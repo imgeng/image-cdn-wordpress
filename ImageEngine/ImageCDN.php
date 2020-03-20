@@ -50,6 +50,31 @@ class ImageCDN
     }
 
     /**
+     * Add action links
+     *
+     * @param   array  $data  already existing links
+     * @return  array  $data  extended array with links
+     */
+    public static function add_action_link($data)
+    {
+        // check permission
+        if (!current_user_can('manage_options')) {
+            return $data;
+        }
+
+        return array_merge(
+            $data,
+            [
+                sprintf(
+                    '<a href="%s">%s</a>',
+                    add_query_arg(['page' => 'image_cdn'], admin_url('options-general.php')),
+                    __("Settings")
+                ),
+            ]
+        );
+    }
+
+    /**
      * Run uninstall hook
      */
     public static function handle_uninstall_hook()
