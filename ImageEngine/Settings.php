@@ -36,8 +36,22 @@ class Settings
             'excludes' => esc_attr($data['excludes']),
             'relative' => (int) ($data['relative']),
             'https'    => (int) ($data['https']),
-            'directives' => trim($data['directives']),
+            'directives' => self::clean_directives($data['directives']),
         ];
+    }
+
+    /**
+     * clean the ImageEngine Directives
+     */
+    public static function clean_directives($directives) {
+        $directives = preg_replace('#.*imgeng=/+?#', '', $directives);
+        $directives = trim($directives);
+
+        // ensure there is one leading "/" and none trailing
+        $directives = trim($directives, "/");
+        $directives = '/' . $directives;
+
+        return $directives;
     }
 
 
