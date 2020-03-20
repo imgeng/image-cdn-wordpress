@@ -94,7 +94,7 @@ class Settings
         $options = ImageCDN::get_options(); ?>
         <div class="wrap">
             <img src="<?php echo plugin_dir_url(IMAGE_CDN_FILE) ?>assets/logo.png"/>
-            <blockquote>This plugin is best used with <a href="https://imageengine.io/?from=wp" target="_blank">ImageEngine</a>, but will also with with most other CDNs.</blockquote>
+            <blockquote>This plugin is best used with <a href="https://imageengine.io/?from=wp" target="_blank">ImageEngine</a>, but will also work with most other CDNs.</blockquote>
             <h2><?php _e("Image CDN Settings", "image-cdn"); ?></h2>
 
             <form method="post" action="options.php">
