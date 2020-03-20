@@ -35,6 +35,11 @@ class Rewriter
     public $https = false;
 
     /**
+     * ImageEngine Directives
+     */
+    public $directives;
+
+    /**
      * Constructor
      */
     public function __construct(
@@ -43,7 +48,8 @@ class Rewriter
         $dirs,
         array $excludes,
         $relative,
-        $https
+        $https,
+        $directives
     ) {
         $this->blog_url       = $blog_url;
         $this->cdn_url        = $cdn_url;
@@ -51,6 +57,7 @@ class Rewriter
         $this->excludes       = $excludes;
         $this->relative       = $relative;
         $this->https          = $https;
+        $this->directives     = $directives;
     }
 
 
@@ -87,42 +94,65 @@ class Rewriter
      * @param   string  $asset  current asset
      * @return  string  updated url if not excluded
      */
-    protected function rewrite_url(&$asset)
+    protected function rewrite_url($asset)
     {
-        if ($this->exclude_asset($asset[0])) {
-            return $asset[0];
+        $url = $asset[0];
+        if ($this->exclude_asset($url)) {
+            return $url;
         }
 
         // Don't rewrite if in preview mode
         if (is_admin_bar_showing()
                 && array_key_exists('preview', $_GET)
                 && $_GET['preview'] == 'true') {
-            return $asset[0];
+            return $url;
         }
 
         $blog_url = $this->relative_url($this->blog_url);
-        $subst_urls = [ 'http:'.$blog_url ];
+        $subst_urls = ['http:'.$blog_url];
 
         // rewrite both http and https URLs if we ticked 'enable CDN for HTTPS connections'
         if ($this->https) {
-            $subst_urls = [
-                'http:'.$blog_url,
-                'https:'.$blog_url,
-            ];
+            $subst_urls[] = 'https:'.$blog_url;
         }
 
-        // is it a protocol independent URL?
-        if (strpos($asset[0], '//') === 0) {
-            return str_replace($blog_url, $this->cdn_url, $asset[0]);
+        // add ImageEngine directives, if any
+        $url = $this->add_directives($url);
+
+        // is it a relative-protocol URL?
+        if (strpos($url, '//') === 0) {
+            return str_replace($blog_url, $this->cdn_url, $url);
         }
 
         // check if not a relative path
-        if (!$this->relative || strstr($asset[0], $blog_url)) {
-            return str_replace($subst_urls, $this->cdn_url, $asset[0]);
+        if (!$this->relative || strstr($url, $blog_url)) {
+            return str_replace($subst_urls, $this->cdn_url, $url);
         }
 
         // relative URL
-        return $this->cdn_url . $asset[0];
+        return $this->cdn_url . $url;
+    }
+
+    protected function add_directives($url)
+    {
+        // No directives, don't do anything
+        if (trim($this->directives) == '') {
+            return $url;
+        }
+
+        // No query string, add ours
+        if (strpos($url, '?') === false) {
+            return $url . '?imgeng=' . $this->directives;
+        }
+        
+        // If there are already some directives, add the new ones
+        if (strpos($url, 'imgeng=') !== false) {
+            return preg_replace('#(\?.*?imgeng=)/?#', '$1' . $this->directives . '/', $url);
+        } else {
+
+        }
+
+        return $url . '&imgeng=' . $this->directives;
     }
 
     /**

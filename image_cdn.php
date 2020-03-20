@@ -3,11 +3,11 @@
 /*
 Plugin Name: Image CDN
 Text Domain: image-cdn
-Description: Simply integrate a Content Delivery Network (CDN) into your WordPress site.
-Author: ScientiaMobile (based on work by KeyCDN)
+Description: Optimize your WordPress site with <a href="https://imageengine.io" target="_blank">ImageEngine</a> or another Image CDN (Content Delivery Network).  This plugin is based on "CDN Enabler" by KeyCDN.
+Author: ImageEngine / ScientiaMobile
 Author URI: https://imageengine.io/
 License: GPLv2 or later
-Version: 1.0.9
+Version: 0.9.0
 */
 
 require_once __DIR__ . '/ImageEngine/Settings.php';

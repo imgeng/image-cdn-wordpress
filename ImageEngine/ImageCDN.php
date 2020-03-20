@@ -103,11 +103,12 @@ class ImageCDN
         add_option(
             'image_cdn',
             [
-                'url'      => get_option('home'),
-                'dirs'     => 'wp-content,wp-includes',
-                'excludes' => '.php',
-                'relative' => '1',
-                'https'    => '',
+                'url'        => get_option('home'),
+                'dirs'       => 'wp-content,wp-includes',
+                'excludes'   => '.php',
+                'relative'   => '1',
+                'https'      => '',
+                'directives' => '',
             ]
         );
     }
@@ -157,6 +158,7 @@ class ImageCDN
                 'excludes'        => '.php',
                 'relative'        => 1,
                 'https'           => 0,
+                'directives'      => '',
             ]
         );
     }
@@ -179,6 +181,7 @@ class ImageCDN
             $excludes,
             $options['relative'],
             $options['https'],
+            $options['directives'],
         );
     }
 
