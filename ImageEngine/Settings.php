@@ -30,8 +30,29 @@ class Settings
             $data['https'] = 0;
         }
 
+        $data['url'] = rtrim($data['url'], '/');
+
+        $parts = parse_url($data['url']);
+        if (!isset($parts['scheme']) || !isset($parts['host'])) {
+            add_settings_error('url', 'url', 'Invalid URL: Missing scheme (<code>http://</code> or <code>https://</code>) or hostname');
+        } else {
+
+            // make sure there is a valid scheme
+            if (!in_array($parts['scheme'], ['http', 'https'])) {
+                add_settings_error('url', 'url', 'Invalid URL: Must begin with <code>http://</code> or <code>https://</code>');
+            }
+
+            // make sure the host is resolves
+            if (!filter_var($parts['host'], FILTER_VALIDATE_IP)) {
+                $ip = gethostbyname($parts['host']);
+                if ($ip == $parts['host']) {
+                    add_settings_error('url', 'url', 'Invalid URL: Could not resolve hostname');
+                }
+            }
+        }
+
         return [
-            'url'      => esc_url(rtrim($data['url'], "/")),
+            'url'      => esc_url($data['url']),
             'dirs'     => esc_attr($data['dirs']),
             'excludes' => esc_attr($data['excludes']),
             'relative' => (int) ($data['relative']),
@@ -43,7 +64,8 @@ class Settings
     /**
      * clean the ImageEngine Directives
      */
-    public static function clean_directives($directives) {
+    public static function clean_directives($directives)
+    {
         $directives = preg_replace('#.*imgeng=/+?#', '', $directives);
         $directives = trim($directives);
 
@@ -69,12 +91,11 @@ class Settings
      */
     public static function settings_page()
     {
-        $options = ImageCDN::get_options()
-?>
+        $options = ImageCDN::get_options(); ?>
         <div class="wrap">
-            <h2>
-                <?php _e("Image CDN Settings", "image-cdn"); ?>
-            </h2>
+            <img src="<?php echo plugin_dir_url(IMAGE_CDN_FILE) ?>assets/logo.png"/>
+            <blockquote>This plugin is best used with <a href="https://imageengine.io/?from=wp" target="_blank">ImageEngine</a>, but will also with with most other CDNs.</blockquote>
+            <h2><?php _e("Image CDN Settings", "image-cdn"); ?></h2>
 
             <form method="post" action="options.php">
                 <?php settings_fields('image_cdn') ?>
@@ -92,7 +113,7 @@ class Settings
                                 </label>
 
                                 <p class="description">
-                                    <?php _e("Enter the CDN URL without trailing", "image-cdn"); ?> <code>/</code>
+                                    <?php _e("Enter your ImageEngine (or other Image CDN) URL.<br>For ImageEngine, this can be found in your customer vault.<br>In most cases, this will be a scheme and a hostname, like <code>https://my-site.cdn.imgeng.in</code>.", "image-cdn"); ?>
                                 </p>
                             </fieldset>
                         </td>
@@ -150,7 +171,7 @@ class Settings
 
                     <tr valign="top">
                         <th scope="row">
-                            <?php _e("CDN HTTPS", "image-cdn"); ?>
+                            <?php _e("CDN HTTPS Support", "image-cdn"); ?>
                         </th>
                         <td>
                             <fieldset>
@@ -174,14 +195,14 @@ class Settings
 
                                 <p class="description">
                                     <?php printf(
-                                        __(
+    __(
                                             '(optional) Enter the <a href="%s">ImageEngine Directives</a> to apply to all images.',
                                             'image-cdn'
                                         ),
-                                        esc_url("https://imageengine.io/docs/implementation/directives")
-                                    ); ?>
+    esc_url("https://imageengine.io/docs/implementation/directives")
+); ?>
                                     <br>
-                                    <?php _e("Example: <code>/cmpr_10/s_0</code> (sets the compression to 10% and disables sharpening)" , "image-cdn"); ?>
+                                    <?php _e("Example: <code>/cmpr_10/s_0</code> (sets the compression to 10% and disables sharpening)", "image-cdn"); ?>
                                 </p>
                             </fieldset>
                         </td>
@@ -191,5 +212,5 @@ class Settings
                 <?php submit_button() ?>
             </form>
         </div><?php
-            }
-        }
+    }
+}

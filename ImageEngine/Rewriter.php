@@ -149,7 +149,6 @@ class Rewriter
         if (strpos($url, 'imgeng=') !== false) {
             return preg_replace('#(\?.*?imgeng=)/?#', '$1' . $this->directives . '/', $url);
         } else {
-
         }
 
         return $url . '&imgeng=' . $this->directives;
