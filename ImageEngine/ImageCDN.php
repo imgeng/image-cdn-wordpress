@@ -5,7 +5,6 @@ namespace ImageEngine;
 class ImageCDN
 {
 
-
     /**
      * Static constructor
      */
@@ -20,70 +19,34 @@ class ImageCDN
      */
     public function __construct()
     {
-        /* CDN rewriter hook */
+        // CDN rewriter hook
         add_action('template_redirect', [self::class, 'handle_rewrite_hook']);
 
-        /* Rewrite rendered content in REST API */
+        // Rewrite rendered content in REST API
         add_filter('the_content', [self::class, 'rewrite_the_content'], 100);
 
-        /* Hooks */
+        // Resource hints
+        add_action('wp_head', [self::class, 'add_head_tags'], 0);
+
+        // Hooks
         add_action('admin_init', [self::class, 'register_textdomain']);
         add_action('admin_init', [Settings::class, 'register_settings']);
         add_action('admin_menu', [Settings::class, 'add_settings_page']);
         add_filter('plugin_action_links_'.IMAGE_CDN_BASE, [self::class, 'add_action_link']);
     }
 
-
     /**
-     * Add Zone purge link
-     *
-     * @hook    mixed
-     *
-     * @param   object  menu properties
+     * Add meta tags for Client Hints and Preconnect Resource Hint.
      */
-    public static function add_admin_links($wp_admin_bar)
+    public static function add_head_tags()
     {
-        global $wp;
         $options = self::get_options();
 
-        // check user role
-        if (! is_admin_bar_showing() || !apply_filters('user_can_clear_cache', current_user_can('manage_options'))) {
-            return;
+        echo '    <meta http-equiv="Accept-CH" content="DPR, Viewport-Width, Width, Save-Data">' . "\n";
+        $host = parse_url($options['url'], PHP_URL_HOST);
+        if (!empty($host)) {
+            echo '    <link rel="preconnect" href="//' . $host . '">' . "\n";
         }
-
-        // redirect to admin page if necessary so we can display notification
-        $current_url = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' .
-                        $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-        $goto_url = get_admin_url();
-
-        if (stristr($current_url, get_admin_url())) {
-            $goto_url = $current_url;
-        }
-    }
-
-    /**
-     * Add action links
-     *
-     * @param   array  $data  already existing links
-     * @return  array  $data  extended array with links
-     */
-    public static function add_action_link($data)
-    {
-        // check permission
-        if (!current_user_can('manage_options')) {
-            return $data;
-        }
-
-        return array_merge(
-            $data,
-            [
-                sprintf(
-                    '<a href="%s">%s</a>',
-                    add_query_arg(['page' => 'image_cdn'], admin_url('options-general.php')),
-                    __("Settings")
-                ),
-            ]
-        );
     }
 
     /**
