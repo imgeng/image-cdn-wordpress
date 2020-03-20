@@ -196,12 +196,12 @@ class Settings
 
                                 <p class="description">
                                     <?php printf(
-    __(
-                                            '(optional) Enter the <a href="%s">ImageEngine Directives</a> to apply to all images.',
-                                            'image-cdn'
-                                        ),
-    esc_url("https://imageengine.io/docs/implementation/directives")
-); ?>
+            __(
+        '(optional) Enter the <a href="%s">ImageEngine Directives</a> to apply to all images.',
+        'image-cdn'
+    ),
+            esc_url("https://imageengine.io/docs/implementation/directives")
+        ); ?>
                                     <br>
                                     <?php _e("Example: <code>/cmpr_10/s_0</code> (sets the compression to 10% and disables sharpening)", "image-cdn"); ?>
                                 </p>

@@ -144,7 +144,7 @@ class ImageCDN
             $excludes,
             $options['relative'],
             $options['https'],
-            $options['directives'],
+            $options['directives']
         );
     }
 
