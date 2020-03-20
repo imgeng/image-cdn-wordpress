@@ -72,6 +72,7 @@ class Settings
         // ensure there is one leading "/" and none trailing
         $directives = trim($directives, "/");
         $directives = '/' . $directives;
+        $directives = rtrim($directives, '/');
 
         return $directives;
     }
