@@ -1,39 +1,49 @@
 <?php
 
-/**
- * CDN_Enabler_Rewriter
- *
- * @since 0.0.1
- */
+namespace ImageEngine;
 
-class CDN_Enabler_Rewriter
+class Rewriter
 {
-    var $blog_url       = null;    // origin URL
-    var $cdn_url        = null;    // CDN URL
-
-    var $dirs           = null;    // included directories
-    var $excludes       = []; // excludes
-    var $relative       = false;   // use CDN on relative paths
-    var $https          = false;   // use CDN on HTTPS
-    var $keycdn_api_key = null;    // optional API key for KeyCDN
-    var $keycdn_zone_id = null;    // optional KeyCDN Zone ID
+    /**
+     * Origin URL
+     */
+    public $blog_url;
+ 
+    /**
+     * CDN URL
+     */
+    public $cdn_url;
 
     /**
-     * constructor
-     *
-     * @since   0.0.1
-     * @change  1.0.5
+     * Included directories
      */
+    public $dirs;
+ 
+    /**
+     * Excludes
+     */
+    public $excludes = [];
+ 
+    /**
+     * Use CDN on relative paths
+     */
+    public $relative = false;
+ 
+    /**
+     * Use CDN on HTTPS
+     */
+    public $https = false;
 
-    function __construct(
+    /**
+     * Constructor
+     */
+    public function __construct(
         $blog_url,
         $cdn_url,
         $dirs,
         array $excludes,
         $relative,
-        $https,
-        $keycdn_api_key,
-        $keycdn_zone_id
+        $https
     ) {
         $this->blog_url       = $blog_url;
         $this->cdn_url        = $cdn_url;
@@ -41,22 +51,16 @@ class CDN_Enabler_Rewriter
         $this->excludes       = $excludes;
         $this->relative       = $relative;
         $this->https          = $https;
-        $this->keycdn_api_key = $keycdn_api_key;
-        $this->keycdn_zone_id = $keycdn_zone_id;
     }
 
 
     /**
-     * exclude assets that should not be rewritten
-     *
-     * @since   0.0.1
-     * @change  1.0.3
-     *
+     * Exclude assets that should not be rewritten
      * @param   string  $asset  current asset
      * @return  boolean  true if need to be excluded
      */
-
-    protected function exclude_asset(&$asset) {
+    protected function exclude_asset(&$asset)
+    {
         // excludes
         foreach ($this->excludes as $exclude) {
             if (!!$exclude && stristr($asset, $exclude) != false) {
@@ -68,39 +72,31 @@ class CDN_Enabler_Rewriter
 
 
     /**
-     * relative url
-     *
-     * @since   1.0.5
-     * @change  1.0.5
-     *
+     * Relative url
      * @param   string  $url a full url
      * @return  string  protocol relative url
      */
-    protected function relative_url($url) {
+    protected function relative_url($url)
+    {
         return substr($url, strpos($url, '//'));
     }
 
 
     /**
-     * rewrite url
-     *
-     * @since   0.0.1
-     * @change  1.0.7
-     *
+     * Rewrite url
      * @param   string  $asset  current asset
      * @return  string  updated url if not excluded
      */
-
-    protected function rewrite_url(&$asset) {
+    protected function rewrite_url(&$asset)
+    {
         if ($this->exclude_asset($asset[0])) {
             return $asset[0];
         }
 
         // Don't rewrite if in preview mode
-        if ( is_admin_bar_showing()
-                and array_key_exists('preview', $_GET)
-                and $_GET['preview'] == 'true' )
-        {
+        if (is_admin_bar_showing()
+                && array_key_exists('preview', $_GET)
+                && $_GET['preview'] == 'true') {
             return $asset[0];
         }
 
@@ -129,39 +125,33 @@ class CDN_Enabler_Rewriter
         return $this->cdn_url . $asset[0];
     }
 
-
     /**
-     * get directory scope
-     *
-     * @since   0.0.1
-     * @change  0.0.1
-     *
+     * Get directory scope
      * @return  string  directory scope
      */
 
-    protected function get_dir_scope() {
+    protected function get_dir_scope()
+    {
         $input = explode(',', $this->dirs);
-
-        // default
-        if ($this->dirs == '' || count($input) < 1) {
-            return 'wp\-content|wp\-includes';
+        if ($this->dirs == '' || count($input) === 0) {
+            $input = ['wp-content', 'wp-includes'];
         }
 
-        return implode('|', array_map('quotemeta', array_map('trim', $input)));
+        return implode('|', array_map(function ($in) {
+            $in = trim($in);
+            $in = preg_quote($in);
+            return $in;
+        }, $input));
     }
 
-
     /**
-     * rewrite url
-     *
-     * @since   0.0.1
-     * @change  1.0.7
-     *
+     * Rewrite URL
      * @param   string  $html  current raw HTML doc
      * @return  string  updated HTML doc with CDN links
      */
 
-    public function rewrite($html) {
+    public function rewrite($html)
+    {
         // check if HTTPS and use CDN over HTTPS enabled
         if (!$this->https && isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on') {
             return $html;
@@ -170,8 +160,8 @@ class CDN_Enabler_Rewriter
         // get dir scope in regex format
         $dirs = $this->get_dir_scope();
         $blog_url = $this->https
-            ? '(https?:|)'.$this->relative_url(quotemeta($this->blog_url))
-            : '(http:|)'.$this->relative_url(quotemeta($this->blog_url));
+            ? '(https?:|)'.$this->relative_url(preg_quote($this->blog_url))
+            : '(http:|)'.$this->relative_url(preg_quote($this->blog_url));
 
         // regex rule start
         $regex_rule = '#(?<=[(\"\'])';
