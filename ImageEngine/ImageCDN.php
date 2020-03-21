@@ -31,7 +31,9 @@ class ImageCDN
         add_action('admin_init', [self::class, 'register_textdomain']);
         add_action('admin_init', [Settings::class, 'register_settings']);
         add_action('admin_menu', [Settings::class, 'add_settings_page']);
-        add_filter('plugin_action_links_'.IMAGE_CDN_BASE, [self::class, 'add_action_link']);
+        add_action('admin_footer', [Settings::class, 'register_test_config']);
+        add_action('wp_ajax_image_cdn_test_config', [Settings::class, 'test_config']);
+        add_filter('plugin_action_links_' . IMAGE_CDN_BASE, [self::class, 'add_action_link']);
     }
 
     /**
@@ -92,7 +94,6 @@ class ImageCDN
      */
     public static function handle_activation_hook()
     {
-
         $url = self::get_url_path();
 
         add_option(
@@ -116,7 +117,7 @@ class ImageCDN
     public static function image_cdn_requirements_check()
     {
         // WordPress version check
-        if (version_compare($GLOBALS['wp_version'], IMAGE_CDN_MIN_WP.'alpha', '<')) {
+        if (version_compare($GLOBALS['wp_version'], IMAGE_CDN_MIN_WP . 'alpha', '<')) {
             show_message(
                 sprintf(
                     '<div class="error"><p>%s</p></div>',
@@ -231,7 +232,8 @@ class ImageCDN
     /**
      * Returns true if the content should be rewritten
      */
-    public static function should_rewrite() {
+    public static function should_rewrite()
+    {
         $options = self::get_options();
         if (!$options['enabled']) {
             return false;
@@ -243,4 +245,5 @@ class ImageCDN
 
         return true;
     }
+
 }

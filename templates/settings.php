@@ -1,4 +1,3 @@
-<script src="<?php echo plugin_dir_url(IMAGE_CDN_FILE) ?>assets/utilities.js"></script>
 <div class="wrap">
     <img src="<?php echo plugin_dir_url(IMAGE_CDN_FILE) ?>assets/logo.png" />
     <div class="notice notice-info">
@@ -166,55 +165,32 @@
 
         <p class="submit">
             <input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes">
-            <input type="button" name="check-cdn" id="check-cdn" class="hidden button button-primary" value="Test Configuration">
+            <input type="button" name="check-cdn" id="check-cdn" class="button button-secondary" value="Test Configuration">
         </p>
     </form>
 </div>
 
 <div class="image-cdn-test notice notice-info hidden">
+    <h3>Test Results</h3>
     <p>Testing CDN configuration ...</p>
 </div>
 <div class="image-cdn-test notice notice-success hidden">
+    <h3>Test Results</h3>
     <p>Configuration test successful!</p>
 </div>
-<div class="image-cdn-test notice notice-error hidden">
-    <p>Configuration test failed: <em class="image-cdn-result"></em></p>
+<div class="image-cdn-test notice notice-warning hidden">
+    <h3>Test Results</h3>
+    <p>
+        Configuration test warning: <em class="image-cdn-result"></em><br>
+        Local Test URL: <code class="image-cdn-local-url"></code><br>
+        CDN Test URL: <code class="image-cdn-remote-url"></code>
+    </p>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelector('#check-cdn').addEventListener('click', () => {
-
-            const pending = document.querySelector('.image-cdn-test.notice-info')
-            const success = document.querySelector('.image-cdn-test.notice-success')
-            const error = document.querySelector('.image-cdn-test.notice-error')
-
-            pending.classList.remove('hidden')
-            success.classList.add('hidden')
-            error.classList.add('hidden')
-
-            window.scrollTo({
-                top: 0,
-                left: 0,
-                behavior: 'smooth',
-            });
-
-            const local_url = <?php echo json_encode(get_option('home')); ?>;
-
-            const ending_slashes = new RegExp('/+$', 'g')
-            let cdn_url = document.querySelector('#image_cdn_url').value.replace(ending_slashes, '')
-            let path = document.querySelector('#image_cdn_path').value.replace(ending_slashes, '')
-            cdn_url += path
-
-            imageCDNCheckURLs(local_url, cdn_url)
-                .then(() => {
-                    pending.classList.add('hidden')
-                    success.classList.remove('hidden')
-                })
-                .catch(e => {
-                    pending.classList.add('hidden')
-                    error.querySelector('.image-cdn-result').innerHTML = e.message
-                    error.classList.remove('hidden')
-                })
-        })
-    })
-</script>
+<div class="image-cdn-test notice notice-error hidden">
+    <h3>Test Results</h3>
+    <p>
+        Configuration test failed: <em class="image-cdn-result"></em><br>
+        Local Test URL: <code class="image-cdn-local-url"></code><br>
+        CDN Test URL: <code class="image-cdn-remote-url"></code>
+    </p>
+</div>
