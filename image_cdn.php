@@ -7,7 +7,7 @@ Description: Optimize your WordPress site with <a href="https://imageengine.io" 
 Author: ImageEngine / ScientiaMobile
 Author URI: https://imageengine.io/
 License: GPLv2 or later
-Version: 0.9.0
+Version: 1.0.0
 */
 
 require_once __DIR__ . '/ImageEngine/Settings.php';

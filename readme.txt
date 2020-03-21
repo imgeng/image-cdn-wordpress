@@ -57,3 +57,6 @@ No screenshots available at this time
 
 = 0.9.0 =
 * Initial beta release
+
+= 1.0.0 =
+* Added live configuration testing
