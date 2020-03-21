@@ -13,13 +13,12 @@ class ImageCDN
         new self();
     }
 
-
     /**
      * Constructor
      */
     public function __construct()
     {
-        // CDN rewriter hook
+        // Rewriter hook
         add_action('template_redirect', [self::class, 'handle_rewrite_hook']);
 
         // Rewrite rendered content in REST API
@@ -40,9 +39,15 @@ class ImageCDN
      */
     public static function add_head_tags()
     {
-        $options = self::get_options();
+        if (!self::should_rewrite()) {
+            return;
+        }
 
+        // Add client hints
         echo '    <meta http-equiv="Accept-CH" content="DPR, Viewport-Width, Width, Save-Data">' . "\n";
+
+        // Add resource hints
+        $options = self::get_options();
         $host = parse_url($options['url'], PHP_URL_HOST);
         if (!empty($host)) {
             echo '    <link rel="preconnect" href="//' . $host . '">' . "\n";
@@ -82,25 +87,28 @@ class ImageCDN
         delete_option('image_cdn');
     }
 
-
     /**
      * Run activation hook
      */
     public static function handle_activation_hook()
     {
+
+        $url = self::get_url_path();
+
         add_option(
             'image_cdn',
             [
-                'url'        => get_option('home'),
+                'url'        => $url['base'],
+                'path'       => $url['path'],
                 'dirs'       => 'wp-content,wp-includes',
                 'excludes'   => '.php',
                 'relative'   => '1',
                 'https'      => '',
                 'directives' => '',
+                'enabled'    => '1',
             ]
         );
     }
-
 
     /**
      * Check plugin requirements
@@ -121,7 +129,6 @@ class ImageCDN
         }
     }
 
-
     /**
      * Register textdomain
      */
@@ -130,7 +137,6 @@ class ImageCDN
         load_plugin_textdomain('image-cdn', false, 'image-cdn/lang');
     }
 
-
     /**
      * Return plugin options
      *
@@ -138,33 +144,56 @@ class ImageCDN
      */
     public static function get_options()
     {
+        $url = self::get_url_path();
+
         return wp_parse_args(
             get_option('image_cdn'),
             [
-                'url'             => get_option('home'),
+                'url'             => $url['base'],
+                'path'            => $url['path'],
                 'dirs'            => 'wp-content,wp-includes',
                 'excludes'        => '.php',
                 'relative'        => 1,
                 'https'           => 0,
                 'directives'      => '',
+                'enabled'         => 1,
             ]
         );
     }
 
+    /**
+     * Split the WP home URL into base URL and path components
+     */
+    public static function get_url_path()
+    {
+        $url = get_option('home');
+        $base_url = $url;
+        $path = '';
+
+        if (preg_match('#^(https?://[^/]+)(/.*)$#', $url, $matches)) {
+            $base_url = $matches[1];
+            $path = $matches[2];
+        }
+
+        return [
+            'url' => $url,
+            'base' => $base_url,
+            'path' => $path,
+        ];
+    }
 
     /**
      * Return new rewriter
-     *
      */
     public static function get_rewriter()
     {
         $options = self::get_options();
-
         $excludes = array_map('trim', explode(',', $options['excludes']));
 
         return new Rewriter(
             get_option('home'),
             $options['url'],
+            $options['path'],
             $options['dirs'],
             $excludes,
             $options['relative'],
@@ -173,30 +202,45 @@ class ImageCDN
         );
     }
 
-
     /**
      * Run rewrite hook
      */
     public static function handle_rewrite_hook()
     {
-        $options = self::get_options();
-
-        // check if origin equals cdn url
-        if (get_option('home') == $options['url']) {
-            return;
+        if (!self::should_rewrite()) {
+            return false;
         }
 
         $rewriter = self::get_rewriter();
-        ob_start([&$rewriter, 'rewrite']);
+        ob_start([$rewriter, 'rewrite']);
     }
-
 
     /**
      * Rewrite html content
      */
     public static function rewrite_the_content($html)
     {
+        if (!self::should_rewrite()) {
+            return false;
+        }
+
         $rewriter = self::get_rewriter();
         return $rewriter->rewrite($html);
+    }
+
+    /**
+     * Returns true if the content should be rewritten
+     */
+    public static function should_rewrite() {
+        $options = self::get_options();
+        if (!$options['enabled']) {
+            return false;
+        }
+
+        if ($options['url'] == '') {
+            return false;
+        }
+
+        return true;
     }
 }

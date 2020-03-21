@@ -5,14 +5,19 @@ namespace ImageEngine;
 class Rewriter
 {
     /**
-     * Origin URL
+     * WordPress installation URL
      */
     public $blog_url;
- 
+    
     /**
      * CDN URL
      */
     public $cdn_url;
+
+    /**
+     * Path / subdirectory of the WordPress installation, if not '/'
+     */
+    public $path;
 
     /**
      * Included directories
@@ -45,6 +50,7 @@ class Rewriter
     public function __construct(
         $blog_url,
         $cdn_url,
+        $path,
         $dirs,
         array $excludes,
         $relative,
@@ -53,6 +59,7 @@ class Rewriter
     ) {
         $this->blog_url       = $blog_url;
         $this->cdn_url        = $cdn_url;
+        $this->path           = $path;
         $this->dirs           = $dirs;
         $this->excludes       = $excludes;
         $this->relative       = $relative;
@@ -66,7 +73,7 @@ class Rewriter
      * @param   string  $asset  current asset
      * @return  boolean  true if need to be excluded
      */
-    protected function exclude_asset(&$asset)
+    protected function exclude_asset($asset)
     {
         // excludes
         foreach ($this->excludes as $exclude) {
@@ -96,16 +103,16 @@ class Rewriter
      */
     protected function rewrite_url($asset)
     {
-        $url = $asset[0];
-        if ($this->exclude_asset($url)) {
-            return $url;
+        $asset_url = $asset[0];
+        if ($this->exclude_asset($asset_url)) {
+            return $asset_url;
         }
 
         // Don't rewrite if in preview mode
         if (is_admin_bar_showing()
                 && array_key_exists('preview', $_GET)
                 && $_GET['preview'] == 'true') {
-            return $url;
+            return $asset_url;
         }
 
         $blog_url = $this->relative_url($this->blog_url);
@@ -117,20 +124,25 @@ class Rewriter
         }
 
         // add ImageEngine directives, if any
-        $url = $this->add_directives($url);
+        $asset_url = $this->add_directives($asset_url);
+
+        // prepend the path in case this installation is not at /
+        if ($this->path != '') {
+            $asset_url = '/' . trim($this->path, '/') . $asset_url;
+        }
 
         // is it a relative-protocol URL?
-        if (strpos($url, '//') === 0) {
-            return str_replace($blog_url, $this->cdn_url, $url);
+        if (strpos($asset_url, '//') === 0) {
+            return str_replace($blog_url, $this->cdn_url, $asset_url);
         }
 
         // check if not a relative path
-        if (!$this->relative || strstr($url, $blog_url)) {
-            return str_replace($subst_urls, $this->cdn_url, $url);
+        if (!$this->relative || strstr($asset_url, $blog_url)) {
+            return str_replace($subst_urls, $this->cdn_url, $asset_url);
         }
 
         // relative URL
-        return $this->cdn_url . $url;
+        return $this->cdn_url . $asset_url;
     }
 
     protected function add_directives($url)
