@@ -1,3 +1,4 @@
+<script src="<?php echo plugin_dir_url(IMAGE_CDN_FILE) ?>assets/utilities.js"></script>
 <div class="wrap">
     <img src="<?php echo plugin_dir_url(IMAGE_CDN_FILE) ?>assets/logo.png" />
     <div class="notice notice-info">
@@ -8,9 +9,6 @@
         </p>
     </div>
     <h2><?php _e("Image CDN Settings", "image-cdn"); ?></h2>
-    <pre>
-<?php echo json_encode($options, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT); ?>
-    </pre>
     <?php if ($options['enabled'] && !$is_runnable) { ?>
         <div class="notice notice-error">
             <p>
@@ -152,7 +150,7 @@
                             <?php
                             printf(
                                 __(
-                                    'Enter the <a href="%s">ImageEngine Directives</a> to apply to all images.',
+                                    'Enter the <a href="%s" target="_blank">ImageEngine Directives</a> to apply to all images.',
                                     'image-cdn'
                                 ),
                                 esc_url("https://imageengine.io/docs/implementation/directives")
@@ -166,6 +164,57 @@
             </tr>
         </table>
 
-        <?php submit_button() ?>
+        <p class="submit">
+            <input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes">
+            <input type="button" name="check-cdn" id="check-cdn" class="hidden button button-primary" value="Test Configuration">
+        </p>
     </form>
 </div>
+
+<div class="image-cdn-test notice notice-info hidden">
+    <p>Testing CDN configuration ...</p>
+</div>
+<div class="image-cdn-test notice notice-success hidden">
+    <p>Configuration test successful!</p>
+</div>
+<div class="image-cdn-test notice notice-error hidden">
+    <p>Configuration test failed: <em class="image-cdn-result"></em></p>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('#check-cdn').addEventListener('click', () => {
+
+            const pending = document.querySelector('.image-cdn-test.notice-info')
+            const success = document.querySelector('.image-cdn-test.notice-success')
+            const error = document.querySelector('.image-cdn-test.notice-error')
+
+            pending.classList.remove('hidden')
+            success.classList.add('hidden')
+            error.classList.add('hidden')
+
+            window.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: 'smooth',
+            });
+
+            const local_url = <?php echo json_encode(get_option('home')); ?>;
+
+            const ending_slashes = new RegExp('/+$', 'g')
+            let cdn_url = document.querySelector('#image_cdn_url').value.replace(ending_slashes, '')
+            let path = document.querySelector('#image_cdn_path').value.replace(ending_slashes, '')
+            cdn_url += path
+
+            imageCDNCheckURLs(local_url, cdn_url)
+                .then(() => {
+                    pending.classList.add('hidden')
+                    success.classList.remove('hidden')
+                })
+                .catch(e => {
+                    pending.classList.add('hidden')
+                    error.querySelector('.image-cdn-result').innerHTML = e.message
+                    error.classList.remove('hidden')
+                })
+        })
+    })
+</script>
