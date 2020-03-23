@@ -2,10 +2,15 @@
     <img src="<?php echo plugin_dir_url(IMAGE_CDN_FILE) ?>assets/logo.png" />
     <div class="notice notice-info">
         <p>
-            This plugin is best used with <a href="https://imageengine.io/?from=wp" target="_blank">ImageEngine</a>,
-            but will also work with most other CDNs. <a href="https://www.scientiamobile.com/support/" target="_blank">Support is available</a>
-            to assist ImageEngine customers.
+            This plugin is best used with <a href="https://imageengine.io/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine</a>,
+            but will also work with most other CDNs. 
         </p>
+        <p>To obtain an ImageEngine CDN hostname:</p>
+        <ul>
+            <ol><a target="_blank" href="https://imageengine.io/signup/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine">Sign up for an ImageEngine account</a></ol>
+            <ol>Enter the assigned ImageEngine hostname (inlcuding <code>http://</code> or <code>https://</code>) in the "CDN URL" option below.</ol>
+        </ul>
+        <p>See <a href="https://imageengine.io/docs/setup/quick-start/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">full documentation.</a></p>
     </div>
     <h2><?php _e("Image CDN Settings", "image-cdn"); ?></h2>
     <?php if ($options['enabled'] && !$is_runnable) { ?>
@@ -152,7 +157,7 @@
                                     'Enter the <a href="%s" target="_blank">ImageEngine Directives</a> to apply to all images.',
                                     'image-cdn'
                                 ),
-                                esc_url("https://imageengine.io/docs/implementation/directives")
+                                esc_url("https://imageengine.io/docs/implementation/directives/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine")
                             );
                             ?>
 
