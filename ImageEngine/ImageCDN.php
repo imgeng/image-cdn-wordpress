@@ -92,10 +92,16 @@ class ImageCDN
     public static function default_options()
     {
         $url = self::get_url_path();
+
+        $content_url = self::get_url_path(content_url());
+        $includes_url = self::get_url_path(includes_url());
+        $content_path = trim($content_url['path'], '/');
+        $includes_path = trim($includes_url['path'], '/');
+
         return [
             'url'        => $url['base'],
             'path'       => $url['path'],
-            'dirs'       => implode(',', [WP_CONTENT_DIR, WPINC]),
+            'dirs'       => implode(',', [$content_path, $includes_path]),
             'excludes'   => '.php',
             'relative'   => true,
             'https'      => false,
@@ -152,9 +158,12 @@ class ImageCDN
     /**
      * Split the WP home URL into base URL and path components
      */
-    public static function get_url_path()
+    public static function get_url_path($url = '')
     {
-        $url = get_option('home');
+        if ($url === '') {
+            $url = get_option('home');
+        }
+
         $base_url = $url;
         $path = '';
 

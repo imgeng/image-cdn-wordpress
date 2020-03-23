@@ -3,7 +3,7 @@
     <div class="notice notice-info">
         <p>
             This plugin is best used with <a href="https://imageengine.io/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine</a>,
-            but will also work with most other CDNs. 
+            but will also work with most other CDNs.
         </p>
         <p>To obtain an ImageEngine CDN hostname:</p>
         <ol>
@@ -83,7 +83,7 @@
                     <fieldset>
                         <label for="image_cdn_dirs">
                             <input type="text" name="image_cdn[dirs]" id="image_cdn_dirs" value="<?php echo $options['dirs']; ?>" size="64" class="regular-text code" />
-                            <?php _e(sprintf("Default: <code>%s</code>", "image-cdn"),  $defaults['dirs']); ?>
+                            <?php printf(__("Default: <code>%s</code>", "image-cdn"),  $defaults['dirs']); ?>
                         </label>
 
                         <p class="description">

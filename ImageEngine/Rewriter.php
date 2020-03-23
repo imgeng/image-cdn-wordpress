@@ -8,7 +8,7 @@ class Rewriter
      * WordPress installation URL
      */
     public $blog_url;
-    
+
     /**
      * CDN URL
      */
@@ -23,17 +23,17 @@ class Rewriter
      * Included directories
      */
     public $dirs;
- 
+
     /**
      * Excludes
      */
     public $excludes = [];
- 
+
     /**
      * Use CDN on relative paths
      */
     public $relative = false;
- 
+
     /**
      * Use CDN on HTTPS
      */
@@ -157,7 +157,7 @@ class Rewriter
         if (strpos($url, '?') === false) {
             return $url . '?imgeng=' . $this->directives;
         }
-        
+
         // If there are already some directives, add the new ones
         if (strpos($url, 'imgeng=') !== false) {
             return preg_replace('#(\?.*?imgeng=)/?#', '$1' . $this->directives . '/', $url);
