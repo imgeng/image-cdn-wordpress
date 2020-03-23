@@ -6,10 +6,10 @@
             but will also work with most other CDNs. 
         </p>
         <p>To obtain an ImageEngine CDN hostname:</p>
-        <ul>
-            <ol><a target="_blank" href="https://imageengine.io/signup/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine">Sign up for an ImageEngine account</a></ol>
-            <ol>Enter the assigned ImageEngine hostname (inlcuding <code>http://</code> or <code>https://</code>) in the "CDN URL" option below.</ol>
-        </ul>
+        <ol>
+            <li><a target="_blank" href="https://imageengine.io/signup/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine">Sign up for an ImageEngine account</a></li>
+            <li>Enter the assigned ImageEngine hostname (including <code>http://</code> or <code>https://</code>) in the "CDN URL" option below.</li>
+        </ol>
         <p>See <a href="https://imageengine.io/docs/setup/quick-start/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">full documentation.</a></p>
     </div>
     <h2><?php _e("Image CDN Settings", "image-cdn"); ?></h2>
