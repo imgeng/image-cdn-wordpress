@@ -83,7 +83,7 @@
                     <fieldset>
                         <label for="image_cdn_dirs">
                             <input type="text" name="image_cdn[dirs]" id="image_cdn_dirs" value="<?php echo $options['dirs']; ?>" size="64" class="regular-text code" />
-                            <?php _e("Default: <code>wp-content,wp-includes</code>", "image-cdn"); ?>
+                            <?php _e(sprintf("Default: <code>%s</code>", "image-cdn"),  $defaults['dirs']); ?>
                         </label>
 
                         <p class="description">

@@ -104,6 +104,7 @@ class Rewriter
     protected function rewrite_url($asset)
     {
         $asset_url = $asset[0];
+
         if ($this->exclude_asset($asset_url)) {
             return $asset_url;
         }
@@ -173,10 +174,13 @@ class Rewriter
 
     protected function get_dir_scope()
     {
-        $input = explode(',', $this->dirs);
-        if ($this->dirs == '' || count($input) === 0) {
-            $input = ['wp-content', 'wp-includes'];
+        $dirs = trim($this->dirs, ' ,');
+        if ($dirs == '') {
+            $default = ImageCDN::default_options();
+            $dirs = $default['dirs'];
         }
+
+        $input = explode(',', $dirs);
 
         return implode('|', array_map(function ($in) {
             $in = trim($in);

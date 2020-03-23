@@ -89,26 +89,27 @@ class ImageCDN
         delete_option('image_cdn');
     }
 
+    public static function default_options()
+    {
+        $url = self::get_url_path();
+        return [
+            'url'        => $url['base'],
+            'path'       => $url['path'],
+            'dirs'       => implode(',', [WP_CONTENT_DIR, WPINC]),
+            'excludes'   => '.php',
+            'relative'   => true,
+            'https'      => false,
+            'directives' => '',
+            'enabled'    => false,
+        ];
+    }
+
     /**
      * Run activation hook
      */
     public static function handle_activation_hook()
     {
-        $url = self::get_url_path();
-
-        add_option(
-            'image_cdn',
-            [
-                'url'        => $url['base'],
-                'path'       => $url['path'],
-                'dirs'       => 'wp-content,wp-includes',
-                'excludes'   => '.php',
-                'relative'   => '1',
-                'https'      => '',
-                'directives' => '',
-                'enabled'    => '1',
-            ]
-        );
+        add_option('image_cdn', self::default_options());
     }
 
     /**
@@ -145,21 +146,7 @@ class ImageCDN
      */
     public static function get_options()
     {
-        $url = self::get_url_path();
-
-        return wp_parse_args(
-            get_option('image_cdn'),
-            [
-                'url'             => $url['base'],
-                'path'            => $url['path'],
-                'dirs'            => 'wp-content,wp-includes',
-                'excludes'        => '.php',
-                'relative'        => 1,
-                'https'           => 0,
-                'directives'      => '',
-                'enabled'         => 0,
-            ]
-        );
+        return wp_parse_args(get_option('image_cdn'), self::default_options());
     }
 
     /**
@@ -235,6 +222,7 @@ class ImageCDN
     public static function should_rewrite()
     {
         $options = self::get_options();
+
         if (!$options['enabled']) {
             return false;
         }

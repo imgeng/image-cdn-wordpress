@@ -55,7 +55,7 @@ An [Image CDN](https://imageengine.io/what-is-an-image-cdn?utm_source=wordpress.
 
 = What kinds of files can I serve through the CDN? =
 
-You can serve any static files, for example, images, videos, audio files, css, javascript, documents, etc. Normally, all the files in the default directories (`wp-content`, `wp-includes`) are static and are safe to serve.  If you include other directories, be sure to exclude any files types that are not static.
+You can serve any static files, for example, images, videos, audio files, css, javascript, documents, etc. Normally, all the files in the content directories (usually `wp-content` and `wp-includes`) are static and are safe to serve.  If you include other directories, be sure to exclude any files types that are not static.
 
 = Can I use this plugin if my site is not yet on the public internet? =
 

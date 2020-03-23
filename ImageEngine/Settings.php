@@ -61,10 +61,10 @@ class Settings
             'path'       => $data['path'],
             'dirs'       => esc_attr($data['dirs']),
             'excludes'   => esc_attr($data['excludes']),
-            'relative'   => (int) $data['relative'],
-            'https'      => (int) $data['https'],
+            'relative'   => (bool) $data['relative'],
+            'https'      => (bool) $data['https'],
             'directives' => self::clean_directives($data['directives']),
-            'enabled'    => (int) $data['enabled'],
+            'enabled'    => (bool) $data['enabled'],
         ];
     }
 
@@ -100,6 +100,7 @@ class Settings
     public static function settings_page()
     {
         $options = ImageCDN::get_options();
+        $defaults = ImageCDN::default_options();
         $is_runnable = ImageCDN::should_rewrite();
         include __DIR__ . '/../templates/settings.php';
     }
