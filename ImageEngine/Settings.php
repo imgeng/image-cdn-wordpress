@@ -2,8 +2,6 @@
 
 namespace ImageEngine;
 
-use WP_Error;
-
 class Settings
 {
 

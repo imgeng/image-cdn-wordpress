@@ -4,7 +4,7 @@
 Plugin Name: Image CDN
 Text Domain: image-cdn
 Description: Optimize your WordPress site with <a href="https://imageengine.io" target="_blank">ImageEngine</a> or another Image CDN (Content Delivery Network).  This plugin is based on "CDN Enabler" by KeyCDN.
-Author: ImageEngine / ScientiaMobile
+Author: imageengine
 Author URI: https://imageengine.io/
 License: GPLv2 or later
 Version: 1.0.0

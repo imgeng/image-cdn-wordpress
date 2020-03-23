@@ -1,5 +1,5 @@
 === Image CDN - WordPress CDN Plugin ===
-Contributors: scientiamobile, keycdn
+Contributors: imageengine
 Tags: image cdn, cdn, ImageEngine, image optimization, content delivery network, content distribution network
 Requires at least: 4.6
 Tested up to: 5.3
@@ -12,38 +12,50 @@ Enable CDN URLs for your static assets such as images, CSS or JavaScript files.
 
 == Description ==
 
-A **content delivery network (CDN)** is a network of distributed edge servers, which accelerate your content around the globe. The main benefits of a CDN are *scalability*, *reliability* and *performance*. The **CDN Enabler** plugin helps you to quickly and easily integrate a CDN in WordPress.
+The Image CDN plugin improves your site's performance by serving static assets through a content delivery network.  This plugin is optimized for [ImageEngine](https://imageengine.io/) but will work with almost any CDN.
 
-= What it does? =
-The CDN Enabler plugin has been developed to link your content to the CDN URLs.
+= How it works =
+
+This plugin works by rewriting the URLs to your assets (images, javascript, css, etc), switching your domain for the CDN.  Users of [ImageEngine](https://imageengine.io/) can also configure the [Directives](https://imageengine.io/docs/implementation/directives) for their assets, controlling things like image quality, automatic format conversion and automatic image resizing.
+
+> Unlike other CDN plugins, the Image CDN plugin makes it simple to test your configuration before enabling it.
 
 = Features =
-* Link assets to load from a CDN
-* Set included directories
-* Define exclusions (directories or extensions)
-* Enable or disable for HTTPS
-* Supports [Bedrock](https://roots.io/bedrock/ "Bedrock CDN")
 
-> The CDN Enabler works perfectly with the fast and lightweight [WordPress Cache Enabler](https://wordpress.org/plugins/cache-enabler/) plugin.
+* Maximize web performance by serving static assets from a CDN
+* Set the WordPress directories that should be included
+* Define excluded directories or extensions
+* Enable or disable HTTPS support
+* Turn on or off quickly without deactivating the plugin
+* Test the CDN integration before saving your changes to make sure it will work properly
+* Supports [ImageEngine Directives](https://imageengine.io/docs/implementation/directives)
+* Compatible with the [WordPress Cache Enabler](https://wordpress.org/plugins/cache-enabler/) plugin
 
 = System Requirements =
-* PHP >=5.6
+
+* PHP >=7.0
 * WordPress >=4.6
 
-
 = Contribute =
+
 * Anyone is welcome to contribute to the plugin on [GitHub](https://github.com/scientiamobile/image-cdn-wordpress).
 * Please merge (squash) all your changes into a single commit before you open a pull request.
 
-
 = Author =
-* [ImageEngine](https://imageengine.io)
 
-> Note: this plugin was based on the [CDN Enabler](https://github.com/scientiamobile/image-cdn-wordpress) plugin, but will not track it.
+* [ImageEngine](https://imageengine.io/)
+
+> Note: this plugin was based on the [CDN Enabler](https://github.com/keycdn/cdn-enabler) plugin, but has diverged and will not track it.
 
 == Frequently Asked Questions ==
 
-No Frequently asked questions
+= What kinds of files can I serve through the CDN? =
+
+You can serve any static files, for example, images, videos, audio files, css, javascript, documents, etc. Normally, all the files in the default directories (`wp-content`, `wp-includes`) are static and are safe to serve.  If you include other directories, be sure to exclude any files types that are not static.
+
+= Can I use this plugin if my site is not yet on the public internet? =
+
+If the CDN cannot contact your server over the internet, it will not be able to serve your content.  You can configure the plugin, but you should leave it disabled until your site is publicly accessible.  Some CDNs, like [ImageEngine](https://imageengine.io/) support fetching assets from behind password-protected sites and other origins like AWS S3.  These options may work for sites that are not publicly accessible.
 
 == Upgrade Notice ==
 
@@ -51,7 +63,7 @@ Upgrades can be performed in the normal WordPress way, nothing else will need to
 
 == Screenshots ==
 
-No screenshots available at this time
+1. The Image CDN configuration screen showing a successful configuration test.
 
 == Changelog ==
 

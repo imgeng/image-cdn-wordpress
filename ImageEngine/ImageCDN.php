@@ -122,7 +122,7 @@ class ImageCDN
                 sprintf(
                     '<div class="error"><p>%s</p></div>',
                     sprintf(
-                        __("CDN Enabler is optimized for WordPress %s. Please disable the plugin or upgrade your WordPress installation (recommended).", "image-cdn"),
+                        __("The Image CDN plugin is optimized for WordPress %s. Please disable the plugin or upgrade your WordPress installation (recommended).", "image-cdn"),
                         IMAGE_CDN_MIN_WP
                     )
                 )
@@ -157,7 +157,7 @@ class ImageCDN
                 'relative'        => 1,
                 'https'           => 0,
                 'directives'      => '',
-                'enabled'         => 1,
+                'enabled'         => 0,
             ]
         );
     }
@@ -245,5 +245,4 @@ class ImageCDN
 
         return true;
     }
-
 }
