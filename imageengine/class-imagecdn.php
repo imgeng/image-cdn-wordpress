@@ -1,7 +1,15 @@
 <?php
+/**
+ * This file contains the ImageCDN class
+ *
+ * @package ImageCDN
+ */
 
 namespace ImageEngine;
 
+/**
+ * The ImageCDN class manages plugin initialization (adding actions and filters, etc).
+ */
 class ImageCDN {
 
 
@@ -84,6 +92,11 @@ class ImageCDN {
 		delete_option( 'image_cdn' );
 	}
 
+	/**
+	 * Returns the default options for this plugin.
+	 *
+	 * @return array Default options.
+	 */
 	public static function default_options() {
 		$url = self::get_url_path();
 
@@ -121,6 +134,7 @@ class ImageCDN {
 				sprintf(
 					'<div class="error"><p>%s</p></div>',
 					sprintf(
+						// translators: %s: WordPress version.
 						__( 'The Image CDN plugin is optimized for WordPress %s. Please disable the plugin or upgrade your WordPress installation (recommended).', 'image-cdn' ),
 						IMAGE_CDN_MIN_WP
 					)

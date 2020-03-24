@@ -1,7 +1,15 @@
 <?php
+/**
+ * This file contains the Settings class
+ *
+ * @package ImageCDN
+ */
 
 namespace ImageEngine;
 
+/**
+ * The Settings class manages all of the validation and administration of the plugin settings.
+ */
 class Settings {
 
 
@@ -106,7 +114,9 @@ class Settings {
 	/**
 	 * Registers the configuration test javascript helpers.
 	 */
-	public static function register_test_config() {      ?>
+	public static function register_test_config() {
+		$nonce = wp_create_nonce( 'image-cdn-test-config' );
+		?>
 		<script>
 			document.addEventListener('DOMContentLoaded', () => {
 				const show_test_results = res => {
@@ -137,7 +147,7 @@ class Settings {
 
 					const data = {
 						'action': 'image_cdn_test_config',
-						'test': 'image-cdn',
+						'nonce': '<?php echo esc_js( $nonce ); ?>',
 						'cdn_url': document.querySelector('#image_cdn_url').value,
 						'path': document.querySelector('#image_cdn_path').value,
 					}
@@ -155,11 +165,12 @@ class Settings {
 		<?php
 	}
 
-
 	/**
 	 * Runs the configuration test.
 	 */
 	public static function test_config() {
+		check_ajax_referer( 'image-cdn-test-config', 'nonce' );
+
 		$out = array(
 			'type'      => 'error',
 			'message'   => '',
@@ -167,7 +178,7 @@ class Settings {
 			'cdn_url'   => '',
 		);
 
-		if ( ! isset( $_POST['test'] ) || ! isset( $_POST['cdn_url'] ) || 'image-cdn' !== $_POST['test'] ) {
+		if ( ! isset( $_POST['cdn_url'] ) ) {
 			$out['message'] = 'Malformed request';
 			wp_send_json_error( $out );
 		}
@@ -176,7 +187,7 @@ class Settings {
 		$asset        = 'assets/logo.png';
 		$local_url    = plugin_dir_url( IMAGE_CDN_FILE ) . $asset;
 		$cdn_base_url = trim( esc_url_raw( wp_unslash( $_POST['cdn_url'] ) ), '/' );
-		$path         = array_key_exists( 'path', $_POST ) ? wp_unslash( $_POST['path'] ) : '';
+		$path         = array_key_exists( 'path', $_POST ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
 
 		$plugin_path = wp_parse_url( plugin_dir_url( IMAGE_CDN_FILE ), PHP_URL_PATH );
 

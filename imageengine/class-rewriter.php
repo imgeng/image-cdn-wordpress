@@ -1,7 +1,15 @@
 <?php
+/**
+ * This file contains the Rewriter class
+ *
+ * @package ImageCDN
+ */
 
 namespace ImageEngine;
 
+/**
+ * The Rewriter class handles the actual rewriting of URLs in the HTML.
+ */
 class Rewriter {
 
 	/**
@@ -136,8 +144,8 @@ class Rewriter {
 
 		// Don't rewrite if in preview mode.
 		if ( is_admin_bar_showing()
-				&& array_key_exists( 'preview', $_GET )
-				&& 'true' === $_GET['preview'] ) {
+				&& array_key_exists( 'preview', $_GET ) // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				&& 'true' === $_GET['preview'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return $asset_url;
 		}
 
