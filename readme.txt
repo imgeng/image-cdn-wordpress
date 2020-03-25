@@ -33,7 +33,7 @@ This plugin works by rewriting the URLs to your assets (images, javascript, css,
 
 = System Requirements =
 
-* PHP >=7.0
+* PHP >=5.6
 * WordPress >=4.6
 
 = Contribute =
