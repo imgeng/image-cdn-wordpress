@@ -24,14 +24,18 @@ class ImageCDN {
 	 * Constructor.
 	 */
 	public function __construct() {
-		// Rewriter hook.
-		add_action( 'template_redirect', array( self::class, 'handle_rewrite_hook' ) );
 
-		// Rewrite rendered content in REST API.
-		add_filter( 'the_content', array( self::class, 'rewrite_the_content' ), 100 );
+		// Only enable the hooks if the configuration is valid and the plugin is enabled.
+		if ( self::should_rewrite() ) {
+			// Rewriter hook.
+			add_action( 'template_redirect', array( self::class, 'handle_rewrite_hook' ) );
 
-		// Resource hints.
-		add_action( 'wp_head', array( self::class, 'add_head_tags' ), 0 );
+			// Rewrite rendered content in REST API.
+			add_filter( 'the_content', array( self::class, 'rewrite_the_content' ), 100 );
+
+			// Resource hints.
+			add_action( 'wp_head', array( self::class, 'add_head_tags' ), 0 );
+		}
 
 		// Hooks.
 		add_action( 'admin_init', array( self::class, 'register_textdomain' ) );
@@ -208,10 +212,6 @@ class ImageCDN {
 	 * Run rewrite hook.
 	 */
 	public static function handle_rewrite_hook() {
-		if ( ! self::should_rewrite() ) {
-			return false;
-		}
-
 		$rewriter = self::get_rewriter();
 		ob_start( array( $rewriter, 'rewrite' ) );
 	}
@@ -222,10 +222,6 @@ class ImageCDN {
 	 * @param string $html The HTML content.
 	 */
 	public static function rewrite_the_content( $html ) {
-		if ( ! self::should_rewrite() ) {
-			return false;
-		}
-
 		$rewriter = self::get_rewriter();
 		return $rewriter->rewrite( $html );
 	}

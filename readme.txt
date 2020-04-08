@@ -71,6 +71,12 @@ Upgrades can be performed in the normal WordPress way, nothing else will need to
 
 == Changelog ==
 
+= 1.0.1 =
+* Fixed issue with blank content rendering
+
+= 1.0.0 =
+* Initial stable release
+
 = 0.9.0 =
 * Initial beta release
 
