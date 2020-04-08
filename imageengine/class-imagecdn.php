@@ -50,10 +50,6 @@ class ImageCDN {
 	 * Add meta tags for Client Hints and Preconnect Resource Hint.
 	 */
 	public static function add_head_tags() {
-		if ( ! self::should_rewrite() ) {
-			return;
-		}
-
 		// Add client hints.
 		echo '    <meta http-equiv="Accept-CH" content="DPR, Viewport-Width, Width, Save-Data">' . "\n";
 
