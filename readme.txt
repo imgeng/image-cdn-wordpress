@@ -12,15 +12,48 @@ Enable CDN URLs for your static assets such as images, CSS or JavaScript files.
 
 == Description ==
 
-The Image CDN plugin improves your site's performance by serving static assets through a content delivery network.  This plugin is optimized for [ImageEngine](https://imageengine.io/?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine) but will work with almost any CDN.
+[ImageEngine’s Image CDN](https://imageengine.io/?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine) plugin accelerates your WordPress or WooCommerce performance by optimizing static images and other assets and delivering them through the ImageEngine content delivery network. The plugin automatically tailors images specifically to the end user's smartphone, tablet or desktop device model and browser, converts them to an optimal image format (e.g. WebP or JPEG 2000), and delivers them via a CDN. The plugin requires signing up for a free, no credit card required trial with ImageEngine.
 
-= How it works =
+== How ImageEngine Works ==
 
-This plugin works by rewriting the URLs to your assets (images, javascript, css, etc), switching your domain for the CDN.  Users of [ImageEngine](https://imageengine.io/?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine) can also configure the [Directives](https://imageengine.io/docs/implementation/directives/?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine) for their assets, controlling things like image quality, automatic format conversion and automatic image resizing.
+The plugin works by rewriting the URLs to your assets (images, javascript, css, etc), switching your domain for the CDN. Unlike other CDN plugins, the Image CDN plugin makes it simple to test your configuration before enabling it.
 
-> Unlike other CDN plugins, the Image CDN plugin makes it simple to test your configuration before enabling it.
+* When a visitor requests a page, ImageEngine dynamically pulls images from your WordPress origin and optimizes them.
+* At the CDN edge, ImageEngine uses device detection to identify the requesting devices and browser characteristics.
+* Based on this information, ImageEngine will resize, compress and encode images so they are best suited to the end users' device.
+* The optimized image will then be delivered at the ImageEngine CDN edge. Subsequent requests are served instantly with cached assets stored on ImageEngine’s global CDN.
 
-= Features =
+Users of [ImageEngine](https://imageengine.io/?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine) can also configure the Directives for their assets to control image quality, automatic format conversion and automatic image resizing.
+
+== What Makes ImageEngine Better Than Other CDNs or Digital Asset Management Platforms? ==
+
+* Delivers optimized images 30% faster than other CDNs or Digital Asset Management platforms.
+* Achieves up to 80% image payload reduction with no perceptible change in quality.
+* Simple to install. Easy to test your configuration before enabling it. No need to move or upload images.
+* Only CDN with true device-aware edge servers to drive superior, fine-tuned optimization.
+* Automatic image optimization of JPG, PNG, GIF, SVG, BMP, TIF into next generation formats like WebP, JPEG 2000, aWebP, or MP4. You can also safely serve non-image files through ImageEngine.
+* Delivers via its scalable global CDN network, with support for HTTPS, HTTP/2, WAF, and DDoS protection.
+
+== Support Resources ==
+
+* [Quick Start documentation](https://imageengine.io/docs/setup/quick-start?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine)
+* Contact our [customer success specialists](https://www.scientiamobile.com/support/)
+* Read our full [WordPress Documentation](https://imageengine.io/docs/integration-guides/imageengine-wordpress?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine)
+* [Test your website](https://demo.imgeng.in/) for image optimization improvements
+* [Best practices](https://imageengine.io/docs/implementation/best-practices?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine) including resource hints, client hints, responsive images
+* [ImageEngine Directives documentation](https://imageengine.io/docs/implementation/directives?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine)
+* [Custom domain (CNAME) with HTTPS configuration](https://imageengine.io/docs/implementation/domain-name?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine)
+* [Usage and performance statistics](https://imageengine.io/docs/analytics/statistics?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine) available in your account page at [my.scientiamobile.com](https://my.scientiamobile.com/)
+
+== Pricing Plans ==
+
+You can get started with ImageEngine easily with a [free, no credit card required, 60 day trial](https://imageengine.io/signup?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine). We offer three plans:
+
+* **Basic** - $49/month. Up to **100 GB** per month of optimized image payload. Includes HTTPs, advanced control panes, performance statistics, and email support
+* **Standard** - $99/month. Up to **250 GB** per month. Includes 3 custom domains (CNAME) with HTTPS support. Priority onboarding support.
+* **Pro** - pricing scales with usage volume.  WAF with DDoS protection. Dedicated edge servers available. Ticketed enterprise support. [Contact us](https://imageengine.io/contact?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine).
+
+== Features ==
 
 * Maximize web performance by serving static assets from a CDN
 * Set the WordPress directories that should be included
@@ -31,17 +64,12 @@ This plugin works by rewriting the URLs to your assets (images, javascript, css,
 * Supports [ImageEngine Directives](https://imageengine.io/docs/implementation/directives/?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine)
 * Compatible with the [WordPress Cache Enabler](https://wordpress.org/plugins/cache-enabler/) plugin
 
-= System Requirements =
+== System Requirements ==
 
 * PHP >=5.6
 * WordPress >=4.6
 
-= Contribute =
-
-* Anyone is welcome to contribute to the plugin on [GitHub](https://github.com/scientiamobile/image-cdn-wordpress).
-* Please merge (squash) all your changes into a single commit before you open a pull request.
-
-= Author =
+== Author ==
 
 * [ImageEngine](https://imageengine.io/?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine)
 
@@ -68,6 +96,8 @@ Upgrades can be performed in the normal WordPress way, nothing else will need to
 == Screenshots ==
 
 1. The Image CDN configuration screen showing a successful configuration test.
+
+2. Annotated screenshot of the configuration screen showing how to configure ImageEngine.
 
 == Changelog ==
 
