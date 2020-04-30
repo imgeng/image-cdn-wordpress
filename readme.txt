@@ -114,7 +114,13 @@ Upgrades can be performed in the normal WordPress way, nothing else will need to
 
 2. Annotated screenshot of the configuration screen showing how to configure ImageEngine.
 
+3. Annotated screenshot of the ImageEngine control panel and hostnames.
+
+
 == Changelog ==
+
+= 1.0.2 =
+* Updated readme with better documentation
 
 = 1.0.1 =
 * Fixed issue with blank content rendering
