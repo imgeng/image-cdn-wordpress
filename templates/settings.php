@@ -73,7 +73,13 @@
 						</label>
 
 						<p class="description">
-							<?php esc_html_e( 'Enter your ImageEngine (or other Image CDN) URL. For ImageEngine, this can be found in your customer vault. In most cases, this will be a scheme and a hostname, like', 'image-cdn' ); ?> <code>https://my-site.cdn.imgeng.in</code>.
+							<?php
+							printf(
+								// translators: 1: Link to account control panel
+								esc_html__('Enter your ImageEngine (or other Image CDN) URL. For ImageEngine, this can be found in your %1$s. In most cases, this will be a scheme and a hostname, like', 'image-cdn' ),
+								'<a href="https://my.scientiamobile.com/" target="_blank">account control panel</a>'
+							);
+							?> <code>https://my-site.cdn.imgeng.in</code>.
 						</p>
 					</fieldset>
 				</td>
