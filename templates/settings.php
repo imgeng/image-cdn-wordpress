@@ -20,7 +20,7 @@
 		</p>
 		<p><?php esc_html_e( 'To obtain an ImageEngine CDN hostname' ); ?>:</p>
 		<ol>
-			<li><a target="_blank" href="https://imageengine.io/signup/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine">Sign up for an ImageEngine account</a></li>
+			<li><a target="_blank" href="https://imageengine.io/signup/?website=<?php echo get_site_url();?>&?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine">Sign up for an ImageEngine account</a></li>
 			<li>
 			<?php
 				printf(
