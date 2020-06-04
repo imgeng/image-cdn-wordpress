@@ -34,7 +34,8 @@ class ImageCDN {
 			add_filter( 'the_content', array( self::class, 'rewrite_the_content' ), 100 );
 
 			// Resource hints.
-			add_action( 'wp_head', array( self::class, 'add_head_tags' ), 0 );
+			//add_action( 'wp_head', array( self::class, 'add_head_tags' ), 0 );
+      add_action( 'send_headers', array( self::class, 'add_headers' ), 0 );
 		}
 
 		// Hooks.
@@ -45,6 +46,24 @@ class ImageCDN {
 		add_action( 'wp_ajax_image_cdn_test_config', array( Settings::class, 'test_config' ) );
 		add_filter( 'plugin_action_links_' . IMAGE_CDN_BASE, array( self::class, 'add_action_link' ) );
 	}
+
+	/**
+	 * Add http headers for Client Hints, Feature Policy and Preconnect Resource Hint.
+	 */
+	public static function add_headers() {
+		// Add client hints.
+        header( 'Accept-CH: viewport-width, width, device-memory, dpr, rtt, downlink, ect' );
+
+		// Add resource hints and feature policy.
+		$options = self::get_options();
+		$host    = wp_parse_url( $options['url'], PHP_URL_HOST );
+		if ( ! empty( $host ) ) {
+    		$protocol = (is_ssl()) ? "https://" : "http://";
+        header( 'Link: <'.$protocol.$host.'>; rel=preconnect' );
+        header( 'Feature-Policy: ch-viewport-width '.$protocol.$host.'; ch-width '.$protocol.$host.'; ch device-memory '.$protocol.$host.'; ch-dpr '.$protocol.$host.'; ch-rtt '.$protocol.$host.'; ch-downlink '.$protocol.$host.'; ch-ect '.$protocol.$host.';' );
+		}
+	}
+
 
 	/**
 	 * Add meta tags for Client Hints and Preconnect Resource Hint.
