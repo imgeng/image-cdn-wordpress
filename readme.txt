@@ -119,6 +119,9 @@ Upgrades can be performed in the normal WordPress way, nothing else will need to
 
 == Changelog ==
 
+= 1.0.4 =
+* Updated plugin priority
+
 = 1.0.3 =
 * Support for Client Hints and Feature Policy
 
