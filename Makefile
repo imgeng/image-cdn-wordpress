@@ -17,3 +17,9 @@ make-zip:
 svn:
 	cp -v -r plugin-assets/* svn/assets/
 	cp -v -r *.php *.txt imageengine assets templates svn/trunk
+
+phpcs:
+	../phpcs/bin/phpcs --standard=WordPress .
+
+phpcs-fix:
+	../phpcs/bin/phpcbf --standard=WordPress .
