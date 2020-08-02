@@ -2,7 +2,7 @@
 Contributors: imageengine
 Tags: image cdn, cdn, ImageEngine, image optimization, content delivery network, content distribution network
 Requires at least: 4.6
-Tested up to: 5.4
+Tested up to: 5.5
 Requires PHP: 5.6
 Stable tag: trunk
 License: GPLv2 or later
@@ -102,7 +102,7 @@ If the CDN cannot contact your server over the internet, it will not be able to 
 
 = How do I obtain a free ImageEngine trial =
 
-To get started with ImageEngine you need to [sign up for an account](https://imageengine.io/signup?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine). Then you'll be provided with a unique CDN hostname to use with this plugin. The trial is free for 60 days, and can be cancelled anytime. 
+To get started with ImageEngine you need to [sign up for an account](https://imageengine.io/signup?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine). Then you'll be provided with a unique CDN hostname to use with this plugin. The trial is free for 60 days, and can be cancelled anytime.
 
 == Upgrade Notice ==
 
