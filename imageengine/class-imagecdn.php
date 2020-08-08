@@ -52,7 +52,7 @@ class ImageCDN {
 	 */
 	public static function add_headers() {
 		// Add client hints.
-        header( 'Accept-CH: viewport-width, width, device-memory, dpr, rtt, downlink, ect' );
+        header( 'Accept-CH: viewport-width, width, device-memory, dpr, downlink, ect' );
 
 		// Add resource hints and feature policy.
 		$options = self::get_options();
@@ -60,7 +60,7 @@ class ImageCDN {
 		if ( ! empty( $host ) ) {
     		$protocol = (is_ssl()) ? "https://" : "http://";
         header( 'Link: <'.$protocol.$host.'>; rel=preconnect' );
-        header( 'Feature-Policy: ch-viewport-width '.$protocol.$host.'; ch-width '.$protocol.$host.'; ch device-memory '.$protocol.$host.'; ch-dpr '.$protocol.$host.'; ch-rtt '.$protocol.$host.'; ch-downlink '.$protocol.$host.'; ch-ect '.$protocol.$host.';' );
+        header( 'Feature-Policy: ch-viewport-width '.$protocol.$host.'; ch-width '.$protocol.$host.'; ch device-memory '.$protocol.$host.'; ch-dpr '.$protocol.$host.'; ch-downlink '.$protocol.$host.'; ch-ect '.$protocol.$host.';' );
 		}
 	}
 
@@ -70,7 +70,7 @@ class ImageCDN {
 	 */
 	public static function add_head_tags() {
 		// Add client hints.
-		echo '    <meta http-equiv="Accept-CH" content="DPR, Viewport-Width, Width, Save-Data">' . "\n";
+		echo '    <meta http-equiv="Accept-CH" content="DPR, Viewport-Width, Width">' . "\n";
 
 		// Add resource hints.
 		$options = self::get_options();
