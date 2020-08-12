@@ -18,14 +18,14 @@
 			);
 			?>
 		</p>
-		<p><?php esc_html_e( 'To obtain an ImageEngine CDN hostname' ); ?>:</p>
+		<p><?php esc_html_e( 'To obtain an ImageEngine Delivery Address' ); ?>:</p>
 		<ol>
 			<li><a target="_blank" href="https://imageengine.io/signup/?website=<?php echo get_site_url();?>&?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine">Sign up for an ImageEngine account</a></li>
 			<li>
 			<?php
 				printf(
 					// translators: 1: http code example 2: https code example.
-					esc_html__( 'Enter the assigned ImageEngine hostname (including %1$s or %2$s) in the "CDN URL" option below.', 'image-cdn' ),
+					esc_html__( 'Enter the assigned ImageEngine Delivery Address (including %1$s or %2$s) in the "CDN URL" option below.', 'image-cdn' ),
 					'<code>http://</code>',
 					'<code>https://</code>'
 				);
@@ -76,7 +76,7 @@
 							<?php
 							printf(
 								// translators: 1: Link to account control panel
-								esc_html__('Enter your ImageEngine (or other Image CDN) URL. For ImageEngine, this can be found in your %1$s. In most cases, this will be a scheme and a hostname, like', 'image-cdn' ),
+								esc_html__('Enter your ImageEngine (or other Image CDN) Delivery Address. For ImageEngine, this can be found in your %1$s. In most cases, this will be a scheme and a hostname, like', 'image-cdn' ),
 								'<a href="https://my.scientiamobile.com/" target="_blank">account control panel</a>'
 							);
 							?> <code>https://my-site.cdn.imgeng.in</code>.
