@@ -107,7 +107,7 @@ class Rewriter {
 	 * @param   string $asset  current asset.
 	 * @return  boolean  true if need to be excluded.
 	 */
-	protected function exclude_asset( $asset ) {
+	public function exclude_asset( $asset ) {
 		// Excludes.
 		foreach ( $this->excludes as $exclude ) {
 			if ( $exclude && stripos( $asset, $exclude ) !== false ) {
@@ -124,7 +124,7 @@ class Rewriter {
 	 * @param   string $url a full url.
 	 * @return  string  protocol relative url.
 	 */
-	protected function relative_url( $url ) {
+	public function relative_url( $url ) {
 		return substr( $url, strpos( $url, '//' ) );
 	}
 
@@ -135,7 +135,7 @@ class Rewriter {
 	 * @param   string $asset  current asset.
 	 * @return  string  updated url if not excluded.
 	 */
-	protected function rewrite_url( $asset ) {
+	public function rewrite_url( $asset ) {
 		$asset_url = $asset[0];
 
 		if ( $this->exclude_asset( $asset_url ) ) {
@@ -185,7 +185,7 @@ class Rewriter {
 	 * @param string $url Input URL.
 	 * @return string Input URL with the directives added.
 	 */
-	protected function add_directives( $url ) {
+	public function add_directives( $url ) {
 		// No directives, don't do anything.
 		if ( '' === trim( $this->directives ) ) {
 			return $url;
@@ -209,7 +209,7 @@ class Rewriter {
 	 *
 	 * @return  string  directory scope.
 	 */
-	protected function get_dir_scope() {
+	public function get_dir_scope() {
 		$dirs = trim( $this->dirs, ' ,' );
 		if ( empty( $dirs ) ) {
 			$default = ImageCDN::default_options();

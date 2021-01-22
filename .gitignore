@@ -2,3 +2,5 @@
 *.zip
 *.phar
 svn/
+
+/vendor/
