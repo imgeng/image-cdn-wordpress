@@ -147,6 +147,9 @@ class RewriterTest extends PHPUnit_Framework_TestCase
 	.foo {
 		background-image: url("/wp-includes/css1.jpg"), url('/wp-includes/css2.jpg');
 	}
+	.bar {
+		background-image: url(/wp-includes/look-mom-no-quotes.jpg);
+	}
 	</style>
 </head>
 <body>
@@ -179,6 +182,9 @@ EOF;
 	<style>
 	.foo {
 		background-image: url("http://my.cdn/wp-includes/css1.jpg?imgeng=/cmpr_20"), url('http://my.cdn/wp-includes/css2.jpg?imgeng=/cmpr_20');
+	}
+	.bar {
+		background-image: url(http://my.cdn/wp-includes/look-mom-no-quotes.jpg?imgeng=/cmpr_20);
 	}
 	</style>
 </head>
