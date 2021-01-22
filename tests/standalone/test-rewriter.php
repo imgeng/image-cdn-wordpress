@@ -8,7 +8,7 @@ class RewriterTest extends PHPUnit_Framework_TestCase
 	{
 		$blog_url = 'http://foo.com';
 		$cdn_url = 'http://my.cdn';
-		$path = '/';
+		$path = '';
 		$dirs = 'wp-includes';
 		$excludes = ['.php'];
 		$relative = true;
@@ -27,7 +27,7 @@ class RewriterTest extends PHPUnit_Framework_TestCase
 	{
 		$blog_url = 'http://foo.com';
 		$cdn_url = 'http://my.cdn';
-		$path = '/';
+		$path = '';
 		$dirs = 'wp-includes';
 		$excludes = ['.php'];
 		$relative = true;
@@ -66,4 +66,121 @@ class RewriterTest extends PHPUnit_Framework_TestCase
 			$this->assertEquals($expected, $actual);
 		}
 	}
+
+	function testAddDirectives()
+	{
+		$blog_url = 'http://foo.com';
+		$cdn_url = 'http://my.cdn';
+		$path = '';
+		$dirs = 'wp-includes';
+		$excludes = ['.php'];
+		$relative = true;
+		$https = true;
+		$directives = '/cmpr_20/w_240/h_180/f_avif';
+
+		$rewrite = new Rewriter($blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives);
+
+		$test_urls = [
+			'http://foo.com/wp-includes/bar/blah/baz.php' => 'http://foo.com/wp-includes/bar/blah/baz.php?imgeng=/cmpr_20/w_240/h_180/f_avif',
+			'http://foo.com/wp-includes/bar/blah/baz.jpg' => 'http://foo.com/wp-includes/bar/blah/baz.jpg?imgeng=/cmpr_20/w_240/h_180/f_avif',
+			'//foo.com/wp-includes/bar/blah/baz.jpg' => '//foo.com/wp-includes/bar/blah/baz.jpg?imgeng=/cmpr_20/w_240/h_180/f_avif',
+			'/wp-includes/bar/blah/baz.png' => '/wp-includes/bar/blah/baz.png?imgeng=/cmpr_20/w_240/h_180/f_avif',
+			// Directives are merged
+			'/wp-includes/baz.png?imgeng=/s_10' => '/wp-includes/baz.png?imgeng=/cmpr_20/w_240/h_180/f_avif/s_10',
+			// Old query params are preserved
+			'/wp-includes/baz.png?foo=bar' => '/wp-includes/baz.png?foo=bar&imgeng=/cmpr_20/w_240/h_180/f_avif',
+			// Special chars are preserved
+			'/wp-includes/baz.png?name=steve%20kam' => '/wp-includes/baz.png?name=steve%20kam&imgeng=/cmpr_20/w_240/h_180/f_avif',
+		];
+
+		foreach ($test_urls as $input => $expected) {
+			$actual = $rewrite->add_directives($input);
+			$this->assertEquals($expected, $actual);
+		}
+	}
+
+	function testGetDirScope()
+	{
+		$blog_url = 'http://foo.com';
+		$cdn_url = 'http://my.cdn';
+		$path = '';
+		$dirs = 'wp-includes,wp-content';
+		$excludes = ['.php'];
+		$relative = true;
+		$https = true;
+		$directives = '/cmpr_20';
+
+		$rewrite = new Rewriter($blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives);
+
+		$this->assertEquals('wp\-includes|wp\-content', $rewrite->get_dir_scope());
+	}
+
+	function testRewrite()
+	{
+		$blog_url = 'http://foo.com';
+		$cdn_url = 'http://my.cdn';
+		$path = '';
+		$dirs = 'wp-includes,wp-content';
+		$excludes = ['.php'];
+		$relative = true;
+		$https = true;
+		$directives = '/cmpr_20';
+
+		$rewrite = new Rewriter($blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives);
+
+		$input = '<html><body><img src="http://ignore.me/wp-includes/test.jpg"/></body></html>';
+		$expected = '<html><body><img src="http://ignore.me/wp-includes/test.jpg"/></body></html>';
+		$actual = $rewrite->rewrite($input);
+		$this->assertEquals($expected, $actual);
+
+		$input = '<html><body><img src="http://foo.com/wp-includes/test.jpg"/></body></html>';
+		$expected = '<html><body><img src="http://my.cdn/wp-includes/test.jpg?imgeng=/cmpr_20"/></body></html>';
+		$actual = $rewrite->rewrite($input);
+		$this->assertEquals($expected, $actual);
+
+		$input =<<<EOF
+<html>
+<head>
+	<title>http://foo.com/wp-includes/test1.jpg</title>
+	<script src="http://foo.com/wp-includes/test2.js"></script>
+	<style>
+	.foo {
+		background-image: url("/wp-includes/css1.jpg"), url('/wp-includes/css2.jpg')
+	}
+	</style>
+</head>
+<body>
+	<img src="/wp-includes/test3.jpg"/>
+	<img src="http://foo.com/wp-includes/test4.jpg"/>
+	<img src='/wp-includes/test5.jpg' alt='something'/>
+	<img src='http://foo.com/wp-includes/test6.jpg' alt='something'/>
+</body>
+</html>
+EOF;
+
+		$expected =<<<EOF
+<html>
+<head>
+	<title>http://foo.com/wp-includes/test1.jpg</title>
+	<script src="http://my.cdn/wp-includes/test2.js?imgeng=/cmpr_20"></script>
+	<style>
+	.foo {
+		background-image: url("http://my.cdn/wp-includes/css1.jpg?imgeng=/cmpr_20"), url('http://my.cdn/wp-includes/css2.jpg?imgeng=/cmpr_20')
+	}
+	</style>
+</head>
+<body>
+	<img src="http://my.cdn/wp-includes/test3.jpg?imgeng=/cmpr_20"/>
+	<img src="http://my.cdn/wp-includes/test4.jpg?imgeng=/cmpr_20"/>
+	<img src='http://my.cdn/wp-includes/test5.jpg?imgeng=/cmpr_20' alt='something'/>
+	<img src='http://my.cdn/wp-includes/test6.jpg?imgeng=/cmpr_20' alt='something'/>
+</body>
+</html>
+EOF;
+
+		$actual = $rewrite->rewrite($input);
+		$this->assertEquals($expected, $actual);
+
+	}
+
 }
