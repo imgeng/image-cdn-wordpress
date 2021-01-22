@@ -145,7 +145,7 @@ class RewriterTest extends PHPUnit_Framework_TestCase
 	<script src="http://foo.com/wp-includes/test2.js"></script>
 	<style>
 	.foo {
-		background-image: url("/wp-includes/css1.jpg"), url('/wp-includes/css2.jpg')
+		background-image: url("/wp-includes/css1.jpg"), url('/wp-includes/css2.jpg');
 	}
 	</style>
 </head>
@@ -154,6 +154,19 @@ class RewriterTest extends PHPUnit_Framework_TestCase
 	<img src="http://foo.com/wp-includes/test4.jpg"/>
 	<img src='/wp-includes/test5.jpg' alt='something'/>
 	<img src='http://foo.com/wp-includes/test6.jpg' alt='something'/>
+	<div style="background-image: url('/wp-includes/loader.gif')"> </div>
+	<picture>
+		<source media="(min-width: 650px)" srcset="/wp-includes/test7.jpg?imgeng=/w_1024">
+		<source media="(min-width: 465px)" srcset="/wp-includes/test8.jpg?imgeng=/w_650">
+		<img src="/wp-includes/test9.jpg">
+	</picture>
+	<img srcset="/wp-includes/test10.jpg  1024w,
+		/wp-includes/test11.jpg 640w,
+		/wp-includes/test12.jpg  320w"
+		sizes="(min-width: 36em) 33.3vw,
+		100vw"
+		src="/wp-includes/test13.jpg"
+		alt="A crazy syntax!" />
 </body>
 </html>
 EOF;
@@ -165,7 +178,7 @@ EOF;
 	<script src="http://my.cdn/wp-includes/test2.js?imgeng=/cmpr_20"></script>
 	<style>
 	.foo {
-		background-image: url("http://my.cdn/wp-includes/css1.jpg?imgeng=/cmpr_20"), url('http://my.cdn/wp-includes/css2.jpg?imgeng=/cmpr_20')
+		background-image: url("http://my.cdn/wp-includes/css1.jpg?imgeng=/cmpr_20"), url('http://my.cdn/wp-includes/css2.jpg?imgeng=/cmpr_20');
 	}
 	</style>
 </head>
@@ -174,6 +187,19 @@ EOF;
 	<img src="http://my.cdn/wp-includes/test4.jpg?imgeng=/cmpr_20"/>
 	<img src='http://my.cdn/wp-includes/test5.jpg?imgeng=/cmpr_20' alt='something'/>
 	<img src='http://my.cdn/wp-includes/test6.jpg?imgeng=/cmpr_20' alt='something'/>
+	<div style="background-image: url('http://my.cdn/wp-includes/loader.gif?imgeng=/cmpr_20')"> </div>
+	<picture>
+		<source media="(min-width: 650px)" srcset="http://my.cdn/wp-includes/test7.jpg?imgeng=/cmpr_20/w_1024">
+		<source media="(min-width: 465px)" srcset="http://my.cdn/wp-includes/test8.jpg?imgeng=/cmpr_20/w_650">
+		<img src="http://my.cdn/wp-includes/test9.jpg?imgeng=/cmpr_20">
+	</picture>
+	<img srcset="http://my.cdn/wp-includes/test10.jpg?imgeng=/cmpr_20  1024w,
+		http://my.cdn/wp-includes/test11.jpg?imgeng=/cmpr_20 640w,
+		http://my.cdn/wp-includes/test12.jpg?imgeng=/cmpr_20  320w"
+		sizes="(min-width: 36em) 33.3vw,
+		100vw"
+		src="http://my.cdn/wp-includes/test13.jpg?imgeng=/cmpr_20"
+		alt="A crazy syntax!" />
 </body>
 </html>
 EOF;
