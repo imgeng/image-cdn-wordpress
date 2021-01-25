@@ -62,7 +62,7 @@ class RewriterTest extends PHPUnit_Framework_TestCase
 		];
 
 		foreach ($test_urls as $input => $expected) {
-			$actual = $rewrite->rewrite_url([$input]);
+			$actual = $rewrite->rewrite_url($input);
 			$this->assertEquals($expected, $actual);
 		}
 	}
@@ -217,6 +217,36 @@ EOF;
 
 	}
 
+	function testRewriteRegexBadMatches()
+	{
+		$blog_url = 'http://foo.com';
+		$cdn_url = 'http://my.cdn';
+		$path = '';
+		$dirs = 'wp-includes,wp-content';
+		$excludes = ['.php'];
+		$relative = true;
+		$https = true;
+		$directives = '/cmpr_20';
+
+		$rewrite = new Rewriter($blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives);
+		$regex = $rewrite->generate_regex();
+		echo "\nUsing Regex:\n$regex\n";
+
+		$inputs = [
+			// Missmatched starting and ending delimiters
+			'"http://foo.com/wp-includes/test2.js\'',
+			'(http://foo.com/wp-includes/test2.js(',
+			// Escaped ending delimiter
+			'"http://foo.com/wp-includes/test2.js\\"',
+			'"a.b"',
+		];
+
+		foreach ($inputs as $input) {
+			$expected = $input;
+			$actual = $rewrite->rewrite($input);
+			$this->assertEquals($expected, $actual);
+		}
+	}
 
 	function testRewriteRegexCodeRegression()
 	{
@@ -230,6 +260,8 @@ EOF;
 		$directives = '/cmpr_20';
 
 		$rewrite = new Rewriter($blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives);
+		$regex = $rewrite->generate_regex();
+		echo "\nUsing Regex:\n$regex\n";
 
 		// This JS string was found in the Divi builder for WordPress when editing a page
 		// and was previously being altered erroneously
@@ -239,7 +271,6 @@ EOF;
 		$expected = $input;
 		$actual = $rewrite->rewrite($input);
 
-		// TODO: Fix rewriter
 		$this->assertEquals($expected, $actual);
 
 	}
