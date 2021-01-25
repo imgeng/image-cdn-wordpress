@@ -259,10 +259,11 @@ class Rewriter {
 
 			if ($delimiter == '(') {
 				if ($ending_delimiter != ')') {
+					// It it starts with '(' it must end with ')'
 					return $original;
 				}
 			} else if ($delimiter != $ending_delimiter) {
-				// Opening and closing delimiters do not match
+				// Opening and closing quotes do not match
 				return $original;
 			}
 
