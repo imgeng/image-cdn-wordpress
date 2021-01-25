@@ -124,6 +124,9 @@ Upgrades can be performed in the normal WordPress way, nothing else will need to
 * Increased performance
 * Improved srcset handing
 
+= 1.0.5 =
+* User interface updates
+
 = 1.0.4 =
 * Removed rtt hint
 
