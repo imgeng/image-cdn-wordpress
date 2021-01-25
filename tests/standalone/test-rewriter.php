@@ -170,6 +170,11 @@ class RewriterTest extends PHPUnit_Framework_TestCase
 		100vw"
 		src="/wp-includes/test13.jpg"
 		alt="A crazy syntax!" />
+	<img srcset="/wp-includes/test14.jpg  1024w,
+		/wp-includes/test15.jpg"
+		sizes="(min-width: 36em) 33.3vw,
+		100vw"
+		alt="A crazy syntax2!" />
 </body>
 </html>
 EOF;
@@ -199,21 +204,25 @@ EOF;
 		<source media="(min-width: 465px)" srcset="http://my.cdn/wp-includes/test8.jpg?imgeng=/cmpr_20/w_650">
 		<img src="http://my.cdn/wp-includes/test9.jpg?imgeng=/cmpr_20">
 	</picture>
-	<img srcset="http://my.cdn/wp-includes/test10.jpg?imgeng=/cmpr_20  1024w,
+	<img srcset="http://my.cdn/wp-includes/test10.jpg?imgeng=/cmpr_20 1024w,
 		http://my.cdn/wp-includes/test11.jpg?imgeng=/cmpr_20 640w,
-		http://my.cdn/wp-includes/test12.jpg?imgeng=/cmpr_20  320w"
+		http://my.cdn/wp-includes/test12.jpg?imgeng=/cmpr_20 320w"
 		sizes="(min-width: 36em) 33.3vw,
 		100vw"
 		src="http://my.cdn/wp-includes/test13.jpg?imgeng=/cmpr_20"
 		alt="A crazy syntax!" />
+	<img srcset="http://my.cdn/wp-includes/test14.jpg?imgeng=/cmpr_20 1024w,
+		http://my.cdn/wp-includes/test15.jpg?imgeng=/cmpr_20"
+		sizes="(min-width: 36em) 33.3vw,
+		100vw"
+		alt="A crazy syntax2!" />
 </body>
 </html>
 EOF;
 
 		$actual = $rewrite->rewrite($input);
 
-		// TODO: Fix rewriter
-		// $this->assertEquals($expected, $actual);
+		$this->assertEquals($expected, $actual);
 
 	}
 
@@ -230,7 +239,7 @@ EOF;
 
 		$rewrite = new Rewriter($blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives);
 		$regex = $rewrite->generate_regex();
-		echo "\nUsing Regex:\n$regex\n";
+		// echo "\nUsing Regex:\n$regex\n";
 
 		$inputs = [
 			// Missmatched starting and ending delimiters
@@ -261,7 +270,7 @@ EOF;
 
 		$rewrite = new Rewriter($blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives);
 		$regex = $rewrite->generate_regex();
-		echo "\nUsing Regex:\n$regex\n";
+		// echo "\nUsing Regex:\n$regex\n";
 
 		// This JS string was found in the Divi builder for WordPress when editing a page
 		// and was previously being altered erroneously
@@ -275,8 +284,7 @@ EOF;
 
 	}
 
-	// TODO: Fix rewriter
-	function __disabled_testRewriteLargePages()
+	function testRewriteLargePages()
 	{
 		$blog_url = 'http://34.228.82.33';
 		$cdn_url = 'http://my.cdn';
@@ -284,6 +292,30 @@ EOF;
 		$dirs = 'wp-includes,wp-content';
 		$excludes = ['.php'];
 		$relative = true;
+		$https = true;
+		$directives = '';
+
+		$rewrite = new Rewriter($blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives);
+
+		foreach (glob(__DIR__.'/pages/test*-original.html') as $original_file) {
+			$expected_file = str_replace('-original', '-expected', $original_file);
+
+			$original = file_get_contents($original_file);
+			$expected = file_get_contents($expected_file);
+
+			$actual = $rewrite->rewrite($original);
+			$this->assertEquals($expected, $actual);
+		}
+	}
+
+	function testRewriteLargePagesNotRelative()
+	{
+		$blog_url = 'http://34.228.82.33';
+		$cdn_url = 'http://my.cdn';
+		$path = '';
+		$dirs = 'wp-includes,wp-content';
+		$excludes = ['.php'];
+		$relative = false;
 		$https = true;
 		$directives = '';
 

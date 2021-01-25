@@ -45,7 +45,7 @@ class Rewriter {
 	 *
 	 * @var arra
 	 */
-	public $excludes = array();
+	public $excludes = [];
 
 	/**
 	 * Use CDN on relative paths.
@@ -67,6 +67,13 @@ class Rewriter {
 	 * @var string
 	 */
 	public $directives;
+
+	/**
+	 * Regular Expression Delimiter.
+	 *
+	 * @var string
+	 */
+	const PCRE_DELIMITER = '#';
 
 	/**
 	 * Constructor.
@@ -135,9 +142,7 @@ class Rewriter {
 	 * @param   string $asset  current asset.
 	 * @return  string  updated url if not excluded.
 	 */
-	public function rewrite_url( $asset ) {
-		$asset_url = $asset[0];
-
+	public function rewrite_url( $asset_url ) {
 		if ( $this->exclude_asset( $asset_url ) ) {
 			return $asset_url;
 		}
@@ -223,7 +228,7 @@ class Rewriter {
 			array_map(
 				function ( $in ) {
 					$in = trim( $in );
-					$in = preg_quote( $in, '#' );
+					$in = preg_quote( $in, self::PCRE_DELIMITER );
 					return $in;
 				},
 				$input
@@ -243,14 +248,74 @@ class Rewriter {
 			return $html;
 		}
 
+		$regex_rule = $this->generate_regex();
+
+		// Call the cdn rewriter callback.
+		$cdn_html = preg_replace_callback( $regex_rule, function($matches) {
+			$original = $matches[0];
+			$delimiter = $matches[1];
+			$url = $matches[2];
+			$ending_delimiter = $matches[3];
+
+			if ($delimiter == '(') {
+				if ($ending_delimiter != ')') {
+					return $original;
+				}
+			} else if ($delimiter != $ending_delimiter) {
+				// Opening and closing delimiters do not match
+				return $original;
+			}
+
+			if ($delimiter != '' && $url[strlen($url)-1] == '\\') {
+				// The closing delimiter was escaped in some other string
+				return $original;
+			}
+
+			if (strpos($url, ' ') !== false) {
+				// Process this as a srcset
+				$is_srcset = false;
+				$srcset = preg_replace_callback('#(\s?)([^\s]+)(\s+\d+[wx])?\s*(,|$)#', function($srcset_matches) use (&$is_srcset) {
+					// Matches:
+					// 1. Leading whitespace
+					// 2. Asset URL
+					// 3. Optional size specifier (digits followed by 'x' or 'w')
+					// 4. Part delimiter
+					$is_srcset = true;
+					return rtrim($srcset_matches[1] . $this->rewrite_url($srcset_matches[2]) . ' ' . trim($srcset_matches[3]) . $srcset_matches[4]);
+				}, $url);
+
+				if ($is_srcset === true) {
+					return $delimiter . $srcset . $ending_delimiter;
+				}
+			}
+
+
+			return $delimiter . $this->rewrite_url($url) . $ending_delimiter;
+		}, $html );
+
+		return $cdn_html;
+	}
+
+	/**
+	 * Generate the regex rule.
+	 *
+	 * @param   string $html  current raw HTML doc.
+	 * @return  string  updated HTML doc with CDN links.
+	 *
+	 * Matching groups:
+	 * 1. Opening delimiter (quote or parenthesis)
+	 * 2. Asset URL
+	 * 3. Closing delimiter (quote or parenthesis)
+	 */
+	public function generate_regex() {
 		// Get dir scope in regex format.
 		$dirs     = $this->get_dir_scope();
 		$blog_url = $this->https
-			? '(https?:|)' . $this->relative_url( preg_quote( $this->blog_url, '#' ) )
-			: '(http:|)' . $this->relative_url( preg_quote( $this->blog_url, '#' ) );
+			? '(?:https?:|)' . $this->relative_url( preg_quote( $this->blog_url, self::PCRE_DELIMITER ) )
+			: '(?:http:|)' . $this->relative_url( preg_quote( $this->blog_url, self::PCRE_DELIMITER ) );
 
 		// Regex rule start.
-		$regex_rule = '#(?<=[(\"\'])';
+		$regex_rule = self::PCRE_DELIMITER . '([(\"\'])(';
 
 		// Check if relative paths.
 		if ( $this->relative ) {
@@ -259,12 +324,11 @@ class Rewriter {
 			$regex_rule .= $blog_url;
 		}
 
+		$regex_rule .= '/(?:' . $dirs . ')/[^\"\')]+';
+
 		// Regex rule end.
-		$regex_rule .= '/(?:((?:' . $dirs . ')[^\"\')]+)|([^/\"\']+\.[^/\"\')]+))(?=[\"\')])#';
+		$regex_rule .= ')([\"\')])' . self::PCRE_DELIMITER;
 
-		// Call the cdn rewriter callback.
-		$cdn_html = preg_replace_callback( $regex_rule, array( $this, 'rewrite_url' ), $html );
-
-		return $cdn_html;
+		return $regex_rule;
 	}
 }
