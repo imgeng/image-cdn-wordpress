@@ -123,6 +123,8 @@ Upgrades can be performed in the normal WordPress way, nothing else will need to
 * Fixed compatibility issue with Divi
 * Increased performance
 * Improved srcset handing
+* Added support for Advanced Custom Forms REST API (ACF to REST API)
+* Added support for WooCommerce REST API
 
 = 1.0.5 =
 * User interface updates
