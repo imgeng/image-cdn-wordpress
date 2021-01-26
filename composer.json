@@ -1,0 +1,16 @@
+{
+    "name": "imageengine/image-cdn-wordpress",
+    "description": "WordPress Image CDN plugin for ImageEngine",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "5.*"
+    },
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Steve Kamerman",
+            "email": "stevekamerman@gmail.com"
+        }
+    ],
+    "require": {}
+}

@@ -6,7 +6,7 @@
  * Author: imageengine
  * Author URI: https://imageengine.io/
  * License: GPLv2 or later
- * Version: 1.0.5
+ * Version: 1.1.0
  */
 
 require_once __DIR__ . '/imageengine/class-settings.php';
