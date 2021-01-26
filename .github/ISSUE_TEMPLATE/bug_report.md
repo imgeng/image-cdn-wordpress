@@ -2,13 +2,20 @@
 name: Bug report
 about: Create a report to help us improve
 title: ''
-labels: ''
+labels: 'bug'
 assignees: ''
 
 ---
 
 **Describe the bug**
-A clear and concise description of what the bug is.
+A clear and concise description of what the bug is, for example "images aren't showing in my WooCommerce product gallery".
+
+**WordPress Environment**
+Describe your WordPress environment:
+1. WordPress version: '...'
+2. WordPress plugins: '...'
+3. Image CDN plugin version: '...'
+4. Web host: (self-hosted, easywp, wordpress.com, etc)
 
 **To Reproduce**
 Steps to reproduce the behavior:
@@ -23,16 +30,5 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
-
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
-
 **Additional context**
-Add any other context about the problem here.
+Add any other context about the problem here, for example "I only see the problem in the WordPress REST API".
