@@ -117,12 +117,15 @@ class ImageCDN {
 	 */
 	public static function rewrite_rest_api($result, $server, $request) {
 
-		if ( ! ($result instanceof \WP_REST_Response && is_array($result->data) ) ) {
+		if (!($result instanceof \WP_REST_Response && is_array($result->data))) {
 			return $result;
 		}
 
 		$rewriter = self::get_rewriter();
 		$url_matcher = $rewriter->generate_regex_for_url();
+
+		$url = array_key_exists('REQUEST_URI', $_SERVER) ? $_SERVER['REQUEST_URI'] : '';
+		$is_woocommerce = strpos($url, '/wp-json/wc/') !== false;
 
 		foreach ($result->data as &$item) {
 			if (!is_array($item)) continue;
@@ -149,6 +152,27 @@ class ImageCDN {
 								$variant = $rewriter->rewrite_url($variant);
 							}
 						}
+					}
+				}
+			}
+
+			// Rewrite image URLs for WooCommerce REST API
+			if ($is_woocommerce) {
+				// Product gallery images
+				if (array_key_exists('images', $item) && is_array($item['images'])) {
+					foreach ($item['images'] as &$image) {
+						if (!is_array($image)) continue;
+
+						if (array_key_exists('src', $image) && preg_match($url_matcher, $image['src'])) {
+							$image['src'] = $rewriter->rewrite_url($image['src']);
+						}
+					}
+				}
+
+				// HTML fragments
+				foreach (['description', 'short_description', 'price_html'] as $fragment) {
+					if (array_key_exists($fragment, $item) && is_string($item[$fragment])) {
+						$item[$fragment] = $rewriter->rewrite($item[$fragment]);
 					}
 				}
 			}
