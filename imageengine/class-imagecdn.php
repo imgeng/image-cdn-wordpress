@@ -35,7 +35,10 @@ class ImageCDN {
 
 			// Resource hints.
 			//add_action( 'wp_head', array( self::class, 'add_head_tags' ), 0 );
-      add_action( 'send_headers', array( self::class, 'add_headers' ), 0 );
+			add_action( 'send_headers', array( self::class, 'add_headers' ), 0 );
+
+			// REST API hooks
+			add_filter( 'rest_pre_dispatch', array( self::class, 'rewrite_rest_api' ), 10, 3 );
 		}
 
 		// Hooks.
@@ -52,15 +55,15 @@ class ImageCDN {
 	 */
 	public static function add_headers() {
 		// Add client hints.
-        header( 'Accept-CH: viewport-width, width, device-memory, dpr, downlink, ect' );
+		header( 'Accept-CH: viewport-width, width, device-memory, dpr, downlink, ect' );
 
 		// Add resource hints and feature policy.
 		$options = self::get_options();
 		$host    = wp_parse_url( $options['url'], PHP_URL_HOST );
 		if ( ! empty( $host ) ) {
-    		$protocol = (is_ssl()) ? "https://" : "http://";
-        header( 'Link: <'.$protocol.$host.'>; rel=preconnect' );
-        header( 'Feature-Policy: ch-viewport-width '.$protocol.$host.'; ch-width '.$protocol.$host.'; ch device-memory '.$protocol.$host.'; ch-dpr '.$protocol.$host.'; ch-downlink '.$protocol.$host.'; ch-ect '.$protocol.$host.';' );
+			$protocol = (is_ssl()) ? "https://" : "http://";
+			header( 'Link: <'.$protocol.$host.'>; rel=preconnect' );
+			header( 'Feature-Policy: ch-viewport-width '.$protocol.$host.'; ch-width '.$protocol.$host.'; ch device-memory '.$protocol.$host.'; ch-dpr '.$protocol.$host.'; ch-downlink '.$protocol.$host.'; ch-ect '.$protocol.$host.';' );
 		}
 	}
 
@@ -102,6 +105,56 @@ class ImageCDN {
 				),
 			)
 		);
+	}
+
+	/**
+	 * Rewrite image URLs in REST API responses
+	 *
+	 * @param   mixed $result  response to replace the requested version with. Can be anything a normal endpoint can return, or null to not hijack the request.
+	 * @param   \WP_REST_Server REST API server instance.
+	 * @param   \WP_REST_Request request used to generate the response.
+	 * @return  array  $data  extended array with links.
+	 */
+	public static function rewrite_rest_api($result, $server, $request) {
+
+		if ( ! ($result instanceof \WP_REST_Response && is_array($result->data) ) ) {
+			return $result;
+		}
+
+		$rewriter = self::get_rewriter();
+		$url_matcher = $rewriter->generate_regex_for_url();
+
+		foreach ($result->data as &$item) {
+			if (!is_array($item)) continue;
+
+			// Rewrite image URLs for Advanced Custom Fields REST API
+			if (array_key_exists('acf', $item)) {
+				foreach ($item['acf'] as &$field) {
+					if (!is_array($field)) continue;
+					if (array_key_exists('type', $field) && $field['type'] == 'image') {
+
+						// Main image
+						if (preg_match($url_matcher, $field['url'])) {
+							$field['url'] = $rewriter->rewrite_url($field['url']);
+						}
+
+						// Icon
+						if (preg_match($url_matcher, $field['icon'])) {
+							$field['icon'] = $rewriter->rewrite_url($field['icon']);
+						}
+
+						// Image variants
+						foreach ($field['sizes'] as &$variant) {
+							if (is_string($variant) && preg_match($url_matcher, $variant)) {
+								$variant = $rewriter->rewrite_url($variant);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return $result;
 	}
 
 	/**
