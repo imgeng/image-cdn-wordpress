@@ -300,8 +300,7 @@ class Rewriter {
 	/**
 	 * Generate the regex rule.
 	 *
-	 * @param   string $html  current raw HTML doc.
-	 * @return  string  updated HTML doc with CDN links.
+	 * @return  string  regular expression.
 	 *
 	 * Matching groups:
 	 * 1. Opening delimiter (quote or parenthesis)
@@ -332,4 +331,36 @@ class Rewriter {
 
 		return $regex_rule;
 	}
+
+	/**
+	 * Generate the regex rule to match a single URL.
+	 *
+	 * @return  string  regular expression.
+	 */
+	public function generate_regex_for_url() {
+
+		// Get dir scope in regex format.
+		$dirs     = $this->get_dir_scope();
+		$blog_url = $this->https
+			? '(?:https?:|)' . $this->relative_url(preg_quote($this->blog_url, self::PCRE_DELIMITER))
+			: '(?:http:|)' . $this->relative_url(preg_quote($this->blog_url, self::PCRE_DELIMITER));
+
+		// Regex rule start.
+		$regex_rule = self::PCRE_DELIMITER . '^';
+
+		// Check if relative paths.
+		if ($this->relative) {
+			$regex_rule .= '(?:' . $blog_url . ')?';
+		} else {
+			$regex_rule .= $blog_url;
+		}
+
+		$regex_rule .= '/(?:' . $dirs . ')/';
+
+		// Regex rule end.
+		$regex_rule .= self::PCRE_DELIMITER;
+
+		return $regex_rule;
+	}
+
 }
