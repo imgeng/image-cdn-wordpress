@@ -38,7 +38,7 @@ class ImageCDN {
 			add_action( 'send_headers', array( self::class, 'add_headers' ), 0 );
 
 			// REST API hooks
-			add_filter( 'rest_pre_dispatch', array( self::class, 'rewrite_rest_api' ), 10, 3 );
+			add_filter( 'rest_post_dispatch', array( self::class, 'rewrite_rest_api' ), 10, 3 );
 		}
 
 		// Hooks.
