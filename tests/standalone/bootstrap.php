@@ -6,4 +6,5 @@ require_once __DIR__ . '/../../imageengine/class-rewriter.php';
 require_once __DIR__ . '/../../imageengine/class-imagecdn.php';
 
 // WordPress API stubs for standalone testing
-function is_admin_bar_showing() { return false; }
+function is_admin_bar_showing() {
+	return false; }
