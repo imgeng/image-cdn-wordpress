@@ -4,3 +4,4 @@
 svn/
 
 /vendor/
+/composer.lock
