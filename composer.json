@@ -6,7 +6,8 @@
         "phpunit/phpunit": "5.*",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
         "phpcompatibility/phpcompatibility-wp": "*",
-        "wp-coding-standards/wpcs": "*"
+        "wp-coding-standards/wpcs": "*",
+        "php-stubs/wordpress-stubs": "^5.6"
     },
     "license": "GPL-2.0-or-later",
     "authors": [

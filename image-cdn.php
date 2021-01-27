@@ -1,5 +1,10 @@
 <?php
 /**
+ * Image CDN WordPress plugin by ImageEngine.
+ *
+ * @package ImageCDN
+ *
+ * @wordpress-plugin
  * Plugin Name: Image CDN
  * Text Domain: image-cdn
  * Description: Optimize your WordPress site with <a href="https://imageengine.io" target="_blank">ImageEngine</a> or another Image CDN (or any other Content Delivery Network).
@@ -9,6 +14,7 @@
  * Version: 1.1.0
  */
 
+// Load plugin files.
 require_once __DIR__ . '/imageengine/class-settings.php';
 require_once __DIR__ . '/imageengine/class-rewriter.php';
 require_once __DIR__ . '/imageengine/class-imagecdn.php';

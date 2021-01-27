@@ -20,7 +20,7 @@
 		</p>
 		<p><?php esc_html_e( 'To obtain an ImageEngine Delivery Address' ); ?>:</p>
 		<ol>
-			<li><a target="_blank" href="https://imageengine.io/signup/?website=<?php echo get_site_url(); ?>&?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine">Sign up for an ImageEngine account</a></li>
+			<li><a target="_blank" href="https://imageengine.io/signup/?website=<?php echo esc_attr( get_site_url() ); ?>&?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine">Sign up for an ImageEngine account</a></li>
 			<li>
 			<?php
 				printf(
@@ -75,12 +75,12 @@
 						<p class="description">
 							<?php
 							printf(
-								// translators: 1: Link to account control panel
+								// translators: 1: Link to account control panel.
 								esc_html__( 'Enter your ImageEngine (or other Image CDN) Delivery Address. For ImageEngine, this can be found in your %1$s. In most cases, this will be a scheme and a hostname, like', 'image-cdn' ),
 								'<a href="https://my.scientiamobile.com/" target="_blank">account control panel</a>'
 							);
 							?>
-							 <code>https://my-site.cdn.imgeng.in</code>.
+							<code>https://my-site.cdn.imgeng.in</code>.
 						</p>
 					</fieldset>
 				</td>

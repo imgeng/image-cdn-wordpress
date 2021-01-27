@@ -139,7 +139,7 @@ class Rewriter {
 	/**
 	 * Rewrite url.
 	 *
-	 * @param   string $asset  current asset.
+	 * @param   string $asset_url  current asset.
 	 * @return  string  updated url if not excluded.
 	 */
 	public function rewrite_url( $asset_url ) {
@@ -259,39 +259,41 @@ class Rewriter {
 				$url              = $matches[2];
 				$ending_delimiter = $matches[3];
 
-				if ( $delimiter == '(' ) {
-					if ( $ending_delimiter != ')' ) {
-						// It it starts with '(' it must end with ')'
+				if ( '(' === $delimiter ) {
+					if ( ')' !== $ending_delimiter ) {
+						// It it starts with '(' it must end with ')'.
 						return $original;
 					}
-				} elseif ( $delimiter != $ending_delimiter ) {
-					// Opening and closing quotes do not match
+				} elseif ( $delimiter !== $ending_delimiter ) {
+					// Opening and closing quotes do not match.
 					return $original;
 				}
 
-				if ( $delimiter != '' && $url[ strlen( $url ) - 1 ] == '\\' ) {
-					// The closing delimiter was escaped in some other string
+				if ( '' !== $delimiter && '\\' === $url[ strlen( $url ) - 1 ] ) {
+					// The closing delimiter was escaped in some other string.
 					return $original;
 				}
 
-				if ( strpos( $url, ' ' ) !== false ) {
-					// Process this as a srcset
+				if ( false !== strpos( $url, ' ' ) ) {
+					// Process this as a srcset.
 					$is_srcset = false;
 					$srcset    = preg_replace_callback(
 						'#(\s?)([^\s]+)(\s+\d+[wx])?\s*(,|$)#',
 						function( $srcset_matches ) use ( &$is_srcset ) {
-							// Matches:
-							// 1. Leading whitespace
-							// 2. Asset URL
-							// 3. Optional size specifier (digits followed by 'x' or 'w')
-							// 4. Part delimiter
+							/*
+							 * Matches:
+							 * 1. Leading whitespace
+							 * 2. Asset URL
+							 * 3. Optional size specifier (digits followed by 'x' or 'w')
+							 * 4. Part delimiter
+							 */
 							$is_srcset = true;
 							return rtrim( $srcset_matches[1] . $this->rewrite_url( $srcset_matches[2] ) . ' ' . trim( $srcset_matches[3] ) . $srcset_matches[4] );
 						},
 						$url
 					);
 
-					if ( $is_srcset === true ) {
+					if ( true === $is_srcset ) {
 						return $delimiter . $srcset . $ending_delimiter;
 					}
 				}

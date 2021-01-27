@@ -33,11 +33,11 @@ class ImageCDN {
 			// Rewrite rendered content in REST API.
 			add_filter( 'the_content', array( self::class, 'rewrite_the_content' ), 100 );
 
-			// Resource hints.
-			// add_action( 'wp_head', array( self::class, 'add_head_tags' ), 0 );
+			// Resource hints.  Note that the 'wp_head' is disabled for the time being due to CORS incompatibility.
+			// add_action( 'wp_head', array( self::class, 'add_head_tags' ), 0 );    .
 			add_action( 'send_headers', array( self::class, 'add_headers' ), 0 );
 
-			// REST API hooks
+			// REST API hooks.
 			add_filter( 'rest_post_dispatch', array( self::class, 'rewrite_rest_api' ), 10, 3 );
 		}
 
@@ -110,9 +110,9 @@ class ImageCDN {
 	/**
 	 * Rewrite image URLs in REST API responses
 	 *
-	 * @param   mixed                                                  $result  response to replace the requested version with. Can be anything a normal endpoint can return, or null to not hijack the request.
-	 * @param   \WP_REST_Server REST API server instance.
-	 * @param   \WP_REST_Request request used to generate the response.
+	 * @param   mixed            $result  response to replace the requested version with. Can be anything a normal endpoint can return, or null to not hijack the request.
+	 * @param   \WP_REST_Server  $server  REST API server instance.
+	 * @param   \WP_REST_Request $request request used to generate the response.
 	 * @return  array  $data  extended array with links.
 	 */
 	public static function rewrite_rest_api( $result, $server, $request ) {
@@ -123,7 +123,7 @@ class ImageCDN {
 		$rewriter    = self::get_rewriter();
 		$url_matcher = $rewriter->generate_regex_for_url();
 
-		$url            = array_key_exists( 'REQUEST_URI', $_SERVER ) ? $_SERVER['REQUEST_URI'] : '';
+		$url            = array_key_exists( 'REQUEST_URI', $_SERVER ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 		$is_woocommerce = strpos( $url, '/wp-json/wc/' ) !== false;
 
 		foreach ( $result->data as &$item ) {
@@ -131,25 +131,25 @@ class ImageCDN {
 				continue;
 			}
 
-			// Rewrite image URLs for Advanced Custom Fields REST API
+			// Rewrite image URLs for Advanced Custom Fields REST API.
 			if ( array_key_exists( 'acf', $item ) ) {
 				foreach ( $item['acf'] as &$field ) {
 					if ( ! is_array( $field ) ) {
 						continue;
 					}
-					if ( array_key_exists( 'type', $field ) && $field['type'] == 'image' ) {
+					if ( array_key_exists( 'type', $field ) && 'image' === $field['type'] ) {
 
-						// Main image
+						// Main image.
 						if ( preg_match( $url_matcher, $field['url'] ) ) {
 							$field['url'] = $rewriter->rewrite_url( $field['url'] );
 						}
 
-						// Icon
+						// Icon.
 						if ( preg_match( $url_matcher, $field['icon'] ) ) {
 							$field['icon'] = $rewriter->rewrite_url( $field['icon'] );
 						}
 
-						// Image variants
+						// Image variants.
 						foreach ( $field['sizes'] as &$variant ) {
 							if ( is_string( $variant ) && preg_match( $url_matcher, $variant ) ) {
 								$variant = $rewriter->rewrite_url( $variant );
@@ -159,9 +159,9 @@ class ImageCDN {
 				}
 			}
 
-			// Rewrite image URLs for WooCommerce REST API
+			// Rewrite image URLs for WooCommerce REST API.
 			if ( $is_woocommerce ) {
-				// Product gallery images
+				// Product gallery images.
 				if ( array_key_exists( 'images', $item ) && is_array( $item['images'] ) ) {
 					foreach ( $item['images'] as &$image ) {
 						if ( ! is_array( $image ) ) {
@@ -174,7 +174,7 @@ class ImageCDN {
 					}
 				}
 
-				// HTML fragments
+				// HTML fragments.
 				foreach ( array( 'description', 'short_description', 'price_html' ) as $fragment ) {
 					if ( array_key_exists( $fragment, $item ) && is_string( $item[ $fragment ] ) ) {
 						$item[ $fragment ] = $rewriter->rewrite( $item[ $fragment ] );

@@ -1,10 +1,21 @@
 <?php
+/**
+ * This file contains standalone tests for the rewriter functionality
+ *
+ * @package ImageCDN
+ */
 
 use ImageEngine\Rewriter;
 
+/**
+ * The RewriterTest class tests the Rewriter.
+ */
 class RewriterTest extends PHPUnit_Framework_TestCase {
 
-	function testExcludeAsset() {
+	/**
+	 * Test assets that should be excluded.
+	 */
+	public function testExcludeAsset() {
 		$blog_url   = 'http://foo.com';
 		$cdn_url    = 'http://my.cdn';
 		$path       = '';
@@ -21,8 +32,10 @@ class RewriterTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( false, $rewrite->exclude_asset( '/wp-includes/bar.jpg' ) );
 	}
 
-
-	function testRelativeURL() {
+	/**
+	 * Test whether relative URLs are transformed properly.
+	 */
+	public function testRelativeURL() {
 		$blog_url   = 'http://foo.com';
 		$cdn_url    = 'http://my.cdn';
 		$path       = '';
@@ -38,8 +51,11 @@ class RewriterTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( '//foo.com/wp-includes/bar/blah/baz.jpg', $rewrite->relative_url( 'http://foo.com/wp-includes/bar/blah/baz.jpg' ) );
 	}
 
-	function testRewriteURL() {
-		 $blog_url  = 'http://foo.com';
+	/**
+	 * Test if URLs are transformed properly via rewrite_url().
+	 */
+	public function testRewriteURL() {
+		$blog_url   = 'http://foo.com';
 		$cdn_url    = 'http://my.cdn';
 		$path       = '';
 		$dirs       = 'wp-includes';
@@ -51,7 +67,7 @@ class RewriterTest extends PHPUnit_Framework_TestCase {
 		$rewrite = new Rewriter( $blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives );
 
 		$test_urls = array(
-			// This one is excluded because it contains '.php'
+			// This one is excluded because it contains '.php'.
 			'http://foo.com/wp-includes/bar/blah/baz.php' => 'http://foo.com/wp-includes/bar/blah/baz.php',
 			'http://foo.com/wp-includes/bar/blah/baz.jpg' => 'http://my.cdn/wp-includes/bar/blah/baz.jpg?imgeng=/cmpr_20',
 			'//foo.com/wp-includes/bar/blah/baz.jpg'      => 'http://my.cdn/wp-includes/bar/blah/baz.jpg?imgeng=/cmpr_20',
@@ -64,7 +80,10 @@ class RewriterTest extends PHPUnit_Framework_TestCase {
 		}
 	}
 
-	function testAddDirectives() {
+	/**
+	 * Test whether ImageEngine directives are added properly.
+	 */
+	public function testAddDirectives() {
 		$blog_url   = 'http://foo.com';
 		$cdn_url    = 'http://my.cdn';
 		$path       = '';
@@ -81,11 +100,11 @@ class RewriterTest extends PHPUnit_Framework_TestCase {
 			'http://foo.com/wp-includes/bar/blah/baz.jpg' => 'http://foo.com/wp-includes/bar/blah/baz.jpg?imgeng=/cmpr_20/w_240/h_180/f_avif',
 			'//foo.com/wp-includes/bar/blah/baz.jpg'      => '//foo.com/wp-includes/bar/blah/baz.jpg?imgeng=/cmpr_20/w_240/h_180/f_avif',
 			'/wp-includes/bar/blah/baz.png'               => '/wp-includes/bar/blah/baz.png?imgeng=/cmpr_20/w_240/h_180/f_avif',
-			// Directives are merged
+			// Directives are merged.
 			'/wp-includes/baz.png?imgeng=/s_10'           => '/wp-includes/baz.png?imgeng=/cmpr_20/w_240/h_180/f_avif/s_10',
-			// Old query params are preserved
+			// Old query params are preserved.
 			'/wp-includes/baz.png?foo=bar'                => '/wp-includes/baz.png?foo=bar&imgeng=/cmpr_20/w_240/h_180/f_avif',
-			// Special chars are preserved
+			// Special chars are preserved.
 			'/wp-includes/baz.png?name=steve%20kam'       => '/wp-includes/baz.png?name=steve%20kam&imgeng=/cmpr_20/w_240/h_180/f_avif',
 		);
 
@@ -95,7 +114,10 @@ class RewriterTest extends PHPUnit_Framework_TestCase {
 		}
 	}
 
-	function testGetDirScope() {
+	/**
+	 * Ensure the dir_scope() function is working as expected.
+	 */
+	public function testGetDirScope() {
 		$blog_url   = 'http://foo.com';
 		$cdn_url    = 'http://my.cdn';
 		$path       = '';
@@ -110,7 +132,10 @@ class RewriterTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( 'wp\-includes|wp\-content', $rewrite->get_dir_scope() );
 	}
 
-	function testRewrite() {
+	/**
+	 * Test if URLs are transformed properly via rewrite().
+	 */
+	public function testRewrite() {
 		$blog_url   = 'http://foo.com';
 		$cdn_url    = 'http://my.cdn';
 		$path       = '';
@@ -219,7 +244,7 @@ EOF;
 		$this->assertEquals( $expected, $actual );
 	}
 
-	function testRewriteRegexBadMatches() {
+	public function testRewriteRegexBadMatches() {
 		 $blog_url  = 'http://foo.com';
 		$cdn_url    = 'http://my.cdn';
 		$path       = '';
@@ -231,13 +256,12 @@ EOF;
 
 		$rewrite = new Rewriter( $blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives );
 		$regex   = $rewrite->generate_regex();
-		// echo "\nUsing Regex:\n$regex\n";
 
 		$inputs = array(
-			// Missmatched starting and ending delimiters
+			// Missmatched starting and ending delimiters.
 			'"http://foo.com/wp-includes/test2.js\'',
 			'(http://foo.com/wp-includes/test2.js(',
-			// Escaped ending delimiter
+			// Escaped ending delimiter.
 			'"http://foo.com/wp-includes/test2.js\\"',
 			'"a.b"',
 		);
@@ -249,7 +273,7 @@ EOF;
 		}
 	}
 
-	function testRewriteRegexCodeRegression() {
+	public function testRewriteRegexCodeRegression() {
 		 $blog_url  = 'http://foo.com';
 		$cdn_url    = 'http://my.cdn';
 		$path       = '';
@@ -261,10 +285,9 @@ EOF;
 
 		$rewrite = new Rewriter( $blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives );
 		$regex   = $rewrite->generate_regex();
-		// echo "\nUsing Regex:\n$regex\n";
 
 		// This JS string was found in the Divi builder for WordPress when editing a page
-		// and was previously being altered erroneously
+		// and was previously being altered erroneously.
 		$input    = <<<EOF
 c=Function.prototype,f=Object.prototype,s=c.toString,p=f.hasOwnProperty,l=RegExp("^"+s.call(p).replace(/[\\^$.*+?()[\]{}|]/g,"\\$&").replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g,"$1.*?")+"$");n.exports=function(n){return!(!i(n)||o(n))&&(e(n)?l:a).test(u(n))}},
 EOF;
@@ -274,7 +297,7 @@ EOF;
 		$this->assertEquals( $expected, $actual );
 	}
 
-	function testRewriteLargePages() {
+	public function testRewriteLargePages() {
 		$blog_url   = 'http://34.228.82.33';
 		$cdn_url    = 'http://my.cdn';
 		$path       = '';
@@ -297,7 +320,7 @@ EOF;
 		}
 	}
 
-	function testRewriteLargePagesNotRelative() {
+	public function testRewriteLargePagesNotRelative() {
 		$blog_url   = 'http://34.228.82.33';
 		$cdn_url    = 'http://my.cdn';
 		$path       = '';
