@@ -21,6 +21,13 @@ class ImageCDN {
 	}
 
 	/**
+	 * Singleton Rewriter instance
+	 *
+	 * @var Rewriter
+	 */
+	private static $rewriter;
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
@@ -31,7 +38,7 @@ class ImageCDN {
 			add_action( 'template_redirect', array( self::class, 'handle_rewrite_hook' ) );
 
 			// Rewrite rendered content in REST API.
-			add_filter( 'the_content', array( self::class, 'rewrite_the_content' ), 100 );
+			add_filter( 'the_content', array( self::class, 'rewrite_html' ), 100 );
 
 			// Resource hints.  Note that the 'wp_head' is disabled for the time being due to CORS incompatibility.
 			// add_action( 'wp_head', array( self::class, 'add_head_tags' ), 0 );    .
@@ -39,6 +46,10 @@ class ImageCDN {
 
 			// REST API hooks.
 			add_filter( 'rest_post_dispatch', array( self::class, 'rewrite_rest_api' ), 10, 3 );
+
+			// Custom filters that can be used in themes to update bare URLs and URLs in HTML.
+			add_filter( 'image_cdn_url', array( self::class, 'rewrite_url' ) );
+			add_filter( 'image_cdn_html', array( self::class, 'rewrite_html' ) );
 		}
 
 		// Hooks.
@@ -290,19 +301,23 @@ class ImageCDN {
 	 * Return new rewriter.
 	 */
 	public static function get_rewriter() {
-		$options  = self::get_options();
-		$excludes = array_map( 'trim', explode( ',', $options['excludes'] ) );
+		if ( ! ( self::$rewriter instanceof Rewriter ) ) {
+			$options  = self::get_options();
+			$excludes = array_map( 'trim', explode( ',', $options['excludes'] ) );
 
-		return new Rewriter(
-			get_option( 'home' ),
-			$options['url'],
-			$options['path'],
-			$options['dirs'],
-			$excludes,
-			$options['relative'],
-			$options['https'],
-			$options['directives']
-		);
+			self::$rewriter = new Rewriter(
+				get_option( 'home' ),
+				$options['url'],
+				$options['path'],
+				$options['dirs'],
+				$excludes,
+				$options['relative'],
+				$options['https'],
+				$options['directives']
+			);
+		}
+
+		return self::$rewriter;
 	}
 
 	/**
@@ -318,7 +333,7 @@ class ImageCDN {
 	 *
 	 * @param string $html The HTML content.
 	 */
-	public static function rewrite_the_content( $html ) {
+	public static function rewrite_html( $html ) {
 		$rewriter = self::get_rewriter();
 		return $rewriter->rewrite( $html );
 	}
@@ -338,5 +353,15 @@ class ImageCDN {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Rewrite URL.
+	 *
+	 * @param string $url The URL.
+	 */
+	public static function rewrite_url( $url ) {
+		$rewriter = self::get_rewriter();
+		return $rewriter->rewrite_url( $url );
 	}
 }
