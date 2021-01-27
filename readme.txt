@@ -57,6 +57,7 @@ You can get started with ImageEngine easily with a [free, no credit card require
 
 * Maximize web performance by serving static assets from a CDN
 * Set the WordPress directories that should be included
+* Custom filters "image_cdn_url" and "image_cdn_html" included
 * Define excluded directories or extensions
 * Enable or disable HTTPS support
 * Turn on or off quickly without deactivating the plugin
@@ -125,6 +126,7 @@ Upgrades can be performed in the normal WordPress way, nothing else will need to
 * Improved srcset handing
 * Added support for Advanced Custom Forms REST API (ACF to REST API)
 * Added support for WooCommerce REST API
+* Added "image_cdn_url" and "image_cdn_html" filters for custom themes
 
 = 1.0.5 =
 * User interface updates
