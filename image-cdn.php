@@ -1,14 +1,25 @@
 <?php
 /**
- * Plugin Name: Image CDN
- * Text Domain: image-cdn
- * Description: Optimize your WordPress site with <a href="https://imageengine.io" target="_blank">ImageEngine</a> or another Image CDN (or any other Content Delivery Network).
- * Author: imageengine
- * Author URI: https://imageengine.io/
- * License: GPLv2 or later
- * Version: 1.1.0
+ * Image CDN WordPress plugin by ImageEngine.
+ *
+ * @package   ImageCDN
+ * @author    imageengine
+ * @copyright 2021 ScientiaMobile, Inc.
+ * @license   GPL-2.0-or-later
+ *
+ * @wordpress-plugin
+ * Plugin Name:       Image CDN
+ * Description:       Optimize your WordPress site with <a href="https://imageengine.io" target="_blank">ImageEngine</a> or another Image CDN (or any other Content Delivery Network).
+ * Author:            imageengine
+ * Author URI:        https://imageengine.io/
+ * Requires at least: 4.6
+ * Requires PHP:      5.6
+ * Text Domain:       image-cdn
+ * License:           GPLv2 or later
+ * Version:           1.1.0
  */
 
+// Load plugin files.
 require_once __DIR__ . '/imageengine/class-settings.php';
 require_once __DIR__ . '/imageengine/class-rewriter.php';
 require_once __DIR__ . '/imageengine/class-imagecdn.php';
