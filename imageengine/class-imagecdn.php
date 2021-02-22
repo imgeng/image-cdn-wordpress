@@ -21,6 +21,20 @@ class ImageCDN {
 	}
 
 	/**
+	 * Client hints.
+	 */
+	private static $client_hints = array(
+		'Viewport-Width',
+		'Width',
+		'DPR',
+		'ECT',
+		// Disabled for CORS compatibility
+		// 'Device-Memory',
+		// 'RTT',
+		// 'Downlink',
+	);
+
+	/**
 	 * Singleton Rewriter instance
 	 *
 	 * @var Rewriter
@@ -41,7 +55,7 @@ class ImageCDN {
 			add_filter( 'the_content', array( self::class, 'rewrite_html' ), 100 );
 
 			// Resource hints.  Note that the 'wp_head' is disabled for the time being due to CORS incompatibility.
-			// add_action( 'wp_head', array( self::class, 'add_head_tags' ), 0 );    .
+			// add_action( 'wp_head', array( self::class, 'add_head_tags' ), 0 );
 			add_action( 'send_headers', array( self::class, 'add_headers' ), 0 );
 
 			// REST API hooks.
@@ -65,17 +79,38 @@ class ImageCDN {
 	 * Add http headers for Client Hints, Feature Policy and Preconnect Resource Hint.
 	 */
 	public static function add_headers() {
-		// Add client hints.
-		header( 'Accept-CH: viewport-width, width, device-memory, dpr, downlink, ect' );
+
+		header( 'Accept-CH: ' . strtolower( implode( ', ', self::$client_hints ) ) );
 
 		// Add resource hints and feature policy.
 		$options = self::get_options();
 		$host    = wp_parse_url( $options['url'], PHP_URL_HOST );
-		if ( ! empty( $host ) ) {
-			$protocol = ( is_ssl() ) ? 'https://' : 'http://';
-			header( 'Link: <' . $protocol . $host . '>; rel=preconnect' );
-			header( 'Feature-Policy: ch-viewport-width ' . $protocol . $host . '; ch-width ' . $protocol . $host . '; ch device-memory ' . $protocol . $host . '; ch-dpr ' . $protocol . $host . '; ch-downlink ' . $protocol . $host . '; ch-ect ' . $protocol . $host . ';' );
+		if ( empty( $host ) ) {
+			return;
 		}
+
+		$protocol = is_ssl() ? 'https' : 'http';
+
+		// Add Preconnect header
+		header( "Link: <${protocol}://${host}>; rel=preconnect" );
+
+		// Add Feature-Policy header.
+		// @deprecated in favor of Permissions-Policy and will be removed once adaquate market
+		// adoption has been reached (90-95%).
+		$features = array();
+		foreach ( self::$client_hints as $hint ) {
+			$features[] = strtolower( "ch-${hint} ${protocol}://${host}" );
+		}
+		header( 'Feature-Policy: ' . strtolower( implode( '; ', $features ) ) );
+
+		$permissions = array();
+		foreach (self::$client_hints as $hint) {
+			$permissions[] = strtolower( "ch-${hint}=(${protocol}://${host})" );
+		}
+		// Add Permissions-Policy header.
+		// This header replaced Feature-Policy in Chrome 88, released in January 2021.
+		// @see https://github.com/w3c/webappsec-permissions-policy/blob/main/permissions-policy-explainer.md#appendix-big-changes-since-this-was-called-feature-policy
+		header( 'Permissions-Policy: ' . strtolower( implode( ', ', $permissions ) ) );
 	}
 
 
@@ -84,7 +119,7 @@ class ImageCDN {
 	 */
 	public static function add_head_tags() {
 		// Add client hints.
-		echo '    <meta http-equiv="Accept-CH" content="DPR, Viewport-Width, Width">' . "\n";
+		echo '    <meta http-equiv="Accept-CH" content="' . implode( ', ', self::$client_hints ) . '">' . "\n";
 
 		// Add resource hints.
 		$options = self::get_options();
