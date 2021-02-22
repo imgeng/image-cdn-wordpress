@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains the ImageCDN class
+ * This file contains the ImageCDN class.
  *
  * @package ImageCDN
  */
@@ -35,11 +35,26 @@ class ImageCDN {
 	);
 
 	/**
-	 * Singleton Rewriter instance
+	 * Singleton Rewriter instance.
 	 *
 	 * @var Rewriter
 	 */
 	private static $rewriter;
+
+	/**
+	 * If true, some functionality will be augmented to facilitate testing.
+	 */
+	public static $tests_running = false;
+
+	/**
+	 * Captures headers written during unit testing.
+	 */
+	public static $test_headers_written = array();
+
+	/**
+	 * Options that will be used during unit testing.
+	 */
+	public static $test_options = array();
 
 	/**
 	 * Constructor.
@@ -76,11 +91,24 @@ class ImageCDN {
 	}
 
 	/**
+	 * Outputs an HTTP header.
+	 */
+	private static function header( $key, $value ) {
+		$val = "$key: $value";
+		if ( self::$tests_running ) {
+			self::$test_headers_written[] = $val;
+			return;
+		}
+
+		header( $val );
+	}
+
+	/**
 	 * Add http headers for Client Hints, Feature Policy and Preconnect Resource Hint.
 	 */
 	public static function add_headers() {
 
-		header( 'Accept-CH: ' . strtolower( implode( ', ', self::$client_hints ) ) );
+		self::header( 'Accept-CH', strtolower( implode( ', ', self::$client_hints ) ) );
 
 		// Add resource hints and feature policy.
 		$options = self::get_options();
@@ -92,7 +120,7 @@ class ImageCDN {
 		$protocol = is_ssl() ? 'https' : 'http';
 
 		// Add Preconnect header
-		header( "Link: <${protocol}://${host}>; rel=preconnect" );
+		self::header( 'Link', "<${protocol}://${host}>; rel=preconnect" );
 
 		// Add Feature-Policy header.
 		// @deprecated in favor of Permissions-Policy and will be removed once adaquate market
@@ -101,7 +129,7 @@ class ImageCDN {
 		foreach ( self::$client_hints as $hint ) {
 			$features[] = strtolower( "ch-${hint} ${protocol}://${host}" );
 		}
-		header( 'Feature-Policy: ' . strtolower( implode( '; ', $features ) ) );
+		self::header( 'Feature-Policy', strtolower( implode( '; ', $features ) ) );
 
 		$permissions = array();
 		foreach (self::$client_hints as $hint) {
@@ -110,7 +138,7 @@ class ImageCDN {
 		// Add Permissions-Policy header.
 		// This header replaced Feature-Policy in Chrome 88, released in January 2021.
 		// @see https://github.com/w3c/webappsec-permissions-policy/blob/main/permissions-policy-explainer.md#appendix-big-changes-since-this-was-called-feature-policy
-		header( 'Permissions-Policy: ' . strtolower( implode( ', ', $permissions ) ) );
+		self::header( 'Permissions-Policy', strtolower( implode( ', ', $permissions ) ) );
 	}
 
 
@@ -303,6 +331,9 @@ class ImageCDN {
 	 * @return  array  $diff  data pairs.
 	 */
 	public static function get_options() {
+		if ( self::$tests_running ) {
+			return self::$test_options;
+		}
 		return wp_parse_args( get_option( 'image_cdn' ), self::default_options() );
 	}
 
