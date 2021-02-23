@@ -22,16 +22,20 @@ class ImageCDN {
 
 	/**
 	 * Client hints.
+	 *
+	 * @var []string
 	 */
 	private static $client_hints = array(
 		'Viewport-Width',
 		'Width',
 		'DPR',
 		'ECT',
-		// Disabled for CORS compatibility
-		// 'Device-Memory',
-		// 'RTT',
-		// 'Downlink',
+		/**
+		 * Disabled for CORS compatibility:
+		 * 'Device-Memory',
+		 * 'RTT',
+		 * 'Downlink',
+		 */
 	);
 
 	/**
@@ -43,16 +47,25 @@ class ImageCDN {
 
 	/**
 	 * If true, some functionality will be augmented to facilitate testing.
+	 *
+	 * @internal
+	 * @var bool
 	 */
 	public static $tests_running = false;
 
 	/**
 	 * Captures headers written during unit testing.
+	 *
+	 * @internal
+	 * @var []string
 	 */
 	public static $test_headers_written = array();
 
 	/**
 	 * Options that will be used during unit testing.
+	 *
+	 * @internal
+	 * @var []string
 	 */
 	public static $test_options = array();
 
@@ -69,8 +82,10 @@ class ImageCDN {
 			// Rewrite rendered content in REST API.
 			add_filter( 'the_content', array( self::class, 'rewrite_html' ), 100 );
 
-			// Resource hints.  Note that the 'wp_head' is disabled for the time being due to CORS incompatibility.
-			// add_action( 'wp_head', array( self::class, 'add_head_tags' ), 0 );
+			/**
+			 * Resource hints.  Note that the 'wp_head' is disabled for the time being due to CORS incompatibility.
+			 * add_action( 'wp_head', array( self::class, 'add_head_tags' ), 0 );
+			 */
 			add_action( 'send_headers', array( self::class, 'add_headers' ), 0 );
 
 			// REST API hooks.
@@ -92,6 +107,9 @@ class ImageCDN {
 
 	/**
 	 * Outputs an HTTP header.
+	 *
+	 * @param string $key HTTP header key.
+	 * @param string $value HTTP header value.
 	 */
 	private static function header( $key, $value ) {
 		$val = "$key: $value";
@@ -107,7 +125,6 @@ class ImageCDN {
 	 * Add http headers for Client Hints, Feature Policy and Preconnect Resource Hint.
 	 */
 	public static function add_headers() {
-
 		self::header( 'Accept-CH', strtolower( implode( ', ', self::$client_hints ) ) );
 
 		// Add resource hints and feature policy.
@@ -119,7 +136,7 @@ class ImageCDN {
 
 		$protocol = is_ssl() ? 'https' : 'http';
 
-		// Add Preconnect header
+		// Add Preconnect header.
 		self::header( 'Link', "<{$protocol}://{$host}>; rel=preconnect" );
 
 		// Add Feature-Policy header.
@@ -132,12 +149,12 @@ class ImageCDN {
 		self::header( 'Feature-Policy', strtolower( implode( '; ', $features ) ) );
 
 		$permissions = array();
-		foreach (self::$client_hints as $hint) {
+		foreach ( self::$client_hints as $hint ) {
 			$permissions[] = strtolower( "ch-{$hint}=(\"{$protocol}://{$host}\")" );
 		}
 		// Add Permissions-Policy header.
 		// This header replaced Feature-Policy in Chrome 88, released in January 2021.
-		// @see https://github.com/w3c/webappsec-permissions-policy/blob/main/permissions-policy-explainer.md#appendix-big-changes-since-this-was-called-feature-policy
+		// @see https://github.com/w3c/webappsec-permissions-policy/blob/main/permissions-policy-explainer.md#appendix-big-changes-since-this-was-called-feature-policy .
 		self::header( 'Permissions-Policy', strtolower( implode( ', ', $permissions ) ) );
 	}
 
@@ -147,7 +164,7 @@ class ImageCDN {
 	 */
 	public static function add_head_tags() {
 		// Add client hints.
-		echo '    <meta http-equiv="Accept-CH" content="' . implode( ', ', self::$client_hints ) . '">' . "\n";
+		echo '    <meta http-equiv="Accept-CH" content="' . esc_attr( implode( ', ', self::$client_hints ) ) . '">' . "\n";
 
 		// Add resource hints.
 		$options = self::get_options();

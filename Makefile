@@ -1,4 +1,4 @@
-.PHONY: % dist-clean dist make-zip svn
+.PHONY: % dist-clean dist make-zip svn test check fix
 
 FILE := image-cdn-0.0.0.zip
 
@@ -14,6 +14,15 @@ make-zip:
 	cd dist && zip -9 -r ${FILE} image_cdn
 	rm -rf dist/image_cdn
 
-svn:
-	cp -v -r plugin-assets/* svn/assets/
-	cp -v -r *.php *.txt imageengine assets templates svn/trunk
+test:
+	vendor/bin/phpunit -vvv -c phpunit-standalone.xml.dist
+
+fix:
+	vendor/bin/phpcbf -v
+
+check:
+	vendor/bin/phpcs
+
+# svn:
+# 	cp -v -r plugin-assets/* svn/assets/
+# 	cp -v -r *.php *.txt imageengine assets templates svn/trunk
