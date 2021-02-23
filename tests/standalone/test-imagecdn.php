@@ -22,10 +22,10 @@ class ImageCDNTest extends PHPUnit_Framework_TestCase {
         ImageCDN::add_headers();
 
         $expected = [
-            'Accept-CH: viewport-width, width, dpr, ect',
+            'Accept-CH: viewport-width, width, dpr',
             'Link: <https://foo.com>; rel=preconnect',
-            'Feature-Policy: ch-viewport-width https://foo.com; ch-width https://foo.com; ch-dpr https://foo.com; ch-ect https://foo.com',
-            'Permissions-Policy: ch-viewport-width=("https://foo.com"), ch-width=("https://foo.com"), ch-dpr=("https://foo.com"), ch-ect=("https://foo.com")',
+            'Feature-Policy: ch-viewport-width https://foo.com; ch-width https://foo.com; ch-dpr https://foo.com',
+            'Permissions-Policy: ch-viewport-width=("https://foo.com"), ch-width=("https://foo.com"), ch-dpr=("https://foo.com")',
         ];
         $this->assertSame($expected, ImageCDN::$test_headers_written);
     }

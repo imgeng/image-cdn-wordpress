@@ -29,9 +29,9 @@ class ImageCDN {
 		'Viewport-Width',
 		'Width',
 		'DPR',
-		'ECT',
 		/**
 		 * Disabled for CORS compatibility:
+		 * 'ECT',
 		 * 'Device-Memory',
 		 * 'RTT',
 		 * 'Downlink',

@@ -20,15 +20,17 @@ class RewriterTest extends PHPUnit_Framework_TestCase {
 		$cdn_url    = 'http://my.cdn';
 		$path       = '';
 		$dirs       = 'wp-includes';
-		$excludes   = array( '.php' );
+		$excludes   = array( '.php', '.woff2' );
 		$relative   = true;
 		$https      = true;
 		$directives = '/cmpr_20';
 
 		$rewrite = new Rewriter( $blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives );
 
-		$this->assertEquals( true, $rewrite->exclude_asset( '/wp-includes/bar.php' ) );
-		$this->assertEquals( true, $rewrite->exclude_asset( '/wp-includes/bar.php/foo.jpg' ) );
+		$this->assertEquals( true,  $rewrite->exclude_asset( '/wp-includes/bar.php' ) );
+		$this->assertEquals( true,  $rewrite->exclude_asset( '/wp-includes/bar.woff2' ) );
+		$this->assertEquals( false, $rewrite->exclude_asset( '/wp-includes/bar.woff' ) );
+		$this->assertEquals( true,  $rewrite->exclude_asset( '/wp-includes/bar.php/foo.jpg' ) );
 		$this->assertEquals( false, $rewrite->exclude_asset( '/wp-includes/bar.jpg' ) );
 	}
 

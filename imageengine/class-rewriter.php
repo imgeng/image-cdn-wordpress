@@ -115,12 +115,19 @@ class Rewriter {
 	 * @return  boolean  true if need to be excluded.
 	 */
 	public function exclude_asset( $asset ) {
+		$path = strtolower( wp_parse_url( $asset, PHP_URL_PATH ) );
+
 		// Excludes.
 		foreach ( $this->excludes as $exclude ) {
-			if ( $exclude && stripos( $asset, $exclude ) !== false ) {
+			if ( '' === $exclude ) {
+				continue;
+			}
+
+			if ( false !== strpos( $path, strtolower( $exclude ) ) ) {
 				return true;
 			}
 		}
+
 		return false;
 	}
 

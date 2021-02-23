@@ -122,7 +122,7 @@ Upgrades can be performed in the normal WordPress way, nothing else will need to
 
 = 1.1.1 =
 * Improved CORS compatibility
-* Removed downlink hint
+* Removed downlink and ect hint
 * Added Permissions-Policy header
 
 = 1.1.0 =
