@@ -16,7 +16,7 @@
  * Requires PHP:      5.6
  * Text Domain:       image-cdn
  * License:           GPLv2 or later
- * Version:           1.1.0
+ * Version:           1.1.1
  */
 
 // Load plugin files.
