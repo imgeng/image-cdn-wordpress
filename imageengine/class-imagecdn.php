@@ -120,20 +120,20 @@ class ImageCDN {
 		$protocol = is_ssl() ? 'https' : 'http';
 
 		// Add Preconnect header
-		self::header( 'Link', "<${protocol}://${host}>; rel=preconnect" );
+		self::header( 'Link', "<{$protocol}://{$host}>; rel=preconnect" );
 
 		// Add Feature-Policy header.
 		// @deprecated in favor of Permissions-Policy and will be removed once adaquate market
 		// adoption has been reached (90-95%).
 		$features = array();
 		foreach ( self::$client_hints as $hint ) {
-			$features[] = strtolower( "ch-${hint} ${protocol}://${host}" );
+			$features[] = strtolower( "ch-{$hint} {$protocol}://{$host}" );
 		}
 		self::header( 'Feature-Policy', strtolower( implode( '; ', $features ) ) );
 
 		$permissions = array();
 		foreach (self::$client_hints as $hint) {
-			$permissions[] = strtolower( "ch-${hint}=(\"${protocol}://${host}\")" );
+			$permissions[] = strtolower( "ch-{$hint}=(\"{$protocol}://{$host}\")" );
 		}
 		// Add Permissions-Policy header.
 		// This header replaced Feature-Policy in Chrome 88, released in January 2021.
