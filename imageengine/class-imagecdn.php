@@ -39,6 +39,17 @@ class ImageCDN {
 	);
 
 	/**
+	 * Client hints that do not require CORS preflight confirmation.
+	 *
+	 * @var []string
+	 */
+	private static $safe_client_hints = array(
+		'Viewport-Width',
+		'Width',
+		'DPR',
+	);
+
+	/**
 	 * Singleton Rewriter instance.
 	 *
 	 * @var Rewriter
@@ -197,6 +208,34 @@ class ImageCDN {
 			)
 		);
 	}
+
+	/**
+	 * Gets the list of active client hints.
+	 *
+	 * @return array client hints.
+	 */
+	public static function get_client_hints() {
+		return self::$client_hints;
+	}
+
+	/**
+	 * Gets the list of safe client hints.
+	 *
+	 * @return array client hints.
+	 */
+	public static function get_safe_client_hints() {
+		return self::$safe_client_hints;
+	}
+
+	/**
+	 * Gets the list of active unsafe client hints.
+	 *
+	 * @return array client hints.
+	 */
+	public static function get_unsafe_client_hints() {
+		return array_diff( self::$client_hints, self::$safe_client_hints );
+	}
+
 
 	/**
 	 * Rewrite image URLs in REST API responses
