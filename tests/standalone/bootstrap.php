@@ -17,3 +17,11 @@ require_once __DIR__ . '/../../imageengine/class-imagecdn.php';
 function is_admin_bar_showing() {
 	return false;
 }
+
+function wp_parse_url($url, $flags) {
+	return parse_url($url, $flags);
+}
+
+function is_ssl() {
+	return true;
+}

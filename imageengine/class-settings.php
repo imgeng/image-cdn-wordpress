@@ -254,16 +254,38 @@ class Settings {
 
 		if ( ! isset( $cdn_res['headers']['content-type'] ) ) {
 			$out['type']    = 'warning';
-			$out['message'] = 'Unable to confirm that the CDN is working properly because it didn\'t send a content type';
+			$out['message'] = 'Unable to confirm that the CDN is working properly because it didn\'t send Content-Type';
 			wp_send_json_error( $out );
 		}
 
 		$cdn_type = $cdn_res['headers']['content-type'];
 		if ( strpos( $cdn_type, 'image/png' ) === false ) {
 			$out['type']    = 'error';
-			$out['message'] = "CDN returned the wrong content type (expected 'image/png', got '$cdn_type'";
+			$out['message'] = "CDN returned the wrong content type (expected 'image/png', got '$cdn_type')";
 			wp_send_json_error( $out );
 		}
+
+		/**
+		 * This check it commented out until we can confirm that it properly tests CORS functionality.
+		 *
+		 * $unsafe_hints = ImageCDN::get_unsafe_client_hints();
+		 * if ( 0 < count( $unsafe_hints ) ) {
+		 *     $cors_error = true;
+		 *     if ( ! array_key_exists( 'access-control-allowed-headers', $cdn_res['headers'] ) ) {
+		 *         $out['type']    = 'warning';
+		 *         $out['message'] = 'Unable to confirm that the CDN supports client-hints because it didn\'t send Access-Control-Allow-Headers.  Fonts may not work if served from the CDN.';
+		 *         wp_send_json_error( $out );
+		 *     }
+		 *
+		 *     $allowed       = preg_split( '/ +/', trim( $cdn_res['headers']['access-control-allowed-headers'] ) );
+		 *     $missing_hints = array_diff( $unsafe_hints, $allowed );
+		 *     if ( 0 < count( $missing_hints ) ) {
+		 *         $out['type']    = 'warning';
+		 *         $out['message'] = 'Unable to confirm that the CDN supports advanced client-hints because it is missing some active client-hints in Access-Control-Allow-Headers (' . implode( ',', $missing_hints ) . ').  Fonts may not work if served from the CDN.';
+		 *         wp_send_json_error( $out );
+		 *     }
+		 * }
+		 */
 
 		$out['type']    = 'success';
 		$out['message'] = 'Test successful';

@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains the ImageCDN class
+ * This file contains the ImageCDN class.
  *
  * @package ImageCDN
  */
@@ -21,11 +21,64 @@ class ImageCDN {
 	}
 
 	/**
-	 * Singleton Rewriter instance
+	 * Client hints.
+	 *
+	 * @var []string
+	 */
+	private static $client_hints = array(
+		'Viewport-Width',
+		'Width',
+		'DPR',
+		/**
+		 * Disabled for CORS compatibility:
+		 * 'ECT',
+		 * 'Device-Memory',
+		 * 'RTT',
+		 * 'Downlink',
+		 */
+	);
+
+	/**
+	 * Client hints that do not require CORS preflight confirmation.
+	 *
+	 * @var []string
+	 */
+	private static $safe_client_hints = array(
+		'Viewport-Width',
+		'Width',
+		'DPR',
+	);
+
+	/**
+	 * Singleton Rewriter instance.
 	 *
 	 * @var Rewriter
 	 */
 	private static $rewriter;
+
+	/**
+	 * If true, some functionality will be augmented to facilitate testing.
+	 *
+	 * @internal
+	 * @var bool
+	 */
+	public static $tests_running = false;
+
+	/**
+	 * Captures headers written during unit testing.
+	 *
+	 * @internal
+	 * @var []string
+	 */
+	public static $test_headers_written = array();
+
+	/**
+	 * Options that will be used during unit testing.
+	 *
+	 * @internal
+	 * @var []string
+	 */
+	public static $test_options = array();
 
 	/**
 	 * Constructor.
@@ -40,8 +93,10 @@ class ImageCDN {
 			// Rewrite rendered content in REST API.
 			add_filter( 'the_content', array( self::class, 'rewrite_html' ), 100 );
 
-			// Resource hints.  Note that the 'wp_head' is disabled for the time being due to CORS incompatibility.
-			// add_action( 'wp_head', array( self::class, 'add_head_tags' ), 0 );    .
+			/**
+			 * Resource hints.  Note that the 'wp_head' is disabled for the time being due to CORS incompatibility.
+			 * add_action( 'wp_head', array( self::class, 'add_head_tags' ), 0 );
+			 */
 			add_action( 'send_headers', array( self::class, 'add_headers' ), 0 );
 
 			// REST API hooks.
@@ -62,20 +117,56 @@ class ImageCDN {
 	}
 
 	/**
+	 * Outputs an HTTP header.
+	 *
+	 * @param string $key HTTP header key.
+	 * @param string $value HTTP header value.
+	 */
+	private static function header( $key, $value ) {
+		$val = "$key: $value";
+		if ( self::$tests_running ) {
+			self::$test_headers_written[] = $val;
+			return;
+		}
+
+		header( $val );
+	}
+
+	/**
 	 * Add http headers for Client Hints, Feature Policy and Preconnect Resource Hint.
 	 */
 	public static function add_headers() {
-		// Add client hints.
-		header( 'Accept-CH: viewport-width, width, device-memory, dpr, downlink, ect' );
+		self::header( 'Accept-CH', strtolower( implode( ', ', self::$client_hints ) ) );
 
 		// Add resource hints and feature policy.
 		$options = self::get_options();
 		$host    = wp_parse_url( $options['url'], PHP_URL_HOST );
-		if ( ! empty( $host ) ) {
-			$protocol = ( is_ssl() ) ? 'https://' : 'http://';
-			header( 'Link: <' . $protocol . $host . '>; rel=preconnect' );
-			header( 'Feature-Policy: ch-viewport-width ' . $protocol . $host . '; ch-width ' . $protocol . $host . '; ch device-memory ' . $protocol . $host . '; ch-dpr ' . $protocol . $host . '; ch-downlink ' . $protocol . $host . '; ch-ect ' . $protocol . $host . ';' );
+		if ( empty( $host ) ) {
+			return;
 		}
+
+		$protocol = is_ssl() ? 'https' : 'http';
+
+		// Add Preconnect header.
+		self::header( 'Link', "<{$protocol}://{$host}>; rel=preconnect" );
+
+		// Add Feature-Policy header.
+		// @deprecated in favor of Permissions-Policy and will be removed once adaquate market
+		// adoption has been reached (90-95%).
+		$features = array();
+		foreach ( self::$client_hints as $hint ) {
+			$features[] = strtolower( "ch-{$hint} {$protocol}://{$host}" );
+		}
+		self::header( 'Feature-Policy', strtolower( implode( '; ', $features ) ) );
+
+		$permissions = array();
+		foreach ( self::$client_hints as $hint ) {
+			$permissions[] = strtolower( "ch-{$hint}=(\"{$protocol}://{$host}\")" );
+		}
+		// Add Permissions-Policy header.
+		// This header replaced Feature-Policy in Chrome 88, released in January 2021.
+		// @see https://github.com/w3c/webappsec-permissions-policy/blob/main/permissions-policy-explainer.md#appendix-big-changes-since-this-was-called-feature-policy .
+		self::header( 'Permissions-Policy', strtolower( implode( ', ', $permissions ) ) );
 	}
 
 
@@ -84,7 +175,7 @@ class ImageCDN {
 	 */
 	public static function add_head_tags() {
 		// Add client hints.
-		echo '    <meta http-equiv="Accept-CH" content="DPR, Viewport-Width, Width">' . "\n";
+		echo '    <meta http-equiv="Accept-CH" content="' . esc_attr( implode( ', ', self::$client_hints ) ) . '">' . "\n";
 
 		// Add resource hints.
 		$options = self::get_options();
@@ -117,6 +208,34 @@ class ImageCDN {
 			)
 		);
 	}
+
+	/**
+	 * Gets the list of active client hints.
+	 *
+	 * @return array client hints.
+	 */
+	public static function get_client_hints() {
+		return self::$client_hints;
+	}
+
+	/**
+	 * Gets the list of safe client hints.
+	 *
+	 * @return array client hints.
+	 */
+	public static function get_safe_client_hints() {
+		return self::$safe_client_hints;
+	}
+
+	/**
+	 * Gets the list of active unsafe client hints.
+	 *
+	 * @return array client hints.
+	 */
+	public static function get_unsafe_client_hints() {
+		return array_diff( self::$client_hints, self::$safe_client_hints );
+	}
+
 
 	/**
 	 * Rewrite image URLs in REST API responses
@@ -268,6 +387,9 @@ class ImageCDN {
 	 * @return  array  $diff  data pairs.
 	 */
 	public static function get_options() {
+		if ( self::$tests_running ) {
+			return self::$test_options;
+		}
 		return wp_parse_args( get_option( 'image_cdn' ), self::default_options() );
 	}
 

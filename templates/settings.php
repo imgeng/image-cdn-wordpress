@@ -18,11 +18,11 @@
 			);
 			?>
 		</p>
-		<p><?php esc_html_e( 'To obtain an ImageEngine Delivery Address' ); ?>:</p>
+		<p><?php esc_html_e( 'To obtain an ImageEngine Delivery Address:' ); ?></p>
 		<ol>
 			<li><a target="_blank" href="https://imageengine.io/signup/?website=<?php echo esc_attr( get_site_url() ); ?>&?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine">Sign up for an ImageEngine account</a></li>
 			<li>
-			<?php
+				<?php
 				printf(
 					// translators: 1: http code example 2: https code example.
 					esc_html__( 'Enter the assigned ImageEngine Delivery Address (including %1$s or %2$s) in the "CDN URL" option below.', 'image-cdn' ),
@@ -34,7 +34,15 @@
 		</ol>
 		<p>See <a href="https://imageengine.io/docs/setup/quick-start/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">full documentation.</a></p>
 	</div>
-	<h2><?php esc_html_e( 'Image CDN Settings', 'image-cdn' ); ?></h2>
+	<h2>
+		<?php
+		printf(
+			// translators: %s is the plugin version number.
+			'Image CDN Settings (version %s)',
+			esc_attr( IMAGE_CDN_VERSION )
+		)
+		?>
+	</h2>
 	<?php if ( $options['enabled'] && ! $is_runnable ) { ?>
 		<div class="notice notice-error">
 			<p>
@@ -119,11 +127,11 @@
 					<fieldset>
 						<label for="image_cdn_dirs">
 							<input type="text" name="image_cdn[dirs]" id="image_cdn_dirs" value="<?php echo esc_attr( $options['dirs'] ); ?>" size="64" class="regular-text code" />
-							<?php esc_html_e( 'Default', 'image-cdn' ); ?>: <code><?php echo esc_html( $defaults['dirs'] ); ?></code>
+							<?php esc_html_e( 'Optional; Default:', 'image-cdn' ); ?> <code><?php echo esc_html( $defaults['dirs'] ); ?></code>
 						</label>
 
 						<p class="description">
-							<?php esc_html_e( 'Assets in these directories will be pointed to the CDN URL. Enter the directories separated by', 'image-cdn' ); ?> <code>,</code>
+							<?php esc_html_e( 'Assets in these directories will be served by the CDN. Enter the directories separated by', 'image-cdn' ); ?> <code>,</code>
 						</p>
 					</fieldset>
 				</td>
