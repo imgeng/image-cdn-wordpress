@@ -2,7 +2,7 @@
 Contributors: imageengine
 Tags: image cdn, cdn, ImageEngine, image optimization, content delivery network, content distribution network
 Requires at least: 4.6
-Tested up to: 5.6
+Tested up to: 5.7
 Requires PHP: 5.6
 Stable tag: trunk
 License: GPLv2 or later
@@ -119,6 +119,10 @@ Upgrades can be performed in the normal WordPress way, nothing else will need to
 
 
 == Changelog ==
+
+= 1.1.2 =
+* Confirmed WordPress 5.7 compatibility
+* Switched from jQuery to Javascript's fetch API
 
 = 1.1.1 =
 * Improved CORS compatibility

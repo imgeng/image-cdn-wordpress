@@ -137,28 +137,33 @@ class Settings {
 				}
 
 				document.querySelector('#check-cdn').addEventListener('click', () => {
-					show_test_results({'type': 'info'})
+					show_test_results({
+						'type': 'info'
+					})
 
 					window.scrollTo({
 						top: 50,
 						left: 0,
 						behavior: 'smooth',
-					});
+					})
 
-					const data = {
-						'action': 'image_cdn_test_config',
-						'nonce': '<?php echo esc_js( $nonce ); ?>',
-						'cdn_url': document.querySelector('#image_cdn_url').value,
-						'path': document.querySelector('#image_cdn_path').value,
-					}
-					console.log(data)
-
-					const success = response => show_test_results(response.data)
-
-					jQuery.post(ajaxurl, data, success, 'json')
-						.fail((jqXHR, status) => {
-							show_test_results('error', 'unable to start test: ' + status)
+					fetch(ajaxurl, {
+							method: 'POST',
+							credentials: 'same-origin',
+							headers: new Headers({
+								'accept': 'application/json',
+								'content-type': 'application/x-www-form-urlencoded; charset=utf-8',
+							}),
+							body: new URLSearchParams({
+								'action': 'image_cdn_test_config',
+								'nonce': '<?php echo esc_js( $nonce ); ?>',
+								'cdn_url': document.querySelector('#image_cdn_url').value,
+								'path': document.querySelector('#image_cdn_path').value,
+							}),
 						})
+						.then(res => res.json())
+						.then(res => show_test_results(res.data))
+						.catch(err => show_test_results('error', 'unable to start test: ' + err))
 				})
 			})
 		</script>
