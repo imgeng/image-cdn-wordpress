@@ -229,7 +229,16 @@
 </div>
 <div class="image-cdn-test notice notice-success hidden">
 	<h3><?php esc_html_e( 'Test Results', 'image-cdn' ); ?></h3>
-	<p><?php esc_html_e( 'Configuration test', 'image-cdn' ); ?> <?php esc_html_e( 'successful!', 'image-cdn' ); ?> ...</p>
+	<p><?php esc_html_e( 'Configuration test successful!', 'image-cdn' ); ?></p>
+	<div class="hidden" id="recommend-section">
+		<strong>The following changes are recommended:</strong>
+		<ul class="ul-disc recommend-options">
+			<li class="hidden" data-target="image_cdn_enabled" data-value="true"><?php esc_html_e( 'Enable CDN Support', 'image-cdn' ); ?></li>
+			<li class="hidden" data-target="image_cdn_https" data-value="true"><?php esc_html_e( 'Enable HTTPS Support', 'image-cdn' ); ?></li>
+		</ul>
+		<input type="button" name="recommend-apply" id="recommend-apply" class="button button-secondary" value="Apply Changes">
+		<p> </p>
+	</div>
 </div>
 <div class="image-cdn-test notice notice-warning hidden">
 	<h3><?php esc_html_e( 'Test Results', 'image-cdn' ); ?></h3>

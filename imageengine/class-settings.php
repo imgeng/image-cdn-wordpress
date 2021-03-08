@@ -13,6 +13,7 @@ namespace ImageEngine;
 class Settings {
 
 
+
 	/**
 	 * Register settings.
 	 */
@@ -120,7 +121,40 @@ class Settings {
 		<script>
 			document.addEventListener('DOMContentLoaded', () => {
 				const show_test_results = res => {
+					// res.type can be 'error', 'warning' or 'success'.
+
+					if (res.type === 'success') {
+						// Recommendations to show the user.
+						recommends = []
+
+						if (!document.getElementById('image_cdn_enabled').checked) {
+							// The user has CDN support disabled.
+							recommends.push('image_cdn_enabled')
+						}
+
+						if (document.getElementById('image_cdn_url').value.match(/^https:/) && !document.getElementById('image_cdn_https').checked) {
+							// The user has an HTTPS CDN URL but doesn't have HTTPS enabled.
+							recommends.push('image_cdn_https')
+						}
+
+						// If there are recommendations to be made, show them.
+						if (recommends.length > 0) {
+							document.getElementById('recommend-section').classList.remove('hidden')
+							document.querySelectorAll('.recommend-options > li').forEach(el => {
+								if (recommends.includes(el.dataset.target)) {
+									el.classList.remove('hidden')
+								} else {
+									el.classList.add('hidden')
+								}
+							})
+						} else {
+							// No recommendations, hide this section
+							document.getElementById('recommend-section').classList.add('hidden')
+						}
+					}
+
 					const class_name = 'notice-' + res.type
+
 					document.querySelectorAll('.image-cdn-test').forEach(el => {
 						if (!el.classList.contains(class_name)) {
 							el.classList.add('hidden')
@@ -136,7 +170,7 @@ class Settings {
 					})
 				}
 
-				document.querySelector('#check-cdn').addEventListener('click', () => {
+				document.getElementById('check-cdn').addEventListener('click', () => {
 					show_test_results({
 						'type': 'info'
 					})
@@ -157,13 +191,41 @@ class Settings {
 							body: new URLSearchParams({
 								'action': 'image_cdn_test_config',
 								'nonce': '<?php echo esc_js( $nonce ); ?>',
-								'cdn_url': document.querySelector('#image_cdn_url').value,
-								'path': document.querySelector('#image_cdn_path').value,
+								'cdn_url': document.getElementById('image_cdn_url').value,
+								'path': document.getElementById('image_cdn_path').value,
 							}),
 						})
 						.then(res => res.json())
 						.then(res => show_test_results(res.data))
-						.catch(err => show_test_results('error', 'unable to start test: ' + err))
+						.catch(err => {
+							show_test_results('error', 'unable to start test: ' + err)
+							console.error(err)
+						})
+				})
+
+				document.getElementById('recommend-apply').addEventListener('click', () => {
+					document.querySelectorAll('.recommend-options > li').forEach(el => {
+						if (el.classList.contains('hidden')) {
+							return
+						}
+
+						const target = el.dataset.target
+						const value = el.dataset.value
+
+						switch (target) {
+							// Checkboxes
+							case 'image_cdn_enabled':
+							case 'image_cdn_https':
+								document.getElementById(target).checked = (value === 'true')
+								break
+							default:
+								console.error(`Invalid recommendation target: ${target}`)
+						}
+
+						// Save the changes with a slight delay so you can see the checkbox(es)
+						// being checked before the page refreshes.
+						setTimeout(() => document.getElementById('submit').click(), 500)
+					})
 				})
 			})
 		</script>
@@ -233,7 +295,7 @@ class Settings {
 			wp_send_json_error( $out );
 		}
 
-		$cdn_res = wp_remote_get( $cdn_url, array( 'sslverify' => false ) );
+		$cdn_res = wp_remote_get( $cdn_url, array( 'sslverify' => true ) );
 		if ( is_wp_error( $cdn_res ) ) {
 			$out['message'] = 'Unable to fetch the URL through the CDN: ' . $cdn_res->get_error_message();
 			wp_send_json_error( $out );
