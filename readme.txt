@@ -123,6 +123,7 @@ Upgrades can be performed in the normal WordPress way, nothing else will need to
 = 1.1.2 =
 * Confirmed WordPress 5.7 compatibility
 * Switched from jQuery to Javascript's fetch API
+* Added recommendations in "Test Configuration"
 
 = 1.1.1 =
 * Improved CORS compatibility
