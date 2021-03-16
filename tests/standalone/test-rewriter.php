@@ -18,14 +18,13 @@ class RewriterTest extends PHPUnit_Framework_TestCase {
 	public function testExcludeAsset() {
 		$blog_url   = 'http://foo.com';
 		$cdn_url    = 'http://my.cdn';
-		$path       = '';
 		$dirs       = 'wp-includes';
 		$excludes   = array( '.php', '.woff2' );
 		$relative   = true;
 		$https      = true;
 		$directives = '/cmpr_20';
 
-		$rewrite = new Rewriter( $blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives );
+		$rewrite = new Rewriter( $blog_url, $cdn_url, $dirs, $excludes, $relative, $https, $directives );
 
 		$this->assertEquals( true,  $rewrite->exclude_asset( '/wp-includes/bar.php' ) );
 		$this->assertEquals( true,  $rewrite->exclude_asset( '/wp-includes/bar.woff2' ) );
@@ -40,17 +39,16 @@ class RewriterTest extends PHPUnit_Framework_TestCase {
 	public function testRelativeURL() {
 		$blog_url   = 'http://foo.com';
 		$cdn_url    = 'http://my.cdn';
-		$path       = '';
 		$dirs       = 'wp-includes';
 		$excludes   = array( '.php' );
 		$relative   = true;
 		$https      = true;
 		$directives = '/cmpr_20';
 
-		$rewrite = new Rewriter( $blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives );
+		$rewrite = new Rewriter( $blog_url, $cdn_url, $dirs, $excludes, $relative, $https, $directives );
 
-		$this->assertEquals( '//foo.com/wp-includes/bar.jpg', $rewrite->relative_url( 'http://foo.com/wp-includes/bar.jpg' ) );
-		$this->assertEquals( '//foo.com/wp-includes/bar/blah/baz.jpg', $rewrite->relative_url( 'http://foo.com/wp-includes/bar/blah/baz.jpg' ) );
+		$this->assertEquals( '//foo.com/wp-includes/bar.jpg', $rewrite->strip_scheme( 'http://foo.com/wp-includes/bar.jpg' ) );
+		$this->assertEquals( '//foo.com/wp-includes/bar/blah/baz.jpg', $rewrite->strip_scheme( 'http://foo.com/wp-includes/bar/blah/baz.jpg' ) );
 	}
 
 	/**
@@ -59,14 +57,13 @@ class RewriterTest extends PHPUnit_Framework_TestCase {
 	public function testRewriteURL() {
 		$blog_url   = 'http://foo.com';
 		$cdn_url    = 'http://my.cdn';
-		$path       = '';
 		$dirs       = 'wp-includes';
 		$excludes   = array( '.php' );
 		$relative   = true;
 		$https      = true;
 		$directives = '/cmpr_20';
 
-		$rewrite = new Rewriter( $blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives );
+		$rewrite = new Rewriter( $blog_url, $cdn_url, $dirs, $excludes, $relative, $https, $directives );
 
 		$test_urls = array(
 			// This one is excluded because it contains '.php'.
@@ -83,19 +80,47 @@ class RewriterTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * Test if URLs in a subdir are transformed properly via rewrite_url().
+	 */
+	public function testRewriteURLSubdir()
+	{
+		$blog_url   = 'http://foo.com/blog';
+		$cdn_url    = 'http://my.cdn';
+		$dirs       = 'wp-includes';
+		$excludes   = array('.php');
+		$relative   = true;
+		$https      = true;
+		$directives = '/cmpr_20';
+
+		$rewrite = new Rewriter( $blog_url, $cdn_url, $dirs, $excludes, $relative, $https, $directives );
+
+		$test_urls = array(
+			// This one is excluded because it contains '.php'.
+			'http://foo.com/blog/wp-includes/bar/blah/baz.php' => 'http://foo.com/blog/wp-includes/bar/blah/baz.php',
+			'http://foo.com/blog/wp-includes/bar/blah/baz.jpg' => 'http://my.cdn/blog/wp-includes/bar/blah/baz.jpg?imgeng=/cmpr_20',
+			'//foo.com/blog/wp-includes/bar/blah/baz.jpg'      => 'http://my.cdn/blog/wp-includes/bar/blah/baz.jpg?imgeng=/cmpr_20',
+			'/blog/wp-includes/bar/blah/baz.png'               => 'http://my.cdn/blog/wp-includes/bar/blah/baz.png?imgeng=/cmpr_20',
+		);
+
+		foreach ($test_urls as $input => $expected) {
+			$actual = $rewrite->rewrite_url($input);
+			$this->assertEquals($expected, $actual);
+		}
+	}
+
+	/**
 	 * Test whether ImageEngine directives are added properly.
 	 */
 	public function testAddDirectives() {
 		$blog_url   = 'http://foo.com';
 		$cdn_url    = 'http://my.cdn';
-		$path       = '';
 		$dirs       = 'wp-includes';
 		$excludes   = array( '.php' );
 		$relative   = true;
 		$https      = true;
 		$directives = '/cmpr_20/w_240/h_180/f_avif';
 
-		$rewrite = new Rewriter( $blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives );
+		$rewrite = new Rewriter( $blog_url, $cdn_url, $dirs, $excludes, $relative, $https, $directives );
 
 		$test_urls = array(
 			'http://foo.com/wp-includes/bar/blah/baz.php' => 'http://foo.com/wp-includes/bar/blah/baz.php?imgeng=/cmpr_20/w_240/h_180/f_avif',
@@ -122,16 +147,15 @@ class RewriterTest extends PHPUnit_Framework_TestCase {
 	public function testGetDirScope() {
 		$blog_url   = 'http://foo.com';
 		$cdn_url    = 'http://my.cdn';
-		$path       = '';
 		$dirs       = 'wp-includes,wp-content';
 		$excludes   = array( '.php' );
 		$relative   = true;
 		$https      = true;
 		$directives = '/cmpr_20';
 
-		$rewrite = new Rewriter( $blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives );
+		$rewrite = new Rewriter( $blog_url, $cdn_url, $dirs, $excludes, $relative, $https, $directives );
 
-		$this->assertEquals( 'wp\-includes|wp\-content', $rewrite->get_dir_scope() );
+		$this->assertEquals( 'wp\-includes|wp\-content', $rewrite->generate_dirs_regex() );
 	}
 
 	/**
@@ -140,14 +164,13 @@ class RewriterTest extends PHPUnit_Framework_TestCase {
 	public function testRewrite() {
 		$blog_url   = 'http://foo.com';
 		$cdn_url    = 'http://my.cdn';
-		$path       = '';
 		$dirs       = 'wp-includes,wp-content';
 		$excludes   = array( '.php' );
 		$relative   = true;
 		$https      = true;
 		$directives = '/cmpr_20';
 
-		$rewrite = new Rewriter( $blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives );
+		$rewrite = new Rewriter( $blog_url, $cdn_url, $dirs, $excludes, $relative, $https, $directives );
 
 		$input    = '<html><body><img src="http://ignore.me/wp-includes/test.jpg"/></body></html>';
 		$expected = '<html><body><img src="http://ignore.me/wp-includes/test.jpg"/></body></html>';
@@ -249,14 +272,13 @@ EOF;
 	public function testRewriteRegexBadMatches() {
 		 $blog_url  = 'http://foo.com';
 		$cdn_url    = 'http://my.cdn';
-		$path       = '';
 		$dirs       = 'wp-includes,wp-content';
 		$excludes   = array( '.php' );
 		$relative   = true;
 		$https      = true;
 		$directives = '/cmpr_20';
 
-		$rewrite = new Rewriter( $blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives );
+		$rewrite = new Rewriter( $blog_url, $cdn_url, $dirs, $excludes, $relative, $https, $directives );
 		$regex   = $rewrite->generate_regex();
 
 		$inputs = array(
@@ -278,14 +300,13 @@ EOF;
 	public function testRewriteRegexCodeRegression() {
 		 $blog_url  = 'http://foo.com';
 		$cdn_url    = 'http://my.cdn';
-		$path       = '';
 		$dirs       = 'wp-includes,wp-content';
 		$excludes   = array( '.php' );
 		$relative   = true;
 		$https      = true;
 		$directives = '/cmpr_20';
 
-		$rewrite = new Rewriter( $blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives );
+		$rewrite = new Rewriter( $blog_url, $cdn_url, $dirs, $excludes, $relative, $https, $directives );
 		$regex   = $rewrite->generate_regex();
 
 		// This JS string was found in the Divi builder for WordPress when editing a page
@@ -302,14 +323,13 @@ EOF;
 	public function testRewriteLargePages() {
 		$blog_url   = 'http://34.228.82.33';
 		$cdn_url    = 'http://my.cdn';
-		$path       = '';
 		$dirs       = 'wp-includes,wp-content';
 		$excludes   = array( '.php' );
 		$relative   = true;
 		$https      = true;
 		$directives = '';
 
-		$rewrite = new Rewriter( $blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives );
+		$rewrite = new Rewriter( $blog_url, $cdn_url, $dirs, $excludes, $relative, $https, $directives );
 
 		foreach ( glob( __DIR__ . '/pages/test*-original.html' ) as $original_file ) {
 			$expected_file = str_replace( '-original', '-expected', $original_file );
@@ -325,14 +345,13 @@ EOF;
 	public function testRewriteLargePagesNotRelative() {
 		$blog_url   = 'http://34.228.82.33';
 		$cdn_url    = 'http://my.cdn';
-		$path       = '';
 		$dirs       = 'wp-includes,wp-content';
 		$excludes   = array( '.php' );
 		$relative   = false;
 		$https      = true;
 		$directives = '';
 
-		$rewrite = new Rewriter( $blog_url, $cdn_url, $path, $dirs, $excludes, $relative, $https, $directives );
+		$rewrite = new Rewriter( $blog_url, $cdn_url, $dirs, $excludes, $relative, $https, $directives );
 
 		foreach ( glob( __DIR__ . '/pages/test*-original.html' ) as $original_file ) {
 			$expected_file = str_replace( '-original', '-expected', $original_file );

@@ -329,16 +329,13 @@ class ImageCDN {
 	 * @return array Default options.
 	 */
 	public static function default_options() {
-		$url = self::get_url_path();
+		$url_parts = wp_parse_url( get_option( 'home' ), -1 );
 
-		$content_url   = self::get_url_path( content_url() );
-		$includes_url  = self::get_url_path( includes_url() );
-		$content_path  = trim( $content_url['path'], '/' );
-		$includes_path = trim( $includes_url['path'], '/' );
+		$content_path   = trim(wp_parse_url( content_url(), PHP_URL_PATH ), '/');
+		$includes_path  = trim(wp_parse_url( includes_url(), PHP_URL_PATH ), '/');
 
 		return array(
-			'url'        => $url['base'],
-			'path'       => $url['path'],
+			'url'        => $url_parts['scheme'] . '://' . $url_parts['host'],
 			'dirs'       => implode( ',', array( $content_path, $includes_path ) ),
 			'excludes'   => '.php',
 			'relative'   => true,
@@ -394,32 +391,6 @@ class ImageCDN {
 	}
 
 	/**
-	 * Split the WP home URL into base URL and path components.
-	 *
-	 * @param string $url Input URL.
-	 * @return array Array of components with keys 'url', 'base' and 'path'.
-	 */
-	public static function get_url_path( $url = '' ) {
-		if ( '' === $url ) {
-			$url = get_option( 'home' );
-		}
-
-		$base_url = $url;
-		$path     = '';
-
-		if ( preg_match( '#^(https?://[^/]+)(/.*)$#', $url, $matches ) ) {
-			$base_url = $matches[1];
-			$path     = $matches[2];
-		}
-
-		return array(
-			'url'  => $url,
-			'base' => $base_url,
-			'path' => $path,
-		);
-	}
-
-	/**
 	 * Return new rewriter.
 	 */
 	public static function get_rewriter() {
@@ -430,7 +401,6 @@ class ImageCDN {
 			self::$rewriter = new Rewriter(
 				get_option( 'home' ),
 				$options['url'],
-				$options['path'],
 				$options['dirs'],
 				$excludes,
 				$options['relative'],

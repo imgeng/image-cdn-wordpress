@@ -58,14 +58,16 @@ class Settings {
 			}
 		}
 
-		$data['path'] = trim( $data['path'], '/' );
-		if ( strlen( $data['path'] ) > 0 ) {
-			$data['path'] = '/' . $data['path'];
+		$clean_dirs = [];
+		foreach (explode(',', $data['dirs']) as $dir) {
+			$dir = trim($dir);
+			if ('' === $dir || in_array($dir, $clean_dirs)) continue;
+			$clean_dirs[] = $dir;
 		}
+		$data['dirs'] = implode(',', $clean_dirs);
 
 		return array(
 			'url'        => esc_url_raw( $data['url'] ),
-			'path'       => $data['path'],
 			'dirs'       => esc_attr( $data['dirs'] ),
 			'excludes'   => esc_attr( $data['excludes'] ),
 			'relative'   => (bool) $data['relative'],
@@ -192,7 +194,6 @@ class Settings {
 								'action': 'image_cdn_test_config',
 								'nonce': '<?php echo esc_js( $nonce ); ?>',
 								'cdn_url': document.getElementById('image_cdn_url').value,
-								'path': document.getElementById('image_cdn_path').value,
 							}),
 						})
 						.then(res => res.json())
@@ -254,7 +255,6 @@ class Settings {
 		$asset        = 'assets/logo.png';
 		$local_url    = plugin_dir_url( IMAGE_CDN_FILE ) . $asset;
 		$cdn_base_url = trim( esc_url_raw( wp_unslash( $_POST['cdn_url'] ) ), '/' );
-		$path         = array_key_exists( 'path', $_POST ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
 
 		$plugin_path = wp_parse_url( plugin_dir_url( IMAGE_CDN_FILE ), PHP_URL_PATH );
 
@@ -263,7 +263,6 @@ class Settings {
 
 		$parts = array(
 			$cdn_base_url,
-			$path,
 			$plugin_path,
 			$asset,
 		);

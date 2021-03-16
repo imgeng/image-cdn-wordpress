@@ -96,38 +96,13 @@
 
 			<tr valign="top">
 				<th scope="row">
-					<?php esc_html_e( 'WordPress URL Path', 'image-cdn' ); ?>
-				</th>
-				<td>
-					<fieldset>
-						<label for="image_cdn_path">
-							<input type="text" name="image_cdn[path]" id="image_cdn_path" value="<?php echo esc_attr( $options['path'] ); ?>" size="64" class="regular-text code" />
-							<?php esc_html_e( 'Optional', 'image-cdn' ); ?>
-						</label>
-
-						<p class="description">
-							<?php
-							printf(
-								// translators: 1: URL code example 2: Path component code example.
-								esc_html__( 'Path/subdirectory that WordPress is installed at.  For example, if WordPress is installed at %1$s, you would enter %2$s.  This is normally auto-detected properly, and is usually empty.', 'image-cdn' ),
-								'<code>https://foo.bar.com/blog</code>',
-								'<code>blog</code>'
-							);
-							?>
-						</p>
-					</fieldset>
-				</td>
-			</tr>
-
-			<tr valign="top">
-				<th scope="row">
 					<?php esc_html_e( 'Included Directories', 'image-cdn' ); ?>
 				</th>
 				<td>
 					<fieldset>
 						<label for="image_cdn_dirs">
 							<input type="text" name="image_cdn[dirs]" id="image_cdn_dirs" value="<?php echo esc_attr( $options['dirs'] ); ?>" size="64" class="regular-text code" />
-							<?php esc_html_e( 'Optional; Default:', 'image-cdn' ); ?> <code><?php echo esc_html( $defaults['dirs'] ); ?></code>
+							<?php esc_html_e( 'Default:', 'image-cdn' ); ?> <code><?php echo esc_html( $defaults['dirs'] ); ?></code>
 						</label>
 
 						<p class="description">
