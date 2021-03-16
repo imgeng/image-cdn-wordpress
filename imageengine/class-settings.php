@@ -58,18 +58,10 @@ class Settings {
 			}
 		}
 
-		$clean_dirs = [];
-		foreach (explode(',', $data['dirs']) as $dir) {
-			$dir = trim($dir);
-			if ('' === $dir || in_array($dir, $clean_dirs)) continue;
-			$clean_dirs[] = $dir;
-		}
-		$data['dirs'] = implode(',', $clean_dirs);
-
 		return array(
 			'url'        => esc_url_raw( $data['url'] ),
-			'dirs'       => esc_attr( $data['dirs'] ),
-			'excludes'   => esc_attr( $data['excludes'] ),
+			'dirs'       => esc_attr( self::clean_list( $data['dirs'] ) ),
+			'excludes'   => esc_attr( self::clean_list( $data['excludes'] ) ),
 			'relative'   => (bool) $data['relative'],
 			'https'      => (bool) $data['https'],
 			'directives' => self::clean_directives( $data['directives'] ),
@@ -78,9 +70,29 @@ class Settings {
 	}
 
 	/**
+	 * Cleans a $delimiter-separated list by trimming each element and rejoining them and removing empty and duplicate elements.
+	 *
+	 * @param string $list list of strings separated by $delimiter.
+	 * @param string $delimiter delimiter.
+	 * @return string list of strings.
+	 */
+	public static function clean_list( $list, $delimiter = ',' ) {
+		$clean = array();
+		foreach ( explode( $delimiter, $list ) as $dir ) {
+			$dir = trim( $dir );
+			if ( '' === $dir || in_array( $dir, $clean, true ) ) {
+				continue;
+			}
+			$clean[] = $dir;
+		}
+		return implode( $delimiter, $clean );
+	}
+
+	/**
 	 * Clean the ImageEngine Directives.
 	 *
 	 * @param string $directives ImageEngine Directives as a comma-separated list.
+	 * @return string ImageEngine Directives.
 	 */
 	public static function clean_directives( $directives ) {
 		$directives = preg_replace( '#.*imgeng=/+?#', '', $directives );

@@ -21,22 +21,17 @@ class Rewriter {
 
 	/**
 	 * WordPress installation scheme (http or https).
+	 *
+	 * @var string
 	 */
 	public $blog_scheme;
 
 	/**
 	 * CDN URL.
 	 *
-	 * @var str
-	 */
-	public $cdn_url;
-
-	/**
-	 * Path / subdirectory of the WordPress installation, if not '/'.
-	 *
 	 * @var string
 	 */
-	public $path;
+	public $cdn_url;
 
 	/**
 	 * Included directories.
@@ -48,7 +43,7 @@ class Rewriter {
 	/**
 	 * Excludes.
 	 *
-	 * @var arra
+	 * @var array
 	 */
 	public $excludes = array();
 
@@ -85,7 +80,6 @@ class Rewriter {
 	 *
 	 * @param string $blog_url WordPress installation URL.
 	 * @param string $cdn_url CDN URL.
-	 * @param string $path Path / subdirectory of the WordPress installation, if not '/'.
 	 * @param string $dirs Included directories.
 	 * @param array  $excludes Excludes.
 	 * @param bool   $relative Use CDN on relative paths.
@@ -102,17 +96,16 @@ class Rewriter {
 		$directives
 	) {
 
-		// Separate the path component from the base URL (scheme://domain)
-		$url_parts = wp_parse_url($blog_url, -1);
-		$this->blog_domain = strtolower($url_parts['host']);
-		$this->blog_scheme = strtolower($url_parts['scheme']);
-		$this->path = array_key_exists('path', $url_parts)? $url_parts['path']: '';
-		$this->cdn_url    = $cdn_url;
-		$this->dirs       = $dirs;
-		$this->excludes   = $excludes;
-		$this->relative   = $relative;
-		$this->https      = $https;
-		$this->directives = $directives;
+		// Separate the path component from the base URL (scheme://domain).
+		$url_parts         = wp_parse_url( $blog_url, -1 );
+		$this->blog_domain = strtolower( $url_parts['host'] );
+		$this->blog_scheme = strtolower( $url_parts['scheme'] );
+		$this->cdn_url     = $cdn_url;
+		$this->dirs        = $dirs;
+		$this->excludes    = $excludes;
+		$this->relative    = $relative;
+		$this->https       = $https;
+		$this->directives  = $directives;
 	}
 
 
@@ -169,7 +162,7 @@ class Rewriter {
 			return $asset_url;
 		}
 
-		$blog_url = "//" . $this->blog_domain;
+		$blog_url   = '//' . $this->blog_domain;
 		$subst_urls = array( 'http:' . $blog_url );
 
 		// Rewrite both http and https URLs if we ticked 'enable CDN for HTTPS connections'.
