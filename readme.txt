@@ -120,6 +120,10 @@ Upgrades can be performed in the normal WordPress way, nothing else will need to
 
 == Changelog ==
 
+= 1.1.3 =
+* Simplify handling of WP installations within subdirectories
+* Automatically detect path setting and remove it from the settings page
+
 = 1.1.2 =
 * Confirmed WordPress 5.7 compatibility
 * Switched from jQuery to Javascript's fetch API
