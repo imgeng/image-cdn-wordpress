@@ -37,48 +37,71 @@ class Settings {
 			$data['https'] = 0;
 		}
 
-		$data['url'] = rtrim( $data['url'], '/' );
+		$data['relative'] = (bool) $data['relative'];
+		$data['https'] = (bool) $data['https'];
+		$data['enabled'] = (bool) $data['enabled'];
 
-		$parts = wp_parse_url( $data['url'] );
-		if ( ! isset( $parts['scheme'] ) || ! isset( $parts['host'] ) ) {
-			add_settings_error( 'url', 'url', 'Invalid URL: Missing scheme (<code>http://</code> or <code>https://</code>) or hostname' );
+		$data['url'] = trim( rtrim( $data['url'], '/' ) );
+
+		if ( '' === $data['url'] ) {
+			add_settings_error( 'url', 'url', 'The Delivery Address is required' );
 		} else {
 
-			// Make sure there is a valid scheme.
-			if ( ! in_array( $parts['scheme'], array( 'http', 'https' ), true ) ) {
-				add_settings_error( 'url', 'url', 'Invalid URL: Must begin with <code>http://</code> or <code>https://</code>' );
-			}
+			$parts = wp_parse_url( $data['url'] );
+			if ( ! isset( $parts['scheme'] ) || ! isset( $parts['host'] ) ) {
+				add_settings_error( 'url', 'url', 'Delivery Address must begin with <code>http://</code> or <code>https://</code>' );
+			} else {
 
-			// Make sure the host is resolves.
-			if ( ! filter_var( $parts['host'], FILTER_VALIDATE_IP ) ) {
-				$ip = gethostbyname( $parts['host'] );
-				if ( $ip === $parts['host'] ) {
-					add_settings_error( 'url', 'url', 'Invalid URL: Could not resolve hostname' );
+				// Make sure there is a valid scheme.
+				if ( ! in_array( $parts['scheme'], array( 'http', 'https' ), true ) ) {
+					add_settings_error( 'url', 'url', 'Delivery Address must begin with <code>http://</code> or <code>https://</code>' );
+				}
+
+				// Make sure the host is resolves.
+				if ( ! filter_var( $parts['host'], FILTER_VALIDATE_IP ) ) {
+					$ip = gethostbyname( $parts['host'] );
+					if ( $ip === $parts['host'] ) {
+						add_settings_error( 'url', 'url', 'Invalid URL: Could not resolve hostname' );
+					}
 				}
 			}
 		}
 
-		$data['path'] = trim( $data['path'], '/' );
-		if ( strlen( $data['path'] ) > 0 ) {
-			$data['path'] = '/' . $data['path'];
-		}
-
 		return array(
 			'url'        => esc_url_raw( $data['url'] ),
-			'path'       => $data['path'],
-			'dirs'       => esc_attr( $data['dirs'] ),
-			'excludes'   => esc_attr( $data['excludes'] ),
-			'relative'   => (bool) $data['relative'],
-			'https'      => (bool) $data['https'],
+			'dirs'       => esc_attr( self::clean_list( $data['dirs'] ) ),
+			'excludes'   => esc_attr( self::clean_list( $data['excludes'] ) ),
+			'relative'   => $data['relative'],
+			'https'      => $data['https'],
 			'directives' => self::clean_directives( $data['directives'] ),
-			'enabled'    => (bool) $data['enabled'],
+			'enabled'    => $data['enabled'],
 		);
+	}
+
+	/**
+	 * Cleans a $delimiter-separated list by trimming each element and rejoining them and removing empty and duplicate elements.
+	 *
+	 * @param string $list list of strings separated by $delimiter.
+	 * @param string $delimiter delimiter.
+	 * @return string list of strings.
+	 */
+	public static function clean_list( $list, $delimiter = ',' ) {
+		$clean = array();
+		foreach ( explode( $delimiter, $list ) as $dir ) {
+			$dir = trim( $dir );
+			if ( '' === $dir || in_array( $dir, $clean, true ) ) {
+				continue;
+			}
+			$clean[] = $dir;
+		}
+		return implode( $delimiter, $clean );
 	}
 
 	/**
 	 * Clean the ImageEngine Directives.
 	 *
 	 * @param string $directives ImageEngine Directives as a comma-separated list.
+	 * @return string ImageEngine Directives.
 	 */
 	public static function clean_directives( $directives ) {
 		$directives = preg_replace( '#.*imgeng=/+?#', '', $directives );
@@ -192,7 +215,6 @@ class Settings {
 								'action': 'image_cdn_test_config',
 								'nonce': '<?php echo esc_js( $nonce ); ?>',
 								'cdn_url': document.getElementById('image_cdn_url').value,
-								'path': document.getElementById('image_cdn_path').value,
 							}),
 						})
 						.then(res => res.json())
@@ -254,7 +276,6 @@ class Settings {
 		$asset        = 'assets/logo.png';
 		$local_url    = plugin_dir_url( IMAGE_CDN_FILE ) . $asset;
 		$cdn_base_url = trim( esc_url_raw( wp_unslash( $_POST['cdn_url'] ) ), '/' );
-		$path         = array_key_exists( 'path', $_POST ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
 
 		$plugin_path = wp_parse_url( plugin_dir_url( IMAGE_CDN_FILE ), PHP_URL_PATH );
 
@@ -263,7 +284,6 @@ class Settings {
 
 		$parts = array(
 			$cdn_base_url,
-			$path,
 			$plugin_path,
 			$asset,
 		);

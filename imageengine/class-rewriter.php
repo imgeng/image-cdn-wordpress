@@ -13,25 +13,25 @@ namespace ImageEngine;
 class Rewriter {
 
 	/**
-	 * WordPress installation URL.
+	 * WordPress installation domain.
 	 *
 	 * @var string
 	 */
-	public $blog_url;
+	public $blog_domain;
+
+	/**
+	 * WordPress installation scheme (http or https).
+	 *
+	 * @var string
+	 */
+	public $blog_scheme;
 
 	/**
 	 * CDN URL.
 	 *
-	 * @var str
-	 */
-	public $cdn_url;
-
-	/**
-	 * Path / subdirectory of the WordPress installation, if not '/'.
-	 *
 	 * @var string
 	 */
-	public $path;
+	public $cdn_url;
 
 	/**
 	 * Included directories.
@@ -43,7 +43,7 @@ class Rewriter {
 	/**
 	 * Excludes.
 	 *
-	 * @var arra
+	 * @var array
 	 */
 	public $excludes = array();
 
@@ -80,7 +80,6 @@ class Rewriter {
 	 *
 	 * @param string $blog_url WordPress installation URL.
 	 * @param string $cdn_url CDN URL.
-	 * @param string $path Path / subdirectory of the WordPress installation, if not '/'.
 	 * @param string $dirs Included directories.
 	 * @param array  $excludes Excludes.
 	 * @param bool   $relative Use CDN on relative paths.
@@ -90,21 +89,23 @@ class Rewriter {
 	public function __construct(
 		$blog_url,
 		$cdn_url,
-		$path,
 		$dirs,
 		array $excludes,
 		$relative,
 		$https,
 		$directives
 	) {
-		$this->blog_url   = $blog_url;
-		$this->cdn_url    = $cdn_url;
-		$this->path       = $path;
-		$this->dirs       = $dirs;
-		$this->excludes   = $excludes;
-		$this->relative   = $relative;
-		$this->https      = $https;
-		$this->directives = $directives;
+
+		// Separate the path component from the base URL (scheme://domain).
+		$url_parts         = wp_parse_url( $blog_url, -1 );
+		$this->blog_domain = strtolower( $url_parts['host'] );
+		$this->blog_scheme = strtolower( $url_parts['scheme'] );
+		$this->cdn_url     = $cdn_url;
+		$this->dirs        = $dirs;
+		$this->excludes    = $excludes;
+		$this->relative    = $relative;
+		$this->https       = $https;
+		$this->directives  = $directives;
 	}
 
 
@@ -133,12 +134,12 @@ class Rewriter {
 
 
 	/**
-	 * Relative url.
+	 * URL with the scheme ("https:" or "http:") removed.
 	 *
 	 * @param   string $url a full url.
 	 * @return  string  protocol relative url.
 	 */
-	public function relative_url( $url ) {
+	public function strip_scheme( $url ) {
 		return substr( $url, strpos( $url, '//' ) );
 	}
 
@@ -161,7 +162,7 @@ class Rewriter {
 			return $asset_url;
 		}
 
-		$blog_url   = $this->relative_url( $this->blog_url );
+		$blog_url   = '//' . $this->blog_domain;
 		$subst_urls = array( 'http:' . $blog_url );
 
 		// Rewrite both http and https URLs if we ticked 'enable CDN for HTTPS connections'.
@@ -171,11 +172,6 @@ class Rewriter {
 
 		// Add ImageEngine directives, if any.
 		$asset_url = $this->add_directives( $asset_url );
-
-		// Prepend the path in case this installation is not at /.
-		if ( strlen( $this->path ) !== 0 ) {
-			$asset_url = '/' . trim( $this->path, '/' ) . $asset_url;
-		}
 
 		// Is it a relative-protocol URL?.
 		if ( strpos( $asset_url, '//' ) === 0 ) {
@@ -221,7 +217,7 @@ class Rewriter {
 	 *
 	 * @return  string  directory scope.
 	 */
-	public function get_dir_scope() {
+	public function generate_dirs_regex() {
 		$dirs = trim( $this->dirs, ' ,' );
 		if ( empty( $dirs ) ) {
 			$default = ImageCDN::default_options();
@@ -325,22 +321,22 @@ class Rewriter {
 	 */
 	public function generate_regex() {
 		// Get dir scope in regex format.
-		$dirs     = $this->get_dir_scope();
-		$blog_url = $this->https
-			? '(?:https?:|)' . $this->relative_url( preg_quote( $this->blog_url, self::PCRE_DELIMITER ) )
-			: '(?:http:|)' . $this->relative_url( preg_quote( $this->blog_url, self::PCRE_DELIMITER ) );
+		$dirs_regex     = $this->generate_dirs_regex();
+		$blog_url_regex = $this->https
+			? '(?:https?:|)//' . preg_quote( $this->blog_domain, self::PCRE_DELIMITER )
+			: '(?:http:|)//' . preg_quote( $this->blog_domain, self::PCRE_DELIMITER );
 
 		// Regex rule start.
 		$regex_rule = self::PCRE_DELIMITER . '([(\"\'])(';
 
 		// Check if relative paths.
 		if ( $this->relative ) {
-			$regex_rule .= '(?:' . $blog_url . ')?';
+			$regex_rule .= '(?:' . $blog_url_regex . ')?';
 		} else {
-			$regex_rule .= $blog_url;
+			$regex_rule .= $blog_url_regex;
 		}
 
-		$regex_rule .= '/(?:' . $dirs . ')/[^\"\')]+';
+		$regex_rule .= '/(?:' . $dirs_regex . ')/[^\"\')]+';
 
 		// Regex rule end.
 		$regex_rule .= ')([\"\')])' . self::PCRE_DELIMITER;
@@ -356,22 +352,22 @@ class Rewriter {
 	public function generate_regex_for_url() {
 
 		// Get dir scope in regex format.
-		$dirs     = $this->get_dir_scope();
-		$blog_url = $this->https
-			? '(?:https?:|)' . $this->relative_url( preg_quote( $this->blog_url, self::PCRE_DELIMITER ) )
-			: '(?:http:|)' . $this->relative_url( preg_quote( $this->blog_url, self::PCRE_DELIMITER ) );
+		$dirs_regex     = $this->generate_dirs_regex();
+		$blog_url_regex = $this->https
+			? '(?:https?:|)//' . preg_quote( $this->blog_domain, self::PCRE_DELIMITER )
+			: '(?:http:|)//' . preg_quote( $this->blog_domain, self::PCRE_DELIMITER );
 
 		// Regex rule start.
 		$regex_rule = self::PCRE_DELIMITER . '^';
 
 		// Check if relative paths.
 		if ( $this->relative ) {
-			$regex_rule .= '(?:' . $blog_url . ')?';
+			$regex_rule .= '(?:' . $blog_url_regex . ')?';
 		} else {
-			$regex_rule .= $blog_url;
+			$regex_rule .= $blog_url_regex;
 		}
 
-		$regex_rule .= '/(?:' . $dirs . ')/';
+		$regex_rule .= '/(?:' . $dirs_regex . ')/';
 
 		// Regex rule end.
 		$regex_rule .= self::PCRE_DELIMITER;
