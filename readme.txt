@@ -21,7 +21,9 @@ This plugin rewrites your image URLs to include the ImageEngine Delivery Address
 
 * When a visitor requests an image, ImageEngine CDN servers use client hints or device detection to identify the requesting devices and browser characteristics.
 * Based on the browser characteristics, ImageEngine will resize, compress and convert images to WebP, JPEG 2000, or AVIF.
-* The optimized image is  delivered from the ImageEngine CDN edge. Subsequent requests are served instantly with WebP, JPEG 2000, or AVIF images stored on ImageEngine’s global CDN.
+* The optimized image is delivered from the nearest ImageEngine CDN region. Subsequent requests are served instantly with WebP, JPEG 2000, or AVIF images and stored on ImageEngine's global CDN.
+
+Other static content like fonts, CSS and JavaScript are also optimized by applying Brotli or gzip compression.
 
 = What Makes ImageEngine Better Than Other CDNs or Digital Asset Management Platforms? =
 
@@ -29,7 +31,7 @@ This plugin rewrites your image URLs to include the ImageEngine Delivery Address
 * Achieves up to 80% image payload reduction with no perceptible change in quality.
 * Simple to install. Easy to test your configuration before enabling it. No need to move or upload images.
 * Only CDN with true device-aware edge servers to drive superior, fine-tuned image optimization.
-* Automatic image optimization of JPG, PNG, GIF, SVG, BMP, TIF into next generation formats like WebP, JPEG 2000, AVIF, Animated WebP, or MP4. You can also safely serve non-image files through ImageEngine.
+* Automatic image optimization of JPG, PNG, GIF, SVG, BMP, TIF into next generation formats like WebP, JPEG 2000, AVIF, Animated WebP, or MP4. You can also safely serve static, non-image files through ImageEngine.
 * Delivers via its scalable global CDN network, with support for HTTPS, HTTP/2, WAF, and DDoS protection.
 
 = Support Resources =
@@ -51,7 +53,7 @@ You can get started with ImageEngine easily with a [free, no credit card require
 * **Standard** - $99/month. Up to **250 GB** per month. Includes 3 custom domains (CNAME) with HTTPS support. Priority onboarding support.
 * **Pro** - pricing scales with usage volume.  WAF with DDoS protection. Dedicated edge servers available. Ticketed enterprise support. [Contact us](https://imageengine.io/contact?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine).
 
-= Features & BENEFITS=
+= Features & benefits =
 
 * Maximize web performance by automatically serving optimized WebP, JPEG 2000, or AVIF images  from a CDN
 * Set the WordPress directories that should be included
@@ -61,7 +63,8 @@ You can get started with ImageEngine easily with a [free, no credit card require
 * Turn on or off quickly without deactivating the plugin
 * Test the CDN integration before saving your changes to make sure it will work properly
 * Supports [ImageEngine Directives](https://imageengine.io/docs/implementation/directives/?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine). Users of ImageEngine can also configure the Directives for their assets to control image quality, automatic format conversion and automatic image resizing.
-* Compatible with the [WordPress Cache Enabler](https://wordpress.org/plugins/cache-enabler/) plugin, WooCommerce, Elementor and other popular plugins.
+* Compatible with the [WordPress Cache Enabler](https://wordpress.org/plugins/cache-enabler/) plugin.
+* Compatible with  WooCommerce, Gutenberg, Elementor, WPBakery / Visual Composer, Oxygen Builder, Divi and other popular page builders.
 
 == System Requirements ==
 
