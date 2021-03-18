@@ -21,7 +21,7 @@ This plugin rewrites your image URLs to include the ImageEngine Delivery Address
 
 * When a visitor requests an image, ImageEngine CDN servers use client hints or device detection to identify the requesting devices and browser characteristics.
 * Based on the browser characteristics, ImageEngine will resize, compress and convert images to WebP, JPEG 2000, or AVIF.
-* The optimized image is  delivered from the ImageEngine CDN edge. Subsequent requests are served instantly with WebP, JPEG 2000, or AVIF images stored on ImageEngine’s global CDN.
+* The optimized image is delivered from the nearest ImageEngine CDN region. Subsequent requests are served instantly with WebP, JPEG 2000, or AVIF images and stored on ImageEngine's global CDN.
 
 = What Makes ImageEngine Better Than Other CDNs or Digital Asset Management Platforms? =
 
