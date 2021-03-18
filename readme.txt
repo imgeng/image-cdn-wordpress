@@ -47,7 +47,7 @@ Other static content like fonts, CSS and JavaScript are also optimized by applyi
 
 = Pricing Plans =
 
-You can get started with ImageEngine easily with a [free, no credit card required, 60 day trial](https://imageengine.io/signup?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine). We offer three plans:
+You can get started with ImageEngine easily with a [free, no credit card required, 30 day trial](https://imageengine.io/signup?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine). We offer three plans:
 
 * **Basic** - $49/month. Up to **100 GB** per month of optimized image payload. Includes HTTPs, advanced control panes, performance statistics, and email support
 * **Standard** - $99/month. Up to **250 GB** per month. Includes 3 custom domains (CNAME) with HTTPS support. Priority onboarding support.
@@ -104,7 +104,7 @@ If the CDN cannot contact your server over the internet, it will not be able to 
 
 = How do I obtain a free ImageEngine trial =
 
-To get started with ImageEngine you need to [sign up for an account](https://imageengine.io/signup?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine). Then you'll be provided with a unique CDN hostname to use with this plugin. The trial is free for 60 days, and can be cancelled anytime.
+To get started with ImageEngine you need to [sign up for an account](https://imageengine.io/signup?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine). Then you'll be provided with a unique CDN hostname to use with this plugin. The trial is free for 30 days, and can be cancelled anytime.
 
 == Upgrade Notice ==
 
