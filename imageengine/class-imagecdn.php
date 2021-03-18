@@ -339,7 +339,7 @@ class ImageCDN {
 			'dirs'       => implode( ',', array( $content_path, $includes_path ) ),
 			'excludes'   => '.php',
 			'relative'   => true,
-			'https'      => false,
+			'https'      => true,
 			'directives' => '',
 			'enabled'    => false,
 		);
