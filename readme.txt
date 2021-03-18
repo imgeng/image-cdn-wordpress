@@ -23,7 +23,7 @@ This plugin rewrites your image URLs to include the ImageEngine Delivery Address
 * Based on the browser characteristics, ImageEngine will resize, compress and convert images to WebP, JPEG 2000, or AVIF.
 * The optimized image is delivered from the nearest ImageEngine CDN region. Subsequent requests are served instantly with WebP, JPEG 2000, or AVIF images and stored on ImageEngine's global CDN.
 
-Other static content like fonts, CSS and JavaScript are also optimized by applying Brotli or gzip compression.
+Other static content like fonts, CSS and JavaScript are also optimized by applying Brotli or gzip compression which dramatically reduces that size of heavy WordPress themes.
 
 = What Makes ImageEngine Better Than Other CDNs or Digital Asset Management Platforms? =
 
@@ -124,6 +124,7 @@ Upgrades can be performed in the normal WordPress way, nothing else will need to
 = 1.1.3 =
 * Simplify handling of WP installations within subdirectories
 * Automatically detect path setting and remove it from the settings page
+* HTTPS enabled by default
 
 = 1.1.2 =
 * Confirmed WordPress 5.7 compatibility
