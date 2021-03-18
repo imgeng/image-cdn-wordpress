@@ -329,13 +329,11 @@ class ImageCDN {
 	 * @return array Default options.
 	 */
 	public static function default_options() {
-		$url_parts = wp_parse_url( get_option( 'home' ), -1 );
-
 		$content_path  = trim( wp_parse_url( content_url(), PHP_URL_PATH ), '/' );
 		$includes_path = trim( wp_parse_url( includes_url(), PHP_URL_PATH ), '/' );
 
 		return array(
-			'url'        => $url_parts['scheme'] . '://' . $url_parts['host'],
+			'url'        => '',
 			'dirs'       => implode( ',', array( $content_path, $includes_path ) ),
 			'excludes'   => '.php',
 			'relative'   => true,
