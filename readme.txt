@@ -29,7 +29,7 @@ This plugin rewrites your image URLs to include the ImageEngine Delivery Address
 * Achieves up to 80% image payload reduction with no perceptible change in quality.
 * Simple to install. Easy to test your configuration before enabling it. No need to move or upload images.
 * Only CDN with true device-aware edge servers to drive superior, fine-tuned image optimization.
-* Automatic image optimization of JPG, PNG, GIF, SVG, BMP, TIF into next generation formats like WebP, JPEG 2000, AVIF, Animated WebP, or MP4. You can also safely serve non-image files through ImageEngine.
+* Automatic image optimization of JPG, PNG, GIF, SVG, BMP, TIFF into next-generation formats like WebP, JPEG 2000, AVIF, Animated WebP, or MP4. You can also safely serve non-image content like CSS, Javascript, Fonts and any other files through ImageEngine and they will be served using the cutting-edge Brotli compression, decreasing Total Blocking Time and Time to Interactive.
 * Delivers via its scalable global CDN network, with support for HTTPS, HTTP/2, WAF, and DDoS protection.
 
 = Support Resources =
@@ -82,7 +82,7 @@ The following are the steps to install the Image CDN plugin
 2. Type `ImageEngine` in the search box in the top right corner.
 3. Click the "Install Now" button on the Image CDN – WordPress CDN Plugin.
 4. Activate the plugin
-4. Go to `Settings` -> `Image CDN` and follow in the instructions on how to enable the service.
+5. Go to `Settings` -> `Image CDN` and follow the instructions to enable the service.
 
 
 == Frequently Asked Questions ==
