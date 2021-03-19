@@ -7,7 +7,7 @@
 
 ?>
 <div class="wrap">
-	<img src="<?php echo esc_attr( plugin_dir_url( IMAGE_CDN_FILE ) ); ?>assets/logo.png" />
+	<img style="max-width: 400px" src="<?php echo esc_attr( plugin_dir_url( IMAGE_CDN_FILE ) ); ?>assets/logo.svg" />
 	<div class="notice notice-info">
 		<p>
 			<?php
@@ -241,7 +241,7 @@
 </div>
 <script>
 	document.getElementById('toggle-advanced').addEventListener("click", function() {
-		  var panel = document.getElementById('ie-advanced');
+		var panel = document.getElementById('ie-advanced');
 		if (panel.style.maxHeight !='0px') {
 			panel.style.maxHeight = '0px';
 			this.innerHTML=" <?php esc_html_e( 'Show advanced settings ▸', 'image-cdn' ); ?>";

@@ -38,15 +38,14 @@ class Settings {
 		}
 
 		$data['relative'] = (bool) $data['relative'];
-		$data['https'] = (bool) $data['https'];
-		$data['enabled'] = (bool) $data['enabled'];
+		$data['https']    = (bool) $data['https'];
+		$data['enabled']  = (bool) $data['enabled'];
 
 		$data['url'] = trim( rtrim( $data['url'], '/' ) );
 
 		if ( '' === $data['url'] ) {
 			add_settings_error( 'url', 'url', 'The Delivery Address is required' );
 		} else {
-
 			$parts = wp_parse_url( $data['url'] );
 			if ( ! isset( $parts['scheme'] ) || ! isset( $parts['host'] ) ) {
 				add_settings_error( 'url', 'url', 'Delivery Address must begin with <code>http://</code> or <code>https://</code>' );
@@ -273,7 +272,7 @@ class Settings {
 		}
 
 		// Make sure we can fetch this content from the local WordPress installation and via the CDN.
-		$asset        = 'assets/logo.png';
+		$asset        = 'assets/logo.svg';
 		$local_url    = plugin_dir_url( IMAGE_CDN_FILE ) . $asset;
 		$cdn_base_url = trim( esc_url_raw( wp_unslash( $_POST['cdn_url'] ) ), '/' );
 
@@ -346,9 +345,9 @@ class Settings {
 		}
 
 		$cdn_type = $cdn_res['headers']['content-type'];
-		if ( strpos( $cdn_type, 'image/png' ) === false ) {
+		if ( strpos( $cdn_type, 'image/svg' ) === false ) {
 			$out['type']    = 'error';
-			$out['message'] = "CDN returned the wrong content type (expected 'image/png', got '$cdn_type')";
+			$out['message'] = "CDN returned the wrong content type (expected 'image/svg', got '$cdn_type')";
 			wp_send_json_error( $out );
 		}
 

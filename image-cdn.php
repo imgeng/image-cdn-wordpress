@@ -37,5 +37,6 @@ define( 'IMAGE_CDN_DIR', __DIR__ );
 define( 'IMAGE_CDN_BASE', plugin_basename( __FILE__ ) );
 
 add_action( 'plugins_loaded', array( ImageEngine\ImageCDN::class, 'instance' ) );
+add_action( 'activated_plugin', array( ImageEngine\ImageCDN::class, 'settings_redirect' ) );
 register_uninstall_hook( __FILE__, array( ImageEngine\ImageCDN::class, 'handle_uninstall_hook' ) );
 register_activation_hook( __FILE__, array( ImageEngine\ImageCDN::class, 'handle_activation_hook' ) );

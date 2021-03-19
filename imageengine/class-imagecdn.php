@@ -351,6 +351,21 @@ class ImageCDN {
 	}
 
 	/**
+	 * Redirect the user to the settings page after activation.
+	 *
+	 * @param string $plugin name of the activated plugin.
+	 */
+	public static function settings_redirect( $plugin ) {
+		if ( ! defined( 'IMAGE_CDN_BASE' ) || IMAGE_CDN_BASE !== $plugin ) {
+			return;
+		}
+
+		wp_safe_redirect( add_query_arg( array( 'page' => 'image_cdn' ), admin_url( 'options-general.php' ) ) );
+		exit;
+	}
+
+
+	/**
 	 * Check plugin requirements.
 	 */
 	public static function image_cdn_requirements_check() {
