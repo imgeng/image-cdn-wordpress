@@ -202,7 +202,7 @@ class ImageCDN {
 			array(
 				sprintf(
 					'<a href="%s">%s</a>',
-					add_query_arg( array( 'page' => 'image_cdn' ), admin_url( 'options-general.php' ) ),
+					add_query_arg( array( 'page' => 'image_cdn' ), admin_url( 'admin.php' ) ),
 					__( 'Settings' )
 				),
 			)

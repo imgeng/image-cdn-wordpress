@@ -120,7 +120,7 @@ class Settings {
 	 */
 	public static function add_settings_page() {
 		$icon = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHN2ZyB2aWV3Qm94PSIwIDAgNjcgNjQuMjYiIHdpZHRoPSI2NyIgaGVpZ2h0PSI2NC4yNiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxzdHlsZT4uY2xzLTF7ZmlsbDojMTM1MThkO30uY2xzLTJ7ZmlsbDojYTdjNTNjO30uY2xzLTN7ZmlsbDojNzdhZDQ1O30uY2xzLTR7ZmlsbDojNjY5NWJiO308L3N0eWxlPgogIDwvZGVmcz4KICA8cmVjdCBjbGFzcz0iY2xzLTIiIHg9IjM0LjcyIiB5PSIxMy4yIiB3aWR0aD0iMzIuMjkiIGhlaWdodD0iMzguNzMiLz4KICA8cmVjdCBjbGFzcz0iY2xzLTEiIHg9IjYuMTQiIHdpZHRoPSIyMi4yNyIgaGVpZ2h0PSIyOC43MSIvPgogIDxyZWN0IGNsYXNzPSJjbHMtMyIgeT0iMzUuMjciIHdpZHRoPSIxMC4zMSIgaGVpZ2h0PSIyOSIvPgogIDxyZWN0IGNsYXNzPSJjbHMtNCIgeD0iMTUuMzQiIHk9IjM1LjI1IiB3aWR0aD0iMTMuMDgiIGhlaWdodD0iMTYuNjciLz4KPC9zdmc+';
-		add_menu_page( 'ImageEngine', 'ImageEngine', 'manage_options', 'image_cdn', array( self::class, 'settings_page' ), $icon, 100 );
+		add_menu_page( 'Image CDN by ImageEngine', 'ImageEngine', 'manage_options', 'image_cdn', array( self::class, 'settings_page' ), $icon, 100 );
 	}
 
 

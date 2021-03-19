@@ -38,7 +38,7 @@
 		<?php
 		printf(
 			// translators: %s is the plugin version number.
-			'Image CDN Settings (version %s)',
+			'Image CDN by ImageEngine Settings (version %s)',
 			esc_attr( IMAGE_CDN_VERSION )
 		)
 		?>
