@@ -25,7 +25,7 @@
 				<?php
 				printf(
 					// translators: 1: http code example 2: https code example.
-					esc_html__( 'Enter the assigned ImageEngine Delivery Address (including %1$s or %2$s) in the "CDN URL" option below.', 'image-cdn' ),
+					esc_html__( 'Enter the assigned ImageEngine Delivery Address (including %1$s or %2$s) in the "Delivery Address" option below.', 'image-cdn' ),
 					'<code>http://</code>',
 					'<code>https://</code>'
 				);
