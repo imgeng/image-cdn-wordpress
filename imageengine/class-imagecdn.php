@@ -360,7 +360,7 @@ class ImageCDN {
 			return;
 		}
 
-		wp_safe_redirect( add_query_arg( array( 'page' => 'image_cdn' ), admin_url( 'options-general.php' ) ) );
+		wp_safe_redirect( add_query_arg( array( 'page' => 'image_cdn' ), admin_url( 'admin.php' ) ) );
 		exit;
 	}
 
