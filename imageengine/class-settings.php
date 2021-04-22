@@ -155,11 +155,6 @@ class Settings {
 							recommends.push('image_cdn_enabled')
 						}
 
-						if (document.getElementById('image_cdn_url').value.match(/^https:/) && !document.getElementById('image_cdn_https').checked) {
-							// The user has an HTTPS CDN URL but doesn't have HTTPS enabled.
-							recommends.push('image_cdn_https')
-						}
-
 						// If there are recommendations to be made, show them.
 						if (recommends.length > 0) {
 							document.getElementById('recommend-section').classList.remove('hidden')
@@ -237,7 +232,6 @@ class Settings {
 						switch (target) {
 							// Checkboxes
 							case 'image_cdn_enabled':
-							case 'image_cdn_https':
 								document.getElementById(target).checked = (value === 'true')
 								break
 							default:
