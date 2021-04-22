@@ -469,4 +469,85 @@ class ImageCDN {
 		$rewriter = self::get_rewriter();
 		return $rewriter->rewrite_url( $url );
 	}
+
+	public static function ie_admin_notice() {
+		//if settigns page
+		$options = self::get_options();
+		$img_url=$options['url'].wp_parse_url( plugin_dir_url( IMAGE_CDN_FILE ), PHP_URL_PATH ).'assets/logo.png';
+		global $pagenow;
+
+			if ( $pagenow == 'admin.php' && $_GET["page"]=='image_cdn') {
+		    if (  !$options['enabled'] || !self::is_server_imageengine($img_url)) {
+		        ?>
+		    	<div class="notice notice-warning">
+				<p>
+					<?php
+					printf(
+						// translators: %s is a link to the ImageEngine site.
+						esc_html__( 'This plugin is best used with %s, but will also work with most other CDNs.', 'image-cdn' ),
+						'<a href="https://imageengine.io/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine</a>'
+					);
+					?>
+				</p>
+				<p><?php esc_html_e( 'To obtain an ImageEngine Delivery Address:' ); ?></p>
+				<ol>
+					<li><a target="_blank" href="https://imageengine.io/signup/?website=<?php echo esc_attr( get_site_url() ); ?>&utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine">Sign up for an ImageEngine account</a></li>
+					<li>
+						<?php
+						printf(
+							// translators: 1: http code example 2: https code example.
+							esc_html__( 'Enter the assigned ImageEngine Delivery Address (including %1$s or %2$s) in the "Delivery Address" option below.', 'image-cdn' ),
+							'<code>http://</code>',
+							'<code>https://</code>'
+						);
+						?>
+					</li>
+					<?php
+					if(!$options['enabled']){
+						?>
+						<li>Enable ImageEngine and hit "Test Configuration" before saving the changes.</li>
+						<?php
+					}
+					?>
+				</ol>
+				<p>See <a href="https://support.imageengine.io/hc/en-us/articles/360059238371-Quick-Start/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">full documentation.</a></p>
+				</div>
+			<?php
+			}else{
+				?>
+				<div class="notice notice-success">
+					<p>
+						<?php
+						printf(
+							// translators: %s is a the ImageEngine delivery address .
+							esc_html__('%s is a valid ImageEngine delivery addrress.', 'image-cdn' ),
+							'<code>'.$options['url'].'</code>'
+						);
+						?>
+					</p>
+					<ul>
+						<li><a href="https://my.scientiamobile.com/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine Control Panel</a></li>
+						<li><a href="https://support.imageengine.io/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine Documentation</a></li>
+					</ul>					
+				</div>
+				<?php
+
+			}
+		}
+	}
+	
+	public static function is_server_imageengine($url){
+		$cdn_res = wp_remote_get( $url, array( 'sslverify' => true ) );
+		if ( is_wp_error( $cdn_res ) ) {
+			return false;
+		}
+
+		if("ScientiaMobile ImageEngine" == $cdn_res['headers']['server']){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+
 }

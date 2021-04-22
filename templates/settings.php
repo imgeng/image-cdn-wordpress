@@ -8,32 +8,6 @@
 ?>
 <div class="wrap">
 	<img style="max-width: 400px" src="<?php echo esc_attr( plugin_dir_url( IMAGE_CDN_FILE ) ); ?>assets/logo.svg" />
-	<div class="notice notice-info">
-		<p>
-			<?php
-			printf(
-				// translators: %s is a link to the ImageEngine site.
-				esc_html__( 'This plugin is best used with %s, but will also work with most other CDNs.', 'image-cdn' ),
-				'<a href="https://imageengine.io/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine</a>'
-			);
-			?>
-		</p>
-		<p><?php esc_html_e( 'To obtain an ImageEngine Delivery Address:' ); ?></p>
-		<ol>
-			<li><a target="_blank" href="https://imageengine.io/signup/?website=<?php echo esc_attr( get_site_url() ); ?>&?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine">Sign up for an ImageEngine account</a></li>
-			<li>
-				<?php
-				printf(
-					// translators: 1: http code example 2: https code example.
-					esc_html__( 'Enter the assigned ImageEngine Delivery Address (including %1$s or %2$s) in the "Delivery Address" option below.', 'image-cdn' ),
-					'<code>http://</code>',
-					'<code>https://</code>'
-				);
-				?>
-			</li>
-		</ol>
-		<p>See <a href="https://imageengine.io/docs/setup/quick-start/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">full documentation.</a></p>
-	</div>
 	<h2>
 		<?php
 		printf(
