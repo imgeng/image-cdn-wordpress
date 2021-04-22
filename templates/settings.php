@@ -61,13 +61,15 @@
 								<option value="https://"
 								<?php
 								if ( 'https' === $url_scheme ) {
-									echo 'selected';}
+									echo 'selected';
+								}
 								?>
 								>https://</option>
 								<option value="http://"
 								<?php
 								if ( 'http' === $url_scheme ) {
-									echo 'selected';}
+									echo 'selected';
+								}
 								?>
 								>http://</option>
 							</select>

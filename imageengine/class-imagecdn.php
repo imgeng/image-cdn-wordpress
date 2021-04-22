@@ -473,7 +473,7 @@ class ImageCDN {
 	/**
 	 * Notifies the user in the settings page if they are not using ImageEngine.
 	 *
-	 * @return void.
+	 * @return void
 	 */
 	public static function ie_admin_notice() {
 		$options = self::get_options();
@@ -481,6 +481,7 @@ class ImageCDN {
 		global $pagenow;
 
 		// check if user is on the settings page.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) && 'image_cdn' === $_GET['page'] ) {
 			if ( ! $options['enabled'] || false === self::is_server_imageengine( $img_url ) ) {
 				?>
