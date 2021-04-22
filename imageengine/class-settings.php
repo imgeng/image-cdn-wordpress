@@ -352,6 +352,13 @@ class Settings {
 			wp_send_json_error( $out );
 		}
 
+		$cdn_server = $cdn_res['headers']['server'];
+		if ( strpos( $cdn_server, 'ScientiaMobile ImageEngine' ) === false  ) {
+			$out['type']    = 'warning';
+			$out['message'] = 'The provided delivery address is not served by ImageEngine';
+			wp_send_json_error( $out );
+		}
+
 		/**
 		 * This check it commented out until we can confirm that it properly tests CORS functionality.
 		 *
