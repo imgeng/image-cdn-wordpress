@@ -35,8 +35,12 @@
 				</th>
 				<td>
 					<fieldset>
-						<label for="image_cdn_url">
-							<input type="text" name="image_cdn[url]" id="image_cdn_url" value="<?php echo esc_attr( $options['url'] ); ?>" size="64" class="regular-text code" />
+						<label for="image_cdn_url" style="border-radius: 4px; border: 1px solid #8c8f94; background-color: #fff; color: #2c3338;">
+							<select name="image_cdn[scheme]" id="image_cdn_scheme" style="border: none;">
+								<option value="https://">https://</option>
+								<option value="http://">http://</option>
+							</select>
+							<input type="text" name="image_cdn[url]" id="image_cdn_url" value="<?php echo esc_attr( $options['url'] ); ?>" size="64" class="regular-text code" style="border: none; border-radius: 0;"/>
 						</label>
 
 						<p class="description">
