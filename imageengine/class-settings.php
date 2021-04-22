@@ -353,7 +353,7 @@ class Settings {
 		}
 
 		$cdn_server = $cdn_res['headers']['server'];
-		if ( strpos( $cdn_server, 'ScientiaMobile ImageEngine' ) === false  ) {
+		if ( strpos( $cdn_server, 'ScientiaMobile ImageEngine' ) === false ) {
 			$out['type']    = 'warning';
 			$out['message'] = 'The provided delivery address is not served by ImageEngine';
 			wp_send_json_error( $out );

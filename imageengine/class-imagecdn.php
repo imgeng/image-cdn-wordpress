@@ -470,16 +470,21 @@ class ImageCDN {
 		return $rewriter->rewrite_url( $url );
 	}
 
+	/**
+	 * Notifies the user in the settings page if they are not using ImageEngine.
+	 *
+	 * @return void.
+	 */
 	public static function ie_admin_notice() {
-		//if settigns page
 		$options = self::get_options();
-		$img_url=$options['url'].wp_parse_url( plugin_dir_url( IMAGE_CDN_FILE ), PHP_URL_PATH ).'assets/logo.png';
+		$img_url = $options['url'] . wp_parse_url( plugin_dir_url( IMAGE_CDN_FILE ), PHP_URL_PATH ) . 'assets/logo.png';
 		global $pagenow;
 
-			if ( $pagenow == 'admin.php' && $_GET["page"]=='image_cdn') {
-		    if (  !$options['enabled'] || !self::is_server_imageengine($img_url)) {
-		        ?>
-		    	<div class="notice notice-warning">
+		// check if user is on the settings page.
+		if ( 'admin.php' === $pagenow && isset( $_GET['page'] ) && 'image_cdn' === $_GET['page'] ) {
+			if ( ! $options['enabled'] || false === self::is_server_imageengine( $img_url ) ) {
+				?>
+				<div class="notice notice-warning">
 				<p>
 					<?php
 					printf(
@@ -503,7 +508,7 @@ class ImageCDN {
 						?>
 					</li>
 					<?php
-					if(!$options['enabled']){
+					if ( ! $options['enabled'] ) {
 						?>
 						<li>Enable ImageEngine and hit "Test Configuration" before saving the changes.</li>
 						<?php
@@ -512,39 +517,44 @@ class ImageCDN {
 				</ol>
 				<p>See <a href="https://support.imageengine.io/hc/en-us/articles/360059238371-Quick-Start/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">full documentation.</a></p>
 				</div>
-			<?php
-			}else{
+				<?php
+			} else {
 				?>
 				<div class="notice notice-success">
 					<p>
 						<?php
 						printf(
 							// translators: %s is a the ImageEngine delivery address .
-							esc_html__('%s is a valid ImageEngine delivery addrress.', 'image-cdn' ),
-							'<code>'.$options['url'].'</code>'
+							esc_html__( '%s is a valid ImageEngine delivery address.', 'image-cdn' ),
+							'<code>' . esc_html( $options['url'] ) . '</code>'
 						);
 						?>
 					</p>
 					<ul>
 						<li><a href="https://my.scientiamobile.com/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine Control Panel</a></li>
 						<li><a href="https://support.imageengine.io/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine Documentation</a></li>
-					</ul>					
+					</ul>
 				</div>
 				<?php
-
 			}
 		}
 	}
-	
-	public static function is_server_imageengine($url){
+
+	/**
+	 * Returns true if the URL is served by ImageEngine.
+	 *
+	 * @param string $url URL to be checked.
+	 * @return bool whether or not the server is ImageEngine.
+	 */
+	public static function is_server_imageengine( $url ) {
 		$cdn_res = wp_remote_get( $url, array( 'sslverify' => true ) );
 		if ( is_wp_error( $cdn_res ) ) {
 			return false;
 		}
 
-		if("ScientiaMobile ImageEngine" == $cdn_res['headers']['server']){
+		if ( 'ScientiaMobile ImageEngine' === $cdn_res['headers']['server'] ) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
