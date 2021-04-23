@@ -245,7 +245,11 @@
 	const httpsEl = document.getElementById('image_cdn_https')
 
 	const updateURL = () => {
-		urlEl.value = schemeEl.value + hostEl.value
+		urlEl.value = ''
+		hostEl.value = hostEl.value.trim()
+		if ( '' != hostEl.value ) {
+			urlEl.value = schemeEl.value + hostEl.value
+		}
 		httpsEl.value = 'https://' === schemeEl.value ? '1' : '0'
 	}
 

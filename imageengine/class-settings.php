@@ -43,19 +43,13 @@ class Settings {
 
 		$data['url'] = trim( rtrim( $data['url'], '/' ) );
 
-		if ( '' === $data['url'] ) {
+		if ( ! isset( $data['url'] ) ) {
 			add_settings_error( 'url', 'url', 'The Delivery Address is required' );
 		} else {
 			$parts = wp_parse_url( $data['url'] );
-			if ( ! isset( $parts['scheme'] ) || ! isset( $parts['host'] ) ) {
-				add_settings_error( 'url', 'url', 'Delivery Address must begin with <code>http://</code> or <code>https://</code>' );
+			if ( ! isset( $parts['host'] ) ) {
+				add_settings_error( 'url', 'url', 'Delivery Address is required' );
 			} else {
-
-				// Make sure there is a valid scheme.
-				if ( ! in_array( $parts['scheme'], array( 'http', 'https' ), true ) ) {
-					add_settings_error( 'url', 'url', 'Delivery Address must begin with <code>http://</code> or <code>https://</code>' );
-				}
-
 				// Make sure the host is resolves.
 				if ( ! filter_var( $parts['host'], FILTER_VALIDATE_IP ) ) {
 					$ip = gethostbyname( $parts['host'] );
