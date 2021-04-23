@@ -27,7 +27,6 @@
 
 	<form method="post" action="options.php">
 		<?php
-		var_dump($options);
 		$parts    = wp_parse_url( $options['url'] );
 		$url_host = $parts['host'];
 		if ( ! empty( $parts['port'] ) ) {
