@@ -27,6 +27,7 @@
 
 	<form method="post" action="options.php">
 		<?php
+		var_dump($options);
 		$parts    = wp_parse_url( $options['url'] );
 		$url_host = $parts['host'];
 		if ( ! empty( $parts['port'] ) ) {
@@ -56,8 +57,8 @@
 				</th>
 				<td>
 					<fieldset>
-						<label for="image_cdn_url" style="border-radius: 4px; border: 1px solid #8c8f94; background-color: #fff; color: #2c3338;">
-							<select name="image_cdn[scheme]" id="image_cdn_scheme" style="border: none;">
+						<label for="image_cdn_url" style="border-radius: 4px; border: 1px solid #8c8f94; background-color: #fff; color: #2c3338; margin-top: 0 !important;">
+							<select name="image_cdn[scheme]" id="image_cdn_scheme" class="code" style="border: none; padding: 0px 0px 0px 20px; margin: 0px 0px 0px 5px; background-position: left; border-radius: 0;">
 								<option value="https://"
 								<?php
 								if ( 'https' === $url_scheme ) {
@@ -73,7 +74,7 @@
 								?>
 								>http://</option>
 							</select>
-							<input type="text" name="image_cdn[host]" id="image_cdn_host" value="<?php echo esc_attr( $url_host ); ?>" size="64" class="regular-text code" style="border: none; border-radius: 0;" />
+							<input type="text" name="image_cdn[host]" id="image_cdn_host" value="<?php echo esc_attr( $url_host ); ?>" size="64" class="regular-text code" style="border: none; border-radius: 0; margin-left: 0; padding-left: 0; vertical-align: middle;" />
 						</label>
 
 						<p class="description">
