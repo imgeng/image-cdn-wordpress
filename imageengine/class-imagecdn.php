@@ -497,7 +497,7 @@ class ImageCDN {
 				</p>
 				<p><?php esc_html_e( 'To obtain an ImageEngine Delivery Address:' ); ?></p>
 				<ol>
-					<li><a target="_blank" href="https://imageengine.io/signup/?website=<?php echo esc_attr( get_site_url() ); ?>&utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine">Sign up for an ImageEngine account</a></li>
+					<li><a target="_blank" href="https://control.imageengine.io/register/website/?website=<?php echo esc_attr( get_site_url() ); ?>&utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine">Sign up for an ImageEngine account</a></li>
 					<li>
 						<?php
 						printf(
@@ -532,7 +532,7 @@ class ImageCDN {
 						?>
 					</p>
 					<ul>
-						<li><a href="https://my.scientiamobile.com/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine Control Panel</a></li>
+						<li><a href="https://control.imageengine.io/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine Control Panel</a></li>
 						<li><a href="https://support.imageengine.io/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine Documentation</a></li>
 					</ul>
 				</div>

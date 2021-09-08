@@ -2,7 +2,7 @@
 Contributors: imageengine
 Tags: image cdn, cdn, ImageEngine, image optimizer, content delivery network, image convert, avif, webp
 Requires at least: 4.6
-Tested up to: 5.7.1
+Tested up to: 5.8
 Requires PHP: 5.6
 Stable tag: trunk
 License: GPLv2 or later
@@ -11,9 +11,8 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 == Description ==
 
-[ImageEngine’s Image CDN](https://imageengine.io/?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine) plugin accelerates your WordPress or WooCommerce performance by optimizing images, converting them to WebP, JPEG2000, or AVIF, and delivering them through the ImageEngine content delivery network. The result is smaller image payload, faster page loading, improved Google PageSpeed Insights scores (Speed Index, Largest Contentful Paint, Time to Interactive), and a better user experience leading to more conversions or sales. To use this plugin with the ImageEngine Optimizer CDN, get a [free trial account here](https://imageengine.io/signup?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine).
+[ImageEngine’s Image CDN](https://imageengine.io/?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine) plugin accelerates your WordPress or WooCommerce performance by optimizing images, converting them to WebP, JPEG2000, or AVIF, and delivering them through the ImageEngine content delivery network. The result is smaller image payload, faster page loading, improved Google PageSpeed Insights scores (Speed Index, Largest Contentful Paint, Time to Interactive), and a better user experience leading to more conversions or sales. To use this plugin with the ImageEngine Optimizer CDN, get a [free trial account here](https://control.imageengine.io/register?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine).
 
-https://vimeo.com/496085924
 
 = How ImageEngine Works =
 
@@ -43,11 +42,11 @@ Other static content like fonts, CSS and JavaScript are also optimized by applyi
 * [Best practices](https://support.imageengine.io/hc/en-us/articles/360059239131-Best-Practices?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine) including resource hints, client hints, responsive images
 * [ImageEngine Directives documentation](https://support.imageengine.io/hc/en-us/articles/360058880672-Directives?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine)
 * [Custom domain (CNAME) with HTTPS configuration](https://support.imageengine.io/hc/en-us/articles/360058879712-Delivery-Address?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine)
-* Usage and performance statistics [ImageEngine control panel](https://my.scientiamobile.com/?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine)
+* Usage and performance statistics [ImageEngine control panel](https://control.imageengine.io/login/?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine)
 
 = Pricing Plans =
 
-You can get started with ImageEngine easily with a [free, no credit card required, 30 day trial](https://imageengine.io/signup?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine). We offer three plans:
+You can get started with ImageEngine easily with a [free, no credit card required, 30 day trial](https://control.imageengine.io/register?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine). We offer three plans:
 
 * **Basic** - $49/month. Up to **100 GB** per month of optimized image payload. Includes HTTPs, advanced control panes, performance statistics, and email support
 * **Standard** - $99/month. Up to **250 GB** per month. Includes 3 custom domains (CNAME) with HTTPS support. Priority onboarding support.
@@ -104,7 +103,7 @@ If the CDN cannot contact your server over the internet, it will not be able to 
 
 = How do I obtain a free ImageEngine trial =
 
-To get started with ImageEngine you need to [sign up for an account](https://imageengine.io/signup?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine). Then you'll be provided with a unique CDN hostname to use with this plugin. The trial is free for 30 days, and can be cancelled anytime.
+To get started with ImageEngine you need to [sign up for an account](https://control.imageengine.io/register?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine). Then you'll be provided with a unique CDN hostname to use with this plugin. The trial is free for 30 days, and can be cancelled anytime.
 
 == Upgrade Notice ==
 
@@ -120,6 +119,10 @@ Upgrades can be performed in the normal WordPress way, nothing else will need to
 
 
 == Changelog ==
+
+= 1.1.5 =
+* New logo
+* New ImageEngine control panel
 
 = 1.1.4 =
 * UI/UX improvements

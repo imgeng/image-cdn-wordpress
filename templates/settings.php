@@ -7,7 +7,7 @@
 
 ?>
 <div class="wrap">
-	<img style="max-width: 400px" src="<?php echo esc_attr( plugin_dir_url( IMAGE_CDN_FILE ) ); ?>assets/logo.svg" />
+	<img style="max-width: 300px" src="<?php echo esc_attr( plugin_dir_url( IMAGE_CDN_FILE ) ); ?>assets/logo.svg" />
 	<h2>
 		<?php
 		printf(
@@ -81,7 +81,7 @@
 							printf(
 								// translators: 1: Link to account control panel.
 								esc_html__( 'Enter your ImageEngine (or other Image CDN) Delivery Address. For ImageEngine, this can be found in your %1$s. In most cases, this will be like', 'image-cdn' ),
-								'<a href="https://my.scientiamobile.com/" target="_blank">account control panel</a>'
+								'<a href="https://control.imageengine.io/" target="_blank">account control panel</a>'
 							);
 							?>
 							<code>my-site.cdn.imgeng.in</code>.
