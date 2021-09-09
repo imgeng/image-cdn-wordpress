@@ -7,38 +7,12 @@
 
 ?>
 <div class="wrap">
-	<img src="<?php echo esc_attr( plugin_dir_url( IMAGE_CDN_FILE ) ); ?>assets/logo.png" />
-	<div class="notice notice-info">
-		<p>
-			<?php
-			printf(
-				// translators: %s is a link to the ImageEngine site.
-				esc_html__( 'This plugin is best used with %s, but will also work with most other CDNs.', 'image-cdn' ),
-				'<a href="https://imageengine.io/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine</a>'
-			);
-			?>
-		</p>
-		<p><?php esc_html_e( 'To obtain an ImageEngine Delivery Address:' ); ?></p>
-		<ol>
-			<li><a target="_blank" href="https://imageengine.io/signup/?website=<?php echo esc_attr( get_site_url() ); ?>&?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine">Sign up for an ImageEngine account</a></li>
-			<li>
-				<?php
-				printf(
-					// translators: 1: http code example 2: https code example.
-					esc_html__( 'Enter the assigned ImageEngine Delivery Address (including %1$s or %2$s) in the "Delivery Address" option below.', 'image-cdn' ),
-					'<code>http://</code>',
-					'<code>https://</code>'
-				);
-				?>
-			</li>
-		</ol>
-		<p>See <a href="https://imageengine.io/docs/setup/quick-start/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">full documentation.</a></p>
-	</div>
+	<img style="max-width: 300px" src="<?php echo esc_attr( plugin_dir_url( IMAGE_CDN_FILE ) ); ?>assets/logo.svg" />
 	<h2>
 		<?php
 		printf(
 			// translators: %s is the plugin version number.
-			'Image CDN Settings (version %s)',
+			'Image CDN by ImageEngine Settings (version %s)',
 			esc_attr( IMAGE_CDN_VERSION )
 		)
 		?>
@@ -52,7 +26,28 @@
 	<?php } ?>
 
 	<form method="post" action="options.php">
-		<?php settings_fields( 'image_cdn' ); ?>
+		<?php
+		$parts    = wp_parse_url( $options['url'] );
+		$url_host = $parts['host'];
+		if ( ! empty( $parts['port'] ) ) {
+			$url_host .= ':' . $parts['port'];
+		}
+
+		if ( ! empty( $parts['path'] ) ) {
+			$url_host .= '/' . trim( $parts['path'], '/' );
+		}
+
+		$url_scheme = $parts['scheme'];
+		if ( empty( $url_scheme ) ) {
+			$url_scheme = 'https';
+		}
+		$is_https_int     = 'https' === $url_scheme ? '1' : '0';
+		$options['https'] = $is_https_int;
+
+		settings_fields( 'image_cdn' );
+		?>
+		<input type="hidden" name="image_cdn[url]" id="image_cdn_url" value="<?php echo esc_attr( $options['url'] ); ?>" />
+		<input type="hidden" name="image_cdn[https]" id="image_cdn_https" value="<?php echo esc_attr( $is_https_int ); ?>" />
 
 		<table class="form-table">
 			<tr valign="top">
@@ -61,8 +56,24 @@
 				</th>
 				<td>
 					<fieldset>
-						<label for="image_cdn_url">
-							<input type="text" name="image_cdn[url]" id="image_cdn_url" value="<?php echo esc_attr( $options['url'] ); ?>" size="64" class="regular-text code" />
+						<label for="image_cdn_url" style="border-radius: 4px; border: 1px solid #8c8f94; background-color: #fff; color: #2c3338; margin-top: 0 !important;">
+							<select name="image_cdn[scheme]" id="image_cdn_scheme" class="code" style="border: none; padding: 0px 0px 0px 20px; margin: 0px 0px 0px 5px; background-position: left; border-radius: 0;">
+								<option value="https://"
+								<?php
+								if ( 'https' === $url_scheme ) {
+									echo 'selected';
+								}
+								?>
+								>https://</option>
+								<option value="http://"
+								<?php
+								if ( 'http' === $url_scheme ) {
+									echo 'selected';
+								}
+								?>
+								>http://</option>
+							</select>
+							<input type="text" name="image_cdn[host]" id="image_cdn_host" value="<?php echo esc_attr( $url_host ); ?>" size="64" class="regular-text code" style="border: none; border-radius: 0; margin-left: 0; padding-left: 0; vertical-align: middle;" />
 						</label>
 
 						<p class="description">
@@ -70,14 +81,15 @@
 							printf(
 								// translators: 1: Link to account control panel.
 								esc_html__( 'Enter your ImageEngine (or other Image CDN) Delivery Address. For ImageEngine, this can be found in your %1$s. In most cases, this will be like', 'image-cdn' ),
-								'<a href="https://my.scientiamobile.com/" target="_blank">account control panel</a>'
+								'<a href="https://control.imageengine.io/" target="_blank">account control panel</a>'
 							);
 							?>
-							<code>https://my-site.cdn.imgeng.in</code>.
+							<code>my-site.cdn.imgeng.in</code>.
 						</p>
 					</fieldset>
 				</td>
 			</tr>
+
 			<tr valign="top">
 				<th scope="row">
 					<?php esc_html_e( 'Enabled', 'image-cdn' ); ?>
@@ -147,20 +159,6 @@
 							<label for="image_cdn_relative">
 								<input type="checkbox" name="image_cdn[relative]" id="image_cdn_relative" value="1" <?php checked( 1, $options['relative'] ); ?> />
 								<?php esc_html_e( 'Enable CDN for relative paths (default: enabled).', 'image-cdn' ); ?>
-							</label>
-						</fieldset>
-					</td>
-				</tr>
-
-				<tr valign="top">
-					<th scope="row">
-						<?php esc_html_e( 'HTTPS Support', 'image-cdn' ); ?>
-					</th>
-					<td>
-						<fieldset>
-							<label for="image_cdn_https">
-								<input type="checkbox" name="image_cdn[https]" id="image_cdn_https" value="1" <?php checked( 1, $options['https'] ); ?> />
-								<?php esc_html_e( 'Enable CDN for HTTPS connections (default: enabled).', 'image-cdn' ); ?>
 							</label>
 						</fieldset>
 					</td>
@@ -240,16 +238,33 @@
 	</p>
 </div>
 <script>
-	document.getElementById('toggle-advanced').addEventListener("click", function() {
-		  var panel = document.getElementById('ie-advanced');
-		if (panel.style.maxHeight !='0px') {
-			panel.style.maxHeight = '0px';
-			this.innerHTML=" <?php esc_html_e( 'Show advanced settings ▸', 'image-cdn' ); ?>";
-		} else {
-			panel.style.maxHeight = panel.scrollHeight + "px";
-			this.innerHTML=" <?php esc_html_e( 'Hide advanced settings ▾', 'image-cdn' ); ?>";
+	// Handle the dynamically-updated form fields.
+	const schemeEl = document.getElementById('image_cdn_scheme')
+	const hostEl = document.getElementById('image_cdn_host')
+	const urlEl = document.getElementById('image_cdn_url')
+	const httpsEl = document.getElementById('image_cdn_https')
+
+	const updateURL = () => {
+		urlEl.value = ''
+		hostEl.value = hostEl.value.trim()
+		if ( '' != hostEl.value ) {
+			urlEl.value = schemeEl.value + hostEl.value
 		}
+		httpsEl.value = 'https://' === schemeEl.value ? '1' : '0'
+	}
 
-	});
+	schemeEl.addEventListener('change', updateURL)
+	hostEl.addEventListener('change', updateURL)
 
+	// Handle the advanced settings panel.
+	document.getElementById('toggle-advanced').addEventListener("click", function() {
+		const panel = document.getElementById('ie-advanced')
+		if (panel.style.maxHeight != '0px') {
+			panel.style.maxHeight = '0px'
+			this.innerHTML = " <?php esc_html_e( 'Show advanced settings ▸', 'image-cdn' ); ?>"
+		} else {
+			panel.style.maxHeight = panel.scrollHeight + "px"
+			this.innerHTML = " <?php esc_html_e( 'Hide advanced settings ▾', 'image-cdn' ); ?>"
+		}
+	})
 </script>

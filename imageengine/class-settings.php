@@ -38,25 +38,18 @@ class Settings {
 		}
 
 		$data['relative'] = (bool) $data['relative'];
-		$data['https'] = (bool) $data['https'];
-		$data['enabled'] = (bool) $data['enabled'];
+		$data['https']    = (bool) $data['https'];
+		$data['enabled']  = (bool) $data['enabled'];
 
 		$data['url'] = trim( rtrim( $data['url'], '/' ) );
 
-		if ( '' === $data['url'] ) {
+		if ( ! isset( $data['url'] ) ) {
 			add_settings_error( 'url', 'url', 'The Delivery Address is required' );
 		} else {
-
 			$parts = wp_parse_url( $data['url'] );
-			if ( ! isset( $parts['scheme'] ) || ! isset( $parts['host'] ) ) {
-				add_settings_error( 'url', 'url', 'Delivery Address must begin with <code>http://</code> or <code>https://</code>' );
+			if ( ! isset( $parts['host'] ) ) {
+				add_settings_error( 'url', 'url', 'Delivery Address is required' );
 			} else {
-
-				// Make sure there is a valid scheme.
-				if ( ! in_array( $parts['scheme'], array( 'http', 'https' ), true ) ) {
-					add_settings_error( 'url', 'url', 'Delivery Address must begin with <code>http://</code> or <code>https://</code>' );
-				}
-
 				// Make sure the host is resolves.
 				if ( ! filter_var( $parts['host'], FILTER_VALIDATE_IP ) ) {
 					$ip = gethostbyname( $parts['host'] );
@@ -120,7 +113,8 @@ class Settings {
 	 * Add settings page.
 	 */
 	public static function add_settings_page() {
-		$page = add_options_page( 'Image CDN', 'Image CDN', 'manage_options', 'image_cdn', array( self::class, 'settings_page' ) );
+		$icon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NTMuODIgNDMwLjgxIiBpZD0ic3ZnX3Jlc2l6ZSIgd2lkdGg9IjY3IiBoZWlnaHQ9IjY3Ij48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6I2ZmZjt9PC9zdHlsZT48L2RlZnM+PGcgaWQ9IkxheWVyXzIiIGRhdGEtbmFtZT0iTGF5ZXIgMiI+PGcgaWQ9IkxheWVyXzEtMiIgZGF0YS1uYW1lPSJMYXllciAxIj48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0zNzMuMTMsMjIuMTZWNTAuMzNhNiw2LDAsMCwxLTYsNkgzMjIuNzlhNiw2LDAsMCwxLTYtNlYyMy4yQTIwNC42MywyMDQuNjMsMCwwLDAsMTk2LjY0LDg4LjI4aC4yNGE2Ljk0LDYuOTQsMCwwLDEsNi45NCw2Ljk0djQxLjdjMCwyLjQ0LjU1LDEwLDUsMTMuODcsNC4yNCwzLjY2LDEwLjExLDQuMTksMTIuNDIsNC4yNWg1Ni42YTguNDYsOC40NiwwLDAsMSw4LjQ2LDguNDV2NjIuNzdhOC40NSw4LjQ1LDAsMCwxLTguNDYsOC40NUgyMTUuMTFhOC40NSw4LjQ1LDAsMCwxLTguNDUtOC40NVYxNjguMTdBMTQuMjksMTQuMjksMCwwLDAsMTkzLjA5LDE1NGEyMC42OSwyMC42OSwwLDAsMC0yLjc4LS4zMUgxNTYuNzdhMjA0LjU5LDIwNC41OSwwLDAsMC0xMy4wNSw3Mi4xMWMwLDExMy4yNSw5MS44LDIwNS4wNSwyMDUuMDUsMjA1LjA1czIwNS4wNS05MS44LDIwNS4wNS0yMDVDNTUzLjgyLDEyMC43Niw0NzQuODksMzQuMjEsMzczLjEzLDIyLjE2Wm0tODcuMzcsOTBIMjU2LjQzYTQsNCwwLDAsMS00LTRWNzguODdhNCw0LDAsMCwxLDQtNGgyOS4zM2E0LDQsMCwwLDEsMy45NSw0VjEwOC4yQTQsNCwwLDAsMSwyODUuNzYsMTEyLjE1Wk0yMjguMDgsMzAwYTQsNCwwLDAsMS00LDMuOTVIMTk0LjhhNCw0LDAsMCwxLTQtMy45NVYyNzAuNjRhNCw0LDAsMCwxLDQtMy45NWgyOS4zM2E0LDQsMCwwLDEsNCwzLjk1Wm04My40MSw3Mi45YTYsNiwwLDAsMS02LDZIMjYxLjE2YTYsNiwwLDAsMS02LTZWMzI4LjUxYTYsNiwwLDAsMSw2LTZoNDQuMzZhNiw2LDAsMCwxLDYsNlptODguNzUtMjk0YTQsNCwwLDAsMSwzLjk1LTRoMjkuMzNhNCw0LDAsMCwxLDQsNFYxMDguMmE0LDQsMCwwLDEtNCw0SDQwNC4xOWE0LDQsMCwwLDEtMy45NS00Wk0zNzUuODMsMzAwYTQsNCwwLDAsMS0zLjk1LDMuOTVIMzQyLjU1QTQsNCwwLDAsMSwzMzguNiwzMDBWMjcwLjY0YTQsNCwwLDAsMSwzLjk1LTMuOTVoMjkuMzNhNCw0LDAsMCwxLDMuOTUsMy45NVptNzcuNDktNzAuNjVhNS4zOSw1LjM5LDAsMCwxLTUuMzksNS4zOWgtNDBhNS4zOSw1LjM5LDAsMCwxLTUuMzktNS4zOVYyMDkuNzlBNDYsNDYsMCwwLDAsMzU4Ljc0LDE2NGgtOS44MmE0LDQsMCwwLDEtMy45NS0zLjk1VjEzMC43NWE0LDQsMCwwLDEsMy45NS00aDI5LjMzYTQsNCwwLDAsMSwzLjk1LDR2Ny4zNEE0Niw0NiwwLDAsMCw0MjgsMTgzLjg5aDE5LjkyYTUuMzksNS4zOSwwLDAsMSw1LjM5LDUuNFptLTI2My4xMy0xNzNIMTQ1LjgzYTYsNiwwLDAsMS02LTZWNmE2LDYsMCwwLDEsNi02aDQ0LjM2YTYsNiwwLDAsMSw2LDZWNTAuMzNBNiw2LDAsMCwxLDE5MC4xOSw1Ni4zMVpNMTA0LjYzLDMwMy45Mkg3NS4zYTQsNCwwLDAsMS00LTMuOTVWMjcwLjY0YTQsNCwwLDAsMSw0LTMuOTVoMjkuMzNhNCw0LDAsMCwxLDQsMy45NVYzMDBBNCw0LDAsMCwxLDEwNC42MywzMDMuOTJabTAtMTkxLjc3SDc1LjNhNCw0LDAsMCwxLTQtNFY3OC44N2E0LDQsMCwwLDEsNC00aDI5LjMzYTQsNCwwLDAsMSw0LDRWMTA4LjJBNCw0LDAsMCwxLDEwNC42MywxMTIuMTVaTTEwMywxODMuODlIODMuMDVhNDYsNDYsMCwwLDEtNDUuODItNDUuOHYtNy4zNGE0LDQsMCwwLDAtMy45NS00SDRhNCw0LDAsMCwwLTMuOTUsNHYyOS4zM0E0LDQsMCwwLDAsNCwxNjRoOS44MkE0Niw0NiwwLDAsMSw1Ny41MywyMDkuOHYxLjY5aDB2MTcuODNhNS4zOSw1LjM5LDAsMCwwLDUuMzksNS4zOWg0MGE1LjM5LDUuMzksMCwwLDAsNS4zOS01LjM5di00MEE1LjM5LDUuMzksMCwwLDAsMTAzLDE4My44OVoiPjwvcGF0aD48L2c+PC9nPjwvc3ZnPg==';
+		add_menu_page( 'Image CDN by ImageEngine', 'ImageEngine', 'manage_options', 'image_cdn', array( self::class, 'settings_page' ), $icon, 100 );
 	}
 
 
@@ -153,11 +147,6 @@ class Settings {
 						if (!document.getElementById('image_cdn_enabled').checked) {
 							// The user has CDN support disabled.
 							recommends.push('image_cdn_enabled')
-						}
-
-						if (document.getElementById('image_cdn_url').value.match(/^https:/) && !document.getElementById('image_cdn_https').checked) {
-							// The user has an HTTPS CDN URL but doesn't have HTTPS enabled.
-							recommends.push('image_cdn_https')
 						}
 
 						// If there are recommendations to be made, show them.
@@ -237,7 +226,6 @@ class Settings {
 						switch (target) {
 							// Checkboxes
 							case 'image_cdn_enabled':
-							case 'image_cdn_https':
 								document.getElementById(target).checked = (value === 'true')
 								break
 							default:
@@ -273,7 +261,7 @@ class Settings {
 		}
 
 		// Make sure we can fetch this content from the local WordPress installation and via the CDN.
-		$asset        = 'assets/logo.png';
+		$asset        = 'assets/logo.svg';
 		$local_url    = plugin_dir_url( IMAGE_CDN_FILE ) . $asset;
 		$cdn_base_url = trim( esc_url_raw( wp_unslash( $_POST['cdn_url'] ) ), '/' );
 
@@ -346,9 +334,16 @@ class Settings {
 		}
 
 		$cdn_type = $cdn_res['headers']['content-type'];
-		if ( strpos( $cdn_type, 'image/png' ) === false ) {
+		if ( strpos( $cdn_type, 'image/svg' ) === false ) {
 			$out['type']    = 'error';
-			$out['message'] = "CDN returned the wrong content type (expected 'image/png', got '$cdn_type')";
+			$out['message'] = "CDN returned the wrong content type (expected 'image/svg', got '$cdn_type')";
+			wp_send_json_error( $out );
+		}
+
+		$cdn_server = $cdn_res['headers']['server'];
+		if ( strpos( $cdn_server, 'ScientiaMobile ImageEngine' ) === false ) {
+			$out['type']    = 'warning';
+			$out['message'] = 'The provided delivery address is not served by ImageEngine';
 			wp_send_json_error( $out );
 		}
 
