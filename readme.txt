@@ -63,7 +63,7 @@ You can get started with ImageEngine easily with a [free, no credit card require
 * Test the CDN integration before saving your changes to make sure it will work properly
 * Supports [ImageEngine Directives](https://support.imageengine.io/hc/en-us/articles/360058880672-Directives/?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine). Users of ImageEngine can also configure the Directives for their assets to control image quality, automatic format conversion and automatic image resizing.
 * Compatible with the [WordPress Cache Enabler](https://wordpress.org/plugins/cache-enabler/) plugin.
-* Compatible with  WooCommerce, Gutenberg, Elementor, WPBakery / Visual Composer, Oxygen Builder, Divi and other popular page builders.
+* Compatible with  WooCommerce, Gutenberg, Elementor, WPBakery, Visual Composer, Oxygen Builder, Divi and other popular page builders.
 
 == System Requirements ==
 
