@@ -2,7 +2,7 @@
 Contributors: imageengine
 Tags: image cdn, cdn, ImageEngine, image optimizer, content delivery network, image convert, avif, webp
 Requires at least: 4.6
-Tested up to: 5.8
+Tested up to: 5.9
 Requires PHP: 5.6
 Stable tag: trunk
 License: GPLv2 or later
@@ -119,6 +119,9 @@ Upgrades can be performed in the normal WordPress way, nothing else will need to
 
 
 == Changelog ==
+
+= 1.1.6 =
+* Readme updates
 
 = 1.1.5 =
 * New logo
