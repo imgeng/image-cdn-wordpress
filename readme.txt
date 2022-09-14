@@ -2,7 +2,7 @@
 Contributors: imageengine
 Tags: image cdn, cdn, ImageEngine, image optimizer, content delivery network, image convert, avif, webp
 Requires at least: 4.6
-Tested up to: 5.9
+Tested up to: 6.0.2
 Requires PHP: 5.6
 Stable tag: trunk
 License: GPLv2 or later
