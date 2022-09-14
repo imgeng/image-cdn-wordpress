@@ -26,9 +26,9 @@ class ImageCDN {
 	 * @var []string
 	 */
 	private static $client_hints = array(
-		'Viewport-Width',
-		'Width',
-		'DPR',
+		'sec-ch-dpr',
+		'sec-ch-width',
+		'sec-ch-viewport-width',
 		/**
 		 * Disabled for CORS compatibility:
 		 * 'ECT',
@@ -44,9 +44,9 @@ class ImageCDN {
 	 * @var []string
 	 */
 	private static $safe_client_hints = array(
-		'Viewport-Width',
-		'Width',
-		'DPR',
+		'sec-ch-dpr',
+		'sec-ch-width',
+		'sec-ch-viewport-width',
 	);
 
 	/**
@@ -157,11 +157,10 @@ class ImageCDN {
 		foreach ( self::$client_hints as $hint ) {
 			$features[] = strtolower( "ch-{$hint} {$protocol}://{$host}" );
 		}
-		self::header( 'Feature-Policy', strtolower( implode( '; ', $features ) ) );
 
 		$permissions = array();
 		foreach ( self::$client_hints as $hint ) {
-			$permissions[] = strtolower( "ch-{$hint}=(\"{$protocol}://{$host}\")" );
+			$permissions[] = strtolower( "sec-{$hint}=(\"{$protocol}://{$host}\")" );
 		}
 		// Add Permissions-Policy header.
 		// This header replaced Feature-Policy in Chrome 88, released in January 2021.

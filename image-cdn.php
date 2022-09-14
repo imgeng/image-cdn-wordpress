@@ -16,14 +16,14 @@
  * Requires PHP:      5.6
  * Text Domain:       image-cdn
  * License:           GPLv2 or later
- * Version:           1.1.6
+ * Version:           1.1.7
  */
 
 // Update this then you update "Requires at least" above!
 define( 'IMAGE_CDN_MIN_WP', '4.6' );
 
 // Update this when you update the "Version" above!
-define( 'IMAGE_CDN_VERSION', '1.1.6' );
+define( 'IMAGE_CDN_VERSION', '1.1.7' );
 
 // Load plugin files.
 require_once __DIR__ . '/imageengine/class-settings.php';
