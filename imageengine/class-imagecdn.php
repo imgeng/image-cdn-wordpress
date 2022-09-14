@@ -160,7 +160,8 @@ class ImageCDN {
 
 		$permissions = array();
 		foreach ( self::$client_hints as $hint ) {
-			$permissions[] = strtolower( "sec-{$hint}=(\"{$protocol}://{$host}\")" );
+			$getHint = str_replace("sec-","",$hint);
+			$permissions[] = strtolower( "{$getHint}=(\"{$protocol}://{$host}\")" );
 		}
 		// Add Permissions-Policy header.
 		// This header replaced Feature-Policy in Chrome 88, released in January 2021.
