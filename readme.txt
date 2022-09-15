@@ -120,7 +120,7 @@ Upgrades can be performed in the normal WordPress way, nothing else will need to
 
 == Changelog ==
 
-= 1.1.9 =
+= 1.1.7 =
 * Fixed: Update name of client hints [#19](https://github.com/imgeng/image-cdn-wordpress/issues/19)
 * Header : Permissions-Policy code updated
 * version update
