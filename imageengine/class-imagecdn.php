@@ -29,6 +29,14 @@ class ImageCDN {
 		'sec-ch-dpr',
 		'sec-ch-width',
 		'sec-ch-viewport-width',
+		'sec-ch-ect',
+		'sec-ch-ua-full-version',
+		'sec-ch-ua-full-version-list',
+		'sec-ch-ua-platform-version',
+		'sec-ch-ua-arch',
+		'sec-ch-ua-wow64',
+		'sec-ch-ua-bitness',
+		'sec-ch-ua-model'
 		/**
 		 * Disabled for CORS compatibility:
 		 * 'ECT',
