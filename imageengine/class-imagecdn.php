@@ -36,7 +36,7 @@ class ImageCDN {
 		'sec-ch-ua-arch',
 		'sec-ch-ua-wow64',
 		'sec-ch-ua-bitness',
-		'sec-ch-ua-model'
+		'sec-ch-ua-model',
 		/**
 		 * Disabled for CORS compatibility:
 		 * 'ECT',
@@ -113,6 +113,13 @@ class ImageCDN {
 			// Custom filters that can be used in themes to update bare URLs and URLs in HTML.
 			add_filter( 'image_cdn_url', array( self::class, 'rewrite_url' ) );
 			add_filter( 'image_cdn_html', array( self::class, 'rewrite_html' ) );
+
+			// Thrive custom filters
+			if( class_exists( 'TCB_Landing_Page' ) ) {
+				add_filter( 'tve_landing_page_content', array( self::class, 'rewrite_html' ), 100 );
+				add_filter( 'thrive_css_file_content', array( self::class, 'rewrite_html' ), 100 );
+				add_filter( 'get_post_metadata', array( self::class, 'tve_custom_css_post_metadata' ), 100, 4 );
+			}
 		}
 
 		// Hooks.
@@ -168,8 +175,8 @@ class ImageCDN {
 
 		$permissions = array();
 		foreach ( self::$client_hints as $hint ) {
-			$getHint = str_replace("sec-","",$hint);
-			$permissions[] = strtolower( "{$getHint}=(\"{$protocol}://{$host}\")" );
+			$get_hint      = str_replace( 'sec-', '', $hint );
+			$permissions[] = strtolower( "{$get_hint}=(\"{$protocol}://{$host}\")" );
 		}
 		// Add Permissions-Policy header.
 		// This header replaced Feature-Policy in Chrome 88, released in January 2021.
@@ -566,6 +573,20 @@ class ImageCDN {
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * Rewrite tve_custom_css.
+	 */
+	public static function tve_custom_css_post_metadata( $value, $object_id, $meta_key, $single  ) {
+		if ( isset( $meta_key ) && strpos( $meta_key, 'tve_custom_css') !== false ) {
+			remove_filter( 'get_post_metadata', array( self::class, 'tve_custom_css_post_metadata' ), 100 );
+			$current_meta = get_post_meta( $object_id, $meta_key, $single );
+			add_filter('get_post_metadata', array( self::class, 'tve_custom_css_post_metadata' ), 100, 4);
+			$rewriter = self::get_rewriter();
+			return $rewriter->rewrite( $current_meta );
+		}
+		return $value;
 	}
 
 
