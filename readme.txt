@@ -120,6 +120,10 @@ Upgrades can be performed in the normal WordPress way, nothing else will need to
 
 == Changelog ==
 
+= 1.1.9 =
+* Full Thrive Themes support
+* ECT ClientHint fix
+
 = 1.1.8 =
 * Fixed: Add new client hints [#24](https://github.com/imgeng/image-cdn-wordpress/issues/24)
 * Header : Permissions-Policy code updated

@@ -29,7 +29,7 @@ class ImageCDN {
 		'sec-ch-dpr',
 		'sec-ch-width',
 		'sec-ch-viewport-width',
-		'sec-ch-ect',
+		'ect',
 		'sec-ch-ua-full-version',
 		'sec-ch-ua-full-version-list',
 		'sec-ch-ua-platform-version',
@@ -176,6 +176,7 @@ class ImageCDN {
 		$permissions = array();
 		foreach ( self::$client_hints as $hint ) {
 			$get_hint      = str_replace( 'sec-', '', $hint );
+			if($get_hint ==='ect') $get_hint = 'ch-'.$get_hint;
 			$permissions[] = strtolower( "{$get_hint}=(\"{$protocol}://{$host}\")" );
 		}
 		// Add Permissions-Policy header.
