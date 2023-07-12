@@ -1,0 +1,33 @@
+name: Sync with SVN
+on:
+  push:
+    branches:
+      - master
+  release:
+    types:
+      - created
+  workflow_dispatch:
+jobs:
+  svn_sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Sync with SVN
+        run: |
+          RELEASE_VERSION=`grep "^Stable tag:" readme.txt | awk -F' ' '{print $NF}'`
+          VERSION=`grep "Version:" image-cdn.php | awk -F' ' '{print $NF}'`
+          echo "release_version: $RELEASE_VERSION"
+          echo "version: $VERSION"
+          mkdir ~/tmp
+          cd ~/tmp
+          svn co ${{ secrets.SVN_REP_URL }} --username "${{ secrets.SVN_REP_USER }}" --password "${{ secrets.SVN_REP_PW }}"
+          cd img-cdn-wp-svn.git
+          svn delete trunk/*
+          mkdir -p dist_image_cdn
+          cp -v -r ${{ github.workspace }}/*.php ${{ github.workspace }}/*.txt ${{ github.workspace }}/imageengine ${{ github.workspace }}/assets ${{ github.workspace }}/templates dist_image_cdn/
+          rsync -r --exclude='.git' --exclude='.github' dist_image_cdn/ trunk/
+          svn add trunk/*
+          svn commit --username "${{ secrets.SVN_REP_USER }}" --password "${{ secrets.SVN_REP_PW }}" -m "release $VERSION" .
+          svn copy --username "${{ secrets.SVN_REP_USER }}" --password "${{ secrets.SVN_REP_PW }}" ${{ secrets.SVN_REP_URL }}/trunk ${{ secrets.SVN_REP_URL }}/tags/$VERSION -m "release $VERSION"
+  
+  
