@@ -20,14 +20,14 @@ jobs:
           echo "version: $VERSION"
           mkdir ~/tmp
           cd ~/tmp
-          svn co ${{ secrets.SVN_REP_URL }} --username "${{ secrets.SVN_REP_USER }}" --password "${{ secrets.SVN_REP_PW }}"
-          cd img-cdn-wp-svn.git
+          svn co ${{ vars.SVN_REP_URL }} --username "${{ vars.SVN_REP_USER }}" --password "${{ secrets.SVN_REP_PW }}"
+          cd ${{ vars.SVN_REP_DIR }}
           svn delete trunk/*
           mkdir -p dist_image_cdn
           cp -v -r ${{ github.workspace }}/*.php ${{ github.workspace }}/*.txt ${{ github.workspace }}/imageengine ${{ github.workspace }}/assets ${{ github.workspace }}/templates dist_image_cdn/
           rsync -r --exclude='.git' --exclude='.github' dist_image_cdn/ trunk/
           svn add trunk/*
-          svn commit --username "${{ secrets.SVN_REP_USER }}" --password "${{ secrets.SVN_REP_PW }}" -m "release $VERSION" .
-          svn copy --username "${{ secrets.SVN_REP_USER }}" --password "${{ secrets.SVN_REP_PW }}" ${{ secrets.SVN_REP_URL }}/trunk ${{ secrets.SVN_REP_URL }}/tags/$VERSION -m "release $VERSION"
+          svn commit --username "${{ vars.SVN_REP_USER }}" --password "${{ secrets.SVN_REP_PW }}" -m "release $VERSION" .
+          svn copy --username "${{ vars.SVN_REP_USER }}" --password "${{ secrets.SVN_REP_PW }}" ${{ vars.SVN_REP_URL }}/trunk ${{ vars.SVN_REP_URL }}/tags/$VERSION -m "release $VERSION"
   
   
