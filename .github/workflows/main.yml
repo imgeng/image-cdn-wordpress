@@ -18,16 +18,38 @@ jobs:
           VERSION=`grep "Version:" image-cdn.php | awk -F' ' '{print $NF}'`
           echo "release_version: $RELEASE_VERSION"
           echo "version: $VERSION"
+          
+          echo "mkdir ~/tmp"
           mkdir ~/tmp
+          
+          echo "cd ~/tmp"
           cd ~/tmp
-          svn co ${{ vars.SVN_REP_URL }} --username "${{ vars.SVN_REP_USER }}" --password "${{ secrets.SVN_REP_PW }}"
+          
+          echo "svn co ${{ vars.SVN_REP_URL }} --no-auth-cache --non-interactive --username \"${{ vars.SVN_REP_USER }}\" --password \"***\""
+          svn co ${{ vars.SVN_REP_URL }} --no-auth-cache --non-interactive --username "${{ vars.SVN_REP_USER }}" --password "${{ secrets.SVN_REP_PW }}"
+          
+          echo "cd ${{ vars.SVN_REP_DIR }}"
           cd ${{ vars.SVN_REP_DIR }}
+          
+          echo "svn delete trunk/*"
           svn delete trunk/*
+          
+          echo "mkdir -p dist_image_cdn"
           mkdir -p dist_image_cdn
+          
+          echo "cp -v -r ${{ github.workspace }}/*.php ${{ github.workspace }}/*.txt ${{ github.workspace }}/imageengine ${{ github.workspace }}/assets ${{ github.workspace }}/templates dist_image_cdn/"
           cp -v -r ${{ github.workspace }}/*.php ${{ github.workspace }}/*.txt ${{ github.workspace }}/imageengine ${{ github.workspace }}/assets ${{ github.workspace }}/templates dist_image_cdn/
+          
+          echo "rsync -r --exclude='.git' --exclude='.github' dist_image_cdn/ trunk/"
           rsync -r --exclude='.git' --exclude='.github' dist_image_cdn/ trunk/
+          
+          echo "svn add trunk/*"
           svn add trunk/*
-          svn commit --username "${{ vars.SVN_REP_USER }}" --password "${{ secrets.SVN_REP_PW }}" -m "release $VERSION" .
-          svn copy --username "${{ vars.SVN_REP_USER }}" --password "${{ secrets.SVN_REP_PW }}" ${{ vars.SVN_REP_URL }}/trunk ${{ vars.SVN_REP_URL }}/tags/$VERSION -m "release $VERSION"
+          
+          echo "svn commit --no-auth-cache --non-interactive --username \"${{ vars.SVN_REP_USER }}\" --password \"***\" -m \"Update to version $VERSION from GitHub\" ."
+          svn commit --no-auth-cache --non-interactive --username "${{ vars.SVN_REP_USER }}" --password "${{ secrets.SVN_REP_PW }}" -m "Update to version $VERSION from GitHub" .
+          
+          echo "svn copy --no-auth-cache --non-interactive --username \"${{ vars.SVN_REP_USER }}\" --password \"***\" ${{ vars.SVN_REP_URL }}/trunk ${{ vars.SVN_REP_URL }}/tags/$VERSION -m "release $VERSION""
+          svn copy --no-auth-cache --non-interactive --username "${{ vars.SVN_REP_USER }}" --password "${{ secrets.SVN_REP_PW }}" ${{ vars.SVN_REP_URL }}/trunk ${{ vars.SVN_REP_URL }}/tags/$VERSION -m "release $VERSION"
   
-  
+
