@@ -31,6 +31,12 @@ jobs:
           echo "cd ${{ vars.SVN_REP_DIR }}"
           cd ${{ vars.SVN_REP_DIR }}
           
+          echo "check if version $VERSION already published and bail out if so"
+          if [[ -d "tags/$VERSION" ]]; then
+            echo "ℹ︎ Version $VERSION was already published";
+            exit
+          fi
+          
           echo "svn delete trunk/*"
           svn delete trunk/*
           
