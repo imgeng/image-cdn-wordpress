@@ -1,17 +1,53 @@
-name: Sync with SVN
+name: Tag-Release and Sync with SVN
 on:
   push:
     branches:
       - master
-  release:
-    types:
-      - created
   workflow_dispatch:
 jobs:
   svn_sync:
+    permissions: write-all
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Prepare Release Info
+        id: vars
+        run: |
+          RELEASE=`grep "Version:" image-cdn.php | awk -F' ' '{print $NF}'`
+          echo "release: r$RELEASE"
+          echo "RELEASE=$RELEASE" >> $GITHUB_OUTPUT
+      - name: AWK Change Log
+        id: changelog
+        run: |
+          CHANGED=`awk -v RS="" '
+            /Changelog/{
+              found1=1
+              next
+            }
+            found1 && $0 ~ "= ${{ steps.vars.outputs.RELEASE }} =" {
+              sub(/^[^\n]*\n*/,"")
+              print
+              found1=""
+            }
+          '  readme.txt`
+          echo "CHANGED=$CHANGED" >> $GITHUB_OUTPUT
+      - name: Check Release Info
+        run: |
+          echo "release: ${{ steps.vars.outputs.RELEASE }}"
+          echo "changelog: ${{ steps.changelog.outputs.CHANGED }}"
+      - name: Create/Update Tag-Release
+        id: create_release
+        uses: ncipollo/release-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: r${{ steps.vars.outputs.RELEASE }}
+          name: Release r${{ steps.vars.outputs.RELEASE }}
+          body: |
+            ${{ steps.changelog.outputs.CHANGED }}
+          allowUpdates: true
+          draft: false
+          prerelease: false
       - name: Sync with SVN
         run: |
           RELEASE_VERSION=`grep "^Stable tag:" readme.txt | awk -F' ' '{print $NF}'`
@@ -58,4 +94,3 @@ jobs:
           echo "svn copy --no-auth-cache --non-interactive --username \"${{ vars.SVN_REP_USER }}\" --password \"***\" ${{ vars.SVN_REP_URL }}/trunk ${{ vars.SVN_REP_URL }}/tags/$VERSION -m "release $VERSION""
           svn copy --no-auth-cache --non-interactive --username "${{ vars.SVN_REP_USER }}" --password "${{ secrets.SVN_REP_PW }}" ${{ vars.SVN_REP_URL }}/trunk ${{ vars.SVN_REP_URL }}/tags/$VERSION -m "release $VERSION"
   
-
