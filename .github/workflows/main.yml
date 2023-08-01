@@ -41,8 +41,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag: r${{ steps.vars.outputs.RELEASE }}
-          name: Release r${{ steps.vars.outputs.RELEASE }}
+          tag: v${{ steps.vars.outputs.RELEASE }}
+          name: Release v${{ steps.vars.outputs.RELEASE }}
           body: |
             ${{ steps.changelog.outputs.CHANGED }}
           allowUpdates: true
