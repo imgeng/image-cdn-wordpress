@@ -24,7 +24,7 @@
 			</p>
 		</div>
 	<?php } ?>
-
+	<?php settings_errors(); ?>
 	<form method="post" action="options.php">
 		<?php
 		$parts    = wp_parse_url( $options['url'] );

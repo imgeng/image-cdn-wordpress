@@ -16,7 +16,7 @@
  * Requires PHP:      5.6
  * Text Domain:       image-cdn
  * License:           GPLv2 or later
- * Version:           1.1.11
+ * Version:           1.1.12
  */
 
 // Update this then you update "Requires at least" above!
