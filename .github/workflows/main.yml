@@ -30,7 +30,9 @@ jobs:
               found1=""
             }
           '  readme.txt`
-          echo "CHANGED=$CHANGED" >> $GITHUB_OUTPUT
+          echo "CHANGED<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
       - name: Check Release Info
         run: |
           echo "release: ${{ steps.vars.outputs.RELEASE }}"
