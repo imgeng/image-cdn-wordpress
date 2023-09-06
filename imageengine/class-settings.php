@@ -49,6 +49,8 @@ class Settings {
 			$parts = wp_parse_url( $data['url'] );
 			if ( ! isset( $parts['host'] ) ) {
 				add_settings_error( 'url', 'url', 'Delivery Address is required' );
+			} else if ( $parts['host'] === parse_url( get_site_url() )['host'] ) {
+				add_settings_error( 'url', 'url', 'You entered the domain of your website. Please enter the ImageEngine delivery address to test the configuration.' );
 			} else {
 				// Make sure the host is resolves.
 				if ( ! filter_var( $parts['host'], FILTER_VALIDATE_IP ) ) {
@@ -257,6 +259,11 @@ class Settings {
 
 		if ( ! isset( $_POST['cdn_url'] ) ) {
 			$out['message'] = 'Malformed request';
+			wp_send_json_error( $out );
+		}
+
+		if ( parse_url( $_POST['cdn_url'] ) === parse_url( get_site_url() ) ) {
+			$out['message'] = 'You entered the domain of your website. Please enter the ImageEngine delivery address to test the configuration.';
 			wp_send_json_error( $out );
 		}
 
