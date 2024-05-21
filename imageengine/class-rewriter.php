@@ -256,7 +256,7 @@ class Rewriter {
 		// Call the cdn rewriter callback.
 		$cdn_html = preg_replace_callback(
 			$regex_rule,
-			function( $matches ) {
+			function ( $matches ) {
 				$original         = $matches[0];
 				$delimiter        = $matches[1];
 				$url              = $matches[2];
@@ -282,7 +282,7 @@ class Rewriter {
 					$is_srcset = false;
 					$srcset    = preg_replace_callback(
 						'#(\s?)([^\s]+)(\s+\d+[wx])?\s*(,|$)#',
-						function( $srcset_matches ) use ( &$is_srcset ) {
+						function ( $srcset_matches ) use ( &$is_srcset ) {
 							/*
 							 * Matches:
 							 * 1. Leading whitespace
@@ -374,5 +374,4 @@ class Rewriter {
 
 		return $regex_rule;
 	}
-
 }

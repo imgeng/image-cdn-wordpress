@@ -2,6 +2,6 @@
 *.zip
 *.phar
 svn/
-
-/vendor/
 /composer.lock
+.idea
+/examples/

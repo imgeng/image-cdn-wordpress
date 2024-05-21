@@ -12,23 +12,28 @@
  * Description:       Optimize your WordPress site with <a href="https://imageengine.io" target="_blank">ImageEngine</a> or another Image CDN (or any other Content Delivery Network).
  * Author:            imageengine
  * Author URI:        https://imageengine.io/
- * Requires at least: 4.6
- * Requires PHP:      5.6
+ * Requires at least: 5.3
+ * Requires PHP:      7.4
  * Text Domain:       image-cdn
  * License:           GPLv2 or later
- * Version:           1.1.12
+ * Version:           1.2.0
  */
 
 // Update this then you update "Requires at least" above!
-define( 'IMAGE_CDN_MIN_WP', '4.6' );
+define( 'IMAGE_CDN_MIN_WP', '5.3' );
 
 // Update this when you update the "Version" above!
-define( 'IMAGE_CDN_VERSION', '1.1.12' );
+define( 'IMAGE_CDN_VERSION', '1.2.0' );
+
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	require_once( __DIR__ . '/vendor/autoload.php' );
+}
 
 // Load plugin files.
 require_once __DIR__ . '/imageengine/class-settings.php';
 require_once __DIR__ . '/imageengine/class-rewriter.php';
 require_once __DIR__ . '/imageengine/class-imagecdn.php';
+require_once __DIR__ . '/imageengine/class-optionstorage.php';
 
 defined( 'ABSPATH' ) || exit();
 
