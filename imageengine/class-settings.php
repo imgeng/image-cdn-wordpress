@@ -7,12 +7,16 @@
 
 namespace ImageEngine;
 
+use ImageEngine\PhpSdk\IEClient;
+
 /**
  * The Settings class manages all of the validation and administration of the plugin settings.
  */
 class Settings {
 
+	public static $_notices = array();
 
+	public static $_client;
 
 	/**
 	 * Register settings.
@@ -26,6 +30,7 @@ class Settings {
 	 * Validation of settings.
 	 *
 	 * @param   array $data  array with form data.
+	 *
 	 * @return  array         array with validated values.
 	 */
 	public static function validate_settings( $data ) {
@@ -49,7 +54,7 @@ class Settings {
 			$parts = wp_parse_url( $data['url'] );
 			if ( ! isset( $parts['host'] ) ) {
 				add_settings_error( 'url', 'url', 'Delivery Address is required' );
-			} else if ( $parts['host'] === parse_url( get_site_url() )['host'] ) {
+			} elseif ( $parts['host'] === parse_url( get_site_url() )['host'] ) {
 				add_settings_error( 'url', 'url', 'You entered the domain of your website. Please enter the ImageEngine delivery address to test the configuration.' );
 			} else {
 				// Make sure the host is resolves.
@@ -78,6 +83,7 @@ class Settings {
 	 *
 	 * @param string $list list of strings separated by $delimiter.
 	 * @param string $delimiter delimiter.
+	 *
 	 * @return string list of strings.
 	 */
 	public static function clean_list( $list, $delimiter = ',' ) {
@@ -96,6 +102,7 @@ class Settings {
 	 * Clean the ImageEngine Directives.
 	 *
 	 * @param string $directives ImageEngine Directives as a comma-separated list.
+	 *
 	 * @return string ImageEngine Directives.
 	 */
 	public static function clean_directives( $directives ) {
@@ -146,7 +153,7 @@ class Settings {
 						// Recommendations to show the user.
 						recommends = []
 
-						if (!document.getElementById('image_cdn_enabled').checked) {
+						if (!(document.getElementById('image_cdn_enabled').value=="1")) {
 							// The user has CDN support disabled.
 							recommends.push('image_cdn_enabled')
 						}
@@ -184,7 +191,7 @@ class Settings {
 					})
 				}
 
-				document.getElementById('check-cdn').addEventListener('click', () => {
+				document.getElementById('check-cdn')?.addEventListener('click', () => {
 					show_test_results({
 						'type': 'info'
 					})
@@ -216,7 +223,7 @@ class Settings {
 						})
 				})
 
-				document.getElementById('recommend-apply').addEventListener('click', () => {
+				document.getElementById('recommend-apply')?.addEventListener('click', () => {
 					document.querySelectorAll('.recommend-options > li').forEach(el => {
 						if (el.classList.contains('hidden')) {
 							return
@@ -228,7 +235,9 @@ class Settings {
 						switch (target) {
 							// Checkboxes
 							case 'image_cdn_enabled':
-								document.getElementById(target).checked = (value === 'true')
+								const enabled = document.getElementById(target)
+								enabled.value = (value === 'true') ? '1' : '0'
+								enabled.dispatchEvent(new Event('change'))
 								break
 							default:
 								console.error(`Invalid recommendation target: ${target}`)
@@ -386,6 +395,7 @@ class Settings {
 	 *
 	 * @param string $haystack The string which is to have it's prefix removed.
 	 * @param string $needle the prefix to be removed.
+	 *
 	 * @return string The haystack without the needle prefix, or the original haystack if no match.
 	 */
 	protected static function remove_prefix( $haystack, $needle ) {
@@ -395,5 +405,255 @@ class Settings {
 		}
 
 		return $haystack;
+	}
+
+	/**
+	 * Get an instance of the ImageEngine client.
+	 */
+	public static function client() {
+		if ( ! isset( self::$_client ) ) {
+			self::$_client = new IEClient( new OptionStorage() );
+		}
+		return self::$_client;
+	}
+
+	/**
+	 * Register with ImageEngine API and retrieve Delivery Address.
+	 */
+	public static function register() {
+		$nonce = sanitize_text_field( $_POST['_wpnonce_register'] );
+		if ( ! wp_verify_nonce( $nonce, 'image_cdn_register_nonce' ) || ! current_user_can( 'administrator' ) ) {
+			self::add_error( __( 'Unauthorized', 'image-cdn' ), 'register' );
+			wp_redirect( add_query_arg( 'register-error', 'Unauthorized', admin_url( '/admin.php?page=image_cdn' ) ) );
+		}
+
+		if ( ! isset( $_POST['register_username'] ) || ! is_email( $_POST['register_username'] ) ) {
+			self::add_error( __( 'Invalid username', 'image-cdn' ), 'register' );
+			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+		}
+
+		if ( ! isset( $_POST['register_password'] ) ) {
+			self::add_error( __( 'Invalid password', 'image-cdn' ), 'register' );
+			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+		}
+
+		try {
+			$response = self::client()->register( $_POST['register_username'], $_POST['register_password'], $_POST['register_plan'] );
+
+			$message = ImageCDN::update_delivery_address( $response );
+			if ( is_string( $message ) ) {
+				self::add_success( $message );
+				wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+			}
+		} catch ( \Exception $e ) {
+			self::add_error( __( 'An error occurred!', 'image-cdn' ), 'register' );
+			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+		}
+	}
+
+	/**
+	 * Login with ImageEngine API and retrieve Delivery Addresses.
+	 */
+	public static function login() {
+		$nonce = sanitize_text_field( $_POST['_wpnonce_login'] );
+		if ( ! wp_verify_nonce( $nonce, 'image_cdn_login_nonce' ) || ! current_user_can( 'administrator' ) ) {
+			self::add_error( __( 'Unauthorized', 'image-cdn' ), 'login' );
+			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+		}
+
+		if ( ! isset( $_POST['login_username'] ) || ! is_email( $_POST['login_username'] ) ) {
+			self::add_error( __( 'Invalid username', 'image-cdn' ), 'login' );
+			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+		}
+
+		if ( ! isset( $_POST['login_password'] ) ) {
+			self::add_error( __( 'Invalid password', 'image-cdn' ), 'login' );
+			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+		}
+
+		try {
+			$response = self::client()->login( $_POST['login_username'], $_POST['login_password'] );
+
+			$message = ImageCDN::update_delivery_address( $response );
+			if ( is_string( $message ) ) {
+				self::add_success( $message );
+				wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+			}
+		} catch ( \Exception $e ) {
+			self::add_error( __( 'An error occurred!', 'image-cdn' ), 'login' );
+			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+		}
+	}
+
+	/**
+	 * Logout from ImageEngine API.
+	 */
+	public static function logout() {
+		$nonce = sanitize_text_field( $_POST['_wpnonce_logout'] );
+		if ( ! wp_verify_nonce( $nonce, 'image_cdn_logout_nonce' ) || ! current_user_can( 'administrator' ) ) {
+			self::add_error( __( 'Unauthorized', 'image-cdn' ) );
+			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+		}
+
+		try {
+			self::client()->logout();
+
+			self::add_success( __("Logged out!", 'image-cdn') );
+			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+		} catch ( \Exception $e ) {
+			self::add_error( __( 'An error occurred!', 'image-cdn' ) );
+			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+		}
+	}
+
+	/**
+	 * Add an error message
+	 */
+	public static function add_error( $text, $tab = null ) {
+		self::$_notices[] = [
+			'type'    => 'error',
+			'message' => $text,
+			'tab'     => $tab,
+		];
+		update_option( 'image_cdn_notices', self::$_notices );
+	}
+
+	/**
+	 * Add a success message
+	 */
+	public static function add_success( $text, $tab = null ) {
+		self::$_notices[] = [
+			'type'    => 'success',
+			'message' => $text,
+			'tab'     => $tab,
+		];
+		update_option( 'image_cdn_notices', self::$_notices );
+	}
+
+	/**
+	 * Get all stored notices
+	 */
+	public static function notices() {
+		self::$_notices = maybe_unserialize( get_option( 'image_cdn_notices' ) );
+		return self::$_notices;
+	}
+
+	/**
+	 * Show any stored error messages
+	 */
+	public static function admin_notices() {
+		$notices = maybe_unserialize( get_option( 'image_cdn_notices' ) );
+
+		if ( ! empty( $notices ) ) {
+			foreach ( $notices as $notice ) {
+				wp_admin_notice( "<b>" . $notice['message'] . "</b>", [
+						'type'        => $notice['type'],
+					'dismissible' => true
+				] );
+			}
+		}
+
+		// Clear
+		delete_option( 'image_cdn_notices' );
+	}
+
+	/**
+	 * Registers the analytics javascript helpers.
+	 */
+	public static function register_analytics() {
+		if ( ! self::client()->isLoggedIn() ) {
+			return;
+		}
+		$nonce   = wp_create_nonce( 'image-cdn-analytics' );
+		$options = ImageCDN::get_options();
+		?>
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				const show_analytics = res => {
+					// res.type can be 'error', 'warning' or 'success'.
+					if (res.type === 'success') {
+						document.getElementById('analytics').innerHTML = res.message
+						document.getElementById('analytics-tab').dataset.loaded = 'true'
+					}
+				}
+
+				document.getElementById('analytics-tab')?.addEventListener('click', (el) => {
+					if(el.target.dataset.loaded === 'true') {
+						return
+					}
+
+					document.getElementById('analytics').innerHTML = '<div class="spinner-loader"></div>'
+
+					window.scrollTo({
+						top: 50,
+						left: 0,
+						behavior: 'smooth',
+					})
+
+					fetch(ajaxurl, {
+						method: 'POST',
+						credentials: 'same-origin',
+						headers: new Headers({
+							'accept': 'application/json',
+							'content-type': 'application/x-www-form-urlencoded; charset=utf-8',
+						}),
+						body: new URLSearchParams({
+							'action': 'image_cdn_analytics',
+							'nonce': '<?php echo esc_js( $nonce ); ?>',
+							'cdn_url': document.getElementById('image_cdn_url').value,
+						}),
+					})
+						.then(res => res.json())
+						.then(res => show_analytics(res.data))
+						.catch(err => {
+							show_analytics('error', 'unable to load analytics: ' + err)
+							console.error(err)
+						})
+				})
+
+				<?php if (Settings::client()->isLoggedIn() && $options['enabled']): ?>
+				document.getElementById('analytics-tab')?.click()
+				<?php endif; ?>
+			})
+		</script>
+		<?php
+	}
+
+	/**
+	 * Display and cache (for 1 h) analytics.
+	 */
+	public static function analytics() {
+		check_ajax_referer( 'image-cdn-analytics', 'nonce' );
+
+		$out = array(
+			'type'      => 'error',
+			'message'   => '',
+			'local_url' => '',
+			'cdn_url'   => '',
+		);
+
+		if ( ! isset( $_POST['cdn_url'] ) ) {
+			$out['message'] = 'Malformed request';
+			wp_send_json_error( $out );
+		}
+
+		$options = ImageCDN::get_options();
+
+		$cname = $options['url'] ?? '';
+		$cname = str_replace( 'https://', '', $cname );
+		$cname = str_replace( '.imgeng.in', '', $cname );
+
+		$cached      = get_transient( 'image_cdn_analytics_' . $cname );
+		$out['type'] = 'success';
+		if ( empty( $cached ) ) {
+			ob_start();
+			include __DIR__ . '/../templates/_analytics.php';
+			$out['message'] = ob_get_clean();
+			ob_end_clean();
+			set_transient( 'image_cdn_analytics_' . $cname, $out['message'], HOUR_IN_SECONDS );
+		} else {
+			$out['message'] = $cached;
+		}
+		wp_send_json_success( $out );
 	}
 }

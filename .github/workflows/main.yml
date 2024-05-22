@@ -81,8 +81,14 @@ jobs:
           echo "mkdir -p dist_image_cdn"
           mkdir -p dist_image_cdn
           
-          echo "cp -v -r ${{ github.workspace }}/*.php ${{ github.workspace }}/*.txt ${{ github.workspace }}/imageengine ${{ github.workspace }}/assets ${{ github.workspace }}/templates dist_image_cdn/"
-          cp -v -r ${{ github.workspace }}/*.php ${{ github.workspace }}/*.txt ${{ github.workspace }}/imageengine ${{ github.workspace }}/assets ${{ github.workspace }}/templates dist_image_cdn/
+          echo "cp -v -r ${{ github.workspace }}/*.php ${{ github.workspace }}/*.txt ${{ github.workspace }}/composer.json ${{ github.workspace }}/imageengine ${{ github.workspace }}/assets ${{ github.workspace }}/config ${{ github.workspace }}/vendor ${{ github.workspace }}/templates dist_image_cdn/"
+          cp -v -r ${{ github.workspace }}/*.php ${{ github.workspace }}/*.txt ${{ github.workspace }}/composer.json ${{ github.workspace }}/imageengine ${{ github.workspace }}/assets ${{ github.workspace }}/config ${{ github.workspace }}/vendor ${{ github.workspace }}/templates dist_image_cdn/
+          
+          echo "cp -v dist_image_cdn/vendor/imageengine/php-sdk/config/APIData.sample.php dist_image_cdn/config/APIData.php"
+          cp -v dist_image_cdn/vendor/imageengine/php-sdk/config/APIData.sample.php dist_image_cdn/config/APIData.php
+          
+          echo "awk '{sub(/\*\*\*/,"***")}1' dist_image_cdn/config/APIData.php > temp.txt && mv temp.txt dist_image_cdn/config/APIData.php"
+          awk '{sub(/\*\*\*/,"${{ secrets.IMAGEENGINE_TOKEN }}")}1' dist_image_cdn/config/APIData.php > temp.txt && mv temp.txt dist_image_cdn/config/APIData.php
           
           echo "rsync -r --exclude='.git' --exclude='.github' dist_image_cdn/ trunk/"
           rsync -r --exclude='.git' --exclude='.github' dist_image_cdn/ trunk/

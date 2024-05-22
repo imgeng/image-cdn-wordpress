@@ -1,0 +1,48 @@
+{
+  "name": "imageengine/php-sdk",
+  "description": "ImageEngine PHP SDK",
+  "type": "library",
+  "license": "GPL-2.0-or-later",
+  "require": {
+	"php": ">=7.4",
+	"ext-json": "*",
+	"psr/http-factory": "^1.0",
+	"psr/http-client": "^1.0",
+	"php-http/client-common": "^2.7",
+    "php-http/discovery": "^1.17"
+  },
+  "autoload": {
+	"psr-4": {
+	  "ImageEngine\\PhpSdk\\": "src/",
+	  "ImageEngine\\PhpSdk\\Config\\": "config/"
+	}
+  },
+  "require-dev": {
+	"phpunit/phpunit": "^9.6",
+	"php-http/mock-client": "^1.6",
+	"php-http/curl-client": "^2.3",
+	"nyholm/psr7": "^1.8",
+	"phpstan/phpstan": "^1.10",
+	"wp-coding-standards/wpcs": "^3.0",
+    "fakerphp/faker": "^1.23",
+    "spatie/ray": "^1.41"
+  },
+  "autoload-dev": {
+	"psr-4": {
+	  "ImageEngine\\Tests\\": "tests/"
+	}
+  },
+  "scripts": {
+	"test": "phpunit",
+	"test-coverage": "phpunit --coverage-html=coverage",
+	"phpstan": "phpstan",
+	"phpcs": "phpcs --standard=PSR12 src/ tests/ config/",
+	"phpbf": "phpcbf --standard=PSR12 src/ tests/ config/"
+  },
+  "config": {
+	"allow-plugins": {
+	  "php-http/discovery": true,
+	  "dealerdirect/phpcodesniffer-composer-installer": true
+	}
+  }
+}

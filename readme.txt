@@ -1,9 +1,9 @@
 === ImageEngine - Optimize the Images on Your WordPress Site Like No Other Plugin ===
 Contributors: imageengine
 Tags: image cdn, cdn, ImageEngine, image optimizer, content delivery network, image convert, avif, webp, jpegxl
-Requires at least: 4.6
+Requires at least: 5.3
 Tested up to: 6.5.3
-Requires PHP: 5.6
+Requires PHP: 7.4
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -52,8 +52,8 @@ Elevate your WordPress site with ImageEngine. Say goodbye to slow loading times 
 
 == System Requirements ==
 
-* PHP >=5.6
-* WordPress >=4.6
+* PHP >=7.4
+* WordPress >=5.3
 
 == Author ==
 
@@ -90,6 +90,12 @@ The following are the steps to install the Image CDN plugin
 
 
 == Changelog ==
+
+= 1.2.0 =
+* Added Image Engine registration in the settings page
+* Added Image Engine login in the settings page
+* Added Image Engine analytics in the settings page
+* Tested up to 6.5.3
 
 = 1.1.12 =
 * Fixed: display of settings and test errors

@@ -29,7 +29,7 @@ class ImageCDN {
 		'sec-ch-dpr',
 		'sec-ch-width',
 		'sec-ch-viewport-width',
-		'ect', //kept in for legacy reasons
+		'ect', // kept in for legacy reasons
 		'sec-ch-ect',
 		'sec-ch-ua-full-version',
 		'sec-ch-ua-full-version-list',
@@ -116,7 +116,7 @@ class ImageCDN {
 			add_filter( 'image_cdn_html', array( self::class, 'rewrite_html' ) );
 
 			// Thrive custom filters
-			if( class_exists( 'TCB_Landing_Page' ) ) {
+			if ( class_exists( 'TCB_Landing_Page' ) ) {
 				add_filter( 'tve_landing_page_content', array( self::class, 'rewrite_html' ), 100 );
 				add_filter( 'thrive_css_file_content', array( self::class, 'rewrite_html' ), 100 );
 				add_filter( 'get_post_metadata', array( self::class, 'tve_custom_css_post_metadata' ), 100, 4 );
@@ -130,6 +130,11 @@ class ImageCDN {
 		add_action( 'admin_footer', array( Settings::class, 'register_test_config' ) );
 		add_action( 'wp_ajax_image_cdn_test_config', array( Settings::class, 'test_config' ) );
 		add_filter( 'plugin_action_links_' . IMAGE_CDN_BASE, array( self::class, 'add_action_link' ) );
+		add_action( 'admin_post_register', array( Settings::class, 'register' ) );
+		add_action( 'admin_post_login', array( Settings::class, 'login' ) );
+		add_action( 'admin_post_logout', array( Settings::class, 'logout' ) );
+		add_action( 'admin_footer', array( Settings::class, 'register_analytics' ) );
+		add_action( 'wp_ajax_image_cdn_analytics', array( Settings::class, 'analytics' ) );
 	}
 
 	/**
@@ -176,7 +181,7 @@ class ImageCDN {
 
 		$permissions = array();
 		foreach ( self::$client_hints as $hint ) {
-			$get_hint      = str_replace( 'sec-', '', $hint );
+			$get_hint = str_replace( 'sec-', '', $hint );
 			if($get_hint ==='ect') continue;
 			$permissions[] = strtolower( "{$get_hint}=(\"{$protocol}://{$host}\")" );
 		}
@@ -421,6 +426,59 @@ class ImageCDN {
 	}
 
 	/**
+	 * Update Delivery Address
+	 *
+	 * @return  string
+	 *
+	 * @throws  Exception
+	 */
+	public static function update_delivery_address( $delivery_addresses ) {
+		if ( is_string( $delivery_addresses ) ) {
+			$delivery_address = $delivery_addresses;
+
+			$options        = self::get_options();
+			$options['url'] = (is_ssl() ? "https://" : "http://") . $delivery_address . ".imgeng.in";
+			// $options['enabled'] = true;
+			$options['https'] = is_ssl();
+			self::update_options( $options );
+
+			return __( "Delivery address saved!", "image-cdn" );
+		} else {
+			$found   = false;
+			$options = self::get_options();
+			foreach ( $delivery_addresses as &$address ) {
+				$address =  $address . ".imgeng.in";
+
+				$url = (is_ssl() ? "https://" : "http://") . $address;
+
+				if ( $url == $options['url'] ) {
+					$found = true;
+					break;
+				}
+			}
+
+			if ( $found ) {
+				return __("Delivery address found! You can choose a different delivery address bellow.", "image-cdn");
+			} else {
+				$options['url']     = '';
+				$options['enabled'] = false;
+
+				self::update_options( $options );
+				return __("Please choose a delivery address bellow!", "image-cdn");
+			}
+		}
+	}
+
+	/**
+	 * Update plugin options.
+	 *
+	 * @return  bool
+	 */
+	public static function update_options( $options ) {
+		return update_option( 'image_cdn', $options );
+	}
+
+	/**
 	 * Return new rewriter.
 	 */
 	public static function get_rewriter() {
@@ -507,24 +565,15 @@ class ImageCDN {
 					<?php
 					printf(
 						// translators: %s is a link to the ImageEngine site.
-						esc_html__( 'This plugin is best used with %s, but will also work with most other CDNs.', 'image-cdn' ),
-						'<a href="https://imageengine.io/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine</a>'
+						esc_html__( 'This plugin will enable the %s CDN on %s.', 'image-cdn' ),
+						'<a href="https://imageengine.io/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine</a>',
+						esc_html( get_site_url() )
 					);
 					?>
 				</p>
-				<p><?php esc_html_e( 'To obtain an ImageEngine Delivery Address:' ); ?></p>
 				<ol>
-					<li><a target="_blank" href="https://control.imageengine.io/register/website/?website=<?php echo esc_attr( get_site_url() ); ?>&utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine">Sign up for an ImageEngine account</a></li>
-					<li>
-						<?php
-						printf(
-							// translators: 1: http code example 2: https code example.
-							esc_html__( 'Enter the assigned ImageEngine Delivery Address (including %1$s or %2$s) in the "Delivery Address" option below.', 'image-cdn' ),
-							'<code>http://</code>',
-							'<code>https://</code>'
-						);
-						?>
-					</li>
+					<li><?php esc_html_e( 'Claim your delivery address by signing up, or log in if you already have an account.', 'image-cdn') ?></li>
+					<li><?php esc_html_e( 'Delivery address appears in the Setup tab below.', 'image-cdn') ?></li>
 					<?php
 					if ( ! $options['enabled'] ) {
 						?>
@@ -580,16 +629,14 @@ class ImageCDN {
 	/**
 	 * Rewrite tve_custom_css.
 	 */
-	public static function tve_custom_css_post_metadata( $value, $object_id, $meta_key, $single  ) {
-		if ( isset( $meta_key ) && strpos( $meta_key, 'tve_custom_css') !== false ) {
+	public static function tve_custom_css_post_metadata( $value, $object_id, $meta_key, $single ) {
+		if ( isset( $meta_key ) && strpos( $meta_key, 'tve_custom_css' ) !== false ) {
 			remove_filter( 'get_post_metadata', array( self::class, 'tve_custom_css_post_metadata' ), 100 );
 			$current_meta = get_post_meta( $object_id, $meta_key, $single );
-			add_filter('get_post_metadata', array( self::class, 'tve_custom_css_post_metadata' ), 100, 4);
+			add_filter( 'get_post_metadata', array( self::class, 'tve_custom_css_post_metadata' ), 100, 4 );
 			$rewriter = self::get_rewriter();
 			return $rewriter->rewrite( $current_meta );
 		}
 		return $value;
 	}
-
-
 }
