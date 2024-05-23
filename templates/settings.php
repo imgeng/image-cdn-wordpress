@@ -146,7 +146,7 @@ use ImageEngine\Settings;
 			?>
 			<nav class="nav-tab-wrapper wp-clearfix">
 				<a href="#" class="nav-tab <?php echo $tabA == "register" ? "nav-tab-active" : "" ?>"
-				   data-tab="register"><?php esc_html_e("Claim you Delivery Address", "image-cdn") ?></a>
+				   data-tab="register"><?php esc_html_e("Claim your Delivery Address", "image-cdn") ?></a>
 				<a href="#" class="nav-tab <?php echo $tabA == "login" ? "nav-tab-active" : "" ?>"
 				   data-tab="login"><?php esc_html_e("Log in if you already got a Delivery Address", "image-cdn") ?></a>
 			</nav>
