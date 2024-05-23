@@ -9,11 +9,7 @@ try {
 	$cname = str_replace( 'https://', '', $cname );
 	$cname = str_replace( '.imgeng.in', '', $cname );
 
-	#$cname = '62x6yb00.cdn'; //one address for user test@example.com
-	#$cname = 'kl5ikhrq.cdn'; //more addresses for user teste@example.com
-
 	$statistics = Settings::client()->statistics( $cname );
-	ray( $statistics );
 
 	if(!is_array($statistics) || !isset($statistics['metadata']['period']['start']) || !isset($statistics['metadata']['period']['end'])) {
 		return;
@@ -22,7 +18,6 @@ try {
 	$start = date( "Y-m-d", strtotime( $statistics['metadata']['period']['start'] ) );
 	$end   = date( "Y-m-d", strtotime( $statistics['metadata']['period']['end'] ) );
 } catch ( \Exception $e ) {
-	ray( $e );
 	return;
 }
 ?>
