@@ -16,14 +16,14 @@
  * Requires PHP:      7.4
  * Text Domain:       image-cdn
  * License:           GPLv2 or later
- * Version:           1.2.1
+ * Version:           1.2.2
  */
 
 // Update this then you update "Requires at least" above!
 define( 'IMAGE_CDN_MIN_WP', '5.3' );
 
 // Update this when you update the "Version" above!
-define( 'IMAGE_CDN_VERSION', '1.2.1' );
+define( 'IMAGE_CDN_VERSION', '1.2.2' );
 
 if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	require_once( __DIR__ . '/vendor/autoload.php' );

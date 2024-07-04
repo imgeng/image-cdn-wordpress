@@ -103,14 +103,12 @@ final class Microservice extends AbstractApi
         $host = $this->host();
 
         $paymentType = $plan == 'trial' ? 'TRIAL' : 'FREE';
-        $planId = $plan == 'trial' ? 'IMAGEENGINE_STARTER' : 'IMAGEENGINE_DEV';
+        $paymentPlan = $plan == 'trial' ? 'IMAGEENGINE_STARTER' : 'IMAGEENGINE_DEV';
 
-        return $this->post('/api/v1/users/' . $user_id . '/subscriptions', [
-            'plan_id' => $planId,
+        return $this->post('/api/v2/users/' . $user_id . '/subscriptions', [
+            'payment_plan' => $paymentPlan,
             'payment_type' => $paymentType,
-            'account_name' => "$host $username",
-            'pro_standard' => true,
-            'use_defaults' => true
+            'account_name' => "$host $username"
         ], [
             'X-Api-Key' => $key,
         ]);
