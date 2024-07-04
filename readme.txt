@@ -2,7 +2,7 @@
 Contributors: imageengine
 Tags: image cdn, ImageEngine, avif, webp, jpegxl
 Requires at least: 5.3
-Tested up to: 6.5.3
+Tested up to: 6.5.5
 Requires PHP: 7.4
 Stable tag: trunk
 License: GPLv2 or later
@@ -90,6 +90,10 @@ The following are the steps to install the Image CDN plugin
 
 
 == Changelog ==
+
+= 1.2.2 =
+* Fixed: Image Engine create subscription, added newer endpoint
+* Tested up to 6.5.5
 
 = 1.2.1 =
 * Fixed: analytics display
