@@ -425,16 +425,19 @@ class Settings {
 		if ( ! wp_verify_nonce( $nonce, 'image_cdn_register_nonce' ) || ! current_user_can( 'administrator' ) ) {
 			self::add_error( __( 'Unauthorized', 'image-cdn' ), 'register' );
 			wp_redirect( add_query_arg( 'register-error', 'Unauthorized', admin_url( '/admin.php?page=image_cdn' ) ) );
+			exit;
 		}
 
 		if ( ! isset( $_POST['register_username'] ) || ! is_email( $_POST['register_username'] ) ) {
 			self::add_error( __( 'Invalid username', 'image-cdn' ), 'register' );
 			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+			exit;
 		}
 
 		if ( ! isset( $_POST['register_password'] ) ) {
 			self::add_error( __( 'Invalid password', 'image-cdn' ), 'register' );
 			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+			exit;
 		}
 
 		try {
@@ -444,10 +447,12 @@ class Settings {
 			if ( is_string( $message ) ) {
 				self::add_success( $message );
 				wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+				exit;
 			}
 		} catch ( \Exception $e ) {
 			self::add_error( __( 'An error occurred!', 'image-cdn' ), 'register' );
 			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+			exit;
 		}
 	}
 
@@ -459,16 +464,19 @@ class Settings {
 		if ( ! wp_verify_nonce( $nonce, 'image_cdn_login_nonce' ) || ! current_user_can( 'administrator' ) ) {
 			self::add_error( __( 'Unauthorized', 'image-cdn' ), 'login' );
 			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+			exit;
 		}
 
 		if ( ! isset( $_POST['login_username'] ) || ! is_email( $_POST['login_username'] ) ) {
 			self::add_error( __( 'Invalid username', 'image-cdn' ), 'login' );
 			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+			exit;
 		}
 
 		if ( ! isset( $_POST['login_password'] ) ) {
 			self::add_error( __( 'Invalid password', 'image-cdn' ), 'login' );
 			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+			exit;
 		}
 
 		try {
@@ -478,10 +486,12 @@ class Settings {
 			if ( is_string( $message ) ) {
 				self::add_success( $message );
 				wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+				exit;
 			}
 		} catch ( \Exception $e ) {
 			self::add_error( __( 'An error occurred!', 'image-cdn' ), 'login' );
 			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+			exit;
 		}
 	}
 
@@ -493,6 +503,7 @@ class Settings {
 		if ( ! wp_verify_nonce( $nonce, 'image_cdn_logout_nonce' ) || ! current_user_can( 'administrator' ) ) {
 			self::add_error( __( 'Unauthorized', 'image-cdn' ) );
 			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+			exit;
 		}
 
 		try {
@@ -500,9 +511,11 @@ class Settings {
 
 			self::add_success( __("Logged out!", 'image-cdn') );
 			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+			exit;
 		} catch ( \Exception $e ) {
 			self::add_error( __( 'An error occurred!', 'image-cdn' ) );
 			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+			exit;
 		}
 	}
 
