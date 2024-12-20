@@ -450,6 +450,12 @@ class Settings {
 				exit;
 			}
 		} catch ( \Exception $e ) {
+			if($e->getMessage() === "User email address needs verification!") {
+				self::add_error( __( 'Please check your email ('.$_POST['register_username'].') to verify your ImageEngine account. ', 'image-cdn' ), 'login' );
+				wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+				exit;
+			}
+
 			self::add_error( __( 'An error occurred!', 'image-cdn' ), 'register' );
 			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
 			exit;
@@ -489,6 +495,12 @@ class Settings {
 				exit;
 			}
 		} catch ( \Exception $e ) {
+			if($e->getMessage() === "User email address needs verification!") {
+				self::add_error( __( 'Please check your email ('.$_POST['login_username'].') to verify your ImageEngine account. ', 'image-cdn' ), 'login' );
+				wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
+				exit;
+			}
+
 			self::add_error( __( 'An error occurred!', 'image-cdn' ), 'login' );
 			wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
 			exit;

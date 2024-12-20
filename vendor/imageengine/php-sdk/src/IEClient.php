@@ -50,7 +50,7 @@ final class IEClient
             }
             return $this->login($username, $password, $plan);
         } catch (Exception $e) {
-            throw new Exception("Failed to register user");
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -66,6 +66,9 @@ final class IEClient
         try {
             $loginResponse = $this->sdk->authentication()->login($username, $password);
             if (!is_array($loginResponse) || !isset($loginResponse['token'])) {
+                if(is_array($loginResponse) && isset($loginResponse['message']) && $loginResponse['message'] == 'unconfirmed-email') {
+                    throw new \Exception("User email address needs verification!");
+                }
                 throw new Exception("Failed login");
             }
 
@@ -88,7 +91,7 @@ final class IEClient
 
             return $this->deliveryAddress($plan);
         } catch (Exception $e) {
-            throw new Exception("Failed to login user");
+            throw new Exception($e->getMessage());
         }
     }
 

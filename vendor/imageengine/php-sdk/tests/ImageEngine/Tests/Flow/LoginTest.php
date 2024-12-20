@@ -14,7 +14,6 @@ final class LoginTest extends TestCase
         $password = "poiepodldfkijtPOED9";
 
         $response = $client->login($username, $password);
-        ray($response);
 
         $cname = null;
         if (is_string($response)) {
@@ -35,7 +34,6 @@ final class LoginTest extends TestCase
         $password = "";
 
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Failed to login user');
 
         $client->login($username, $password);
     }
