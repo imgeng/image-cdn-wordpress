@@ -44,7 +44,7 @@ No developer? No problem! We have a guided onboarding video to get you started. 
 
 Watch our onboarding video:
 
-https://player.vimeo.com/video/869648241
+https://player.vimeo.com/video/1040925255
 
 == Get Started with ImageEngine Today: ==
 
