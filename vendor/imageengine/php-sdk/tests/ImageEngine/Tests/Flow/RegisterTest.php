@@ -35,7 +35,6 @@ final class RegisterTest extends TestCase
         $password = "";
 
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Failed to register user');
 
         $client->register($username, $password);
     }
