@@ -2,7 +2,7 @@
 Contributors: imageengine
 Tags: image cdn, ImageEngine, avif, webp, jpegxl
 Requires at least: 5.3
-Tested up to: 6.7.1
+Tested up to: 6.8.1
 Requires PHP: 7.4
 Stable tag: trunk
 License: GPLv2 or later
@@ -90,6 +90,9 @@ The following are the steps to install the Image CDN plugin
 
 
 == Changelog ==
+= 1.2.5 =
+* Tested up to 6.8.1
+
 = 1.2.4 =
 * Added Image Engine "User email address needs verification!" exception to the register/login process
 * Tested up to 6.7.1

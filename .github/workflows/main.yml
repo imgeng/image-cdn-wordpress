@@ -9,7 +9,11 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - name: Install Subversion
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y subversion
       - name: Prepare Release Info
         id: vars
         run: |
@@ -18,21 +22,22 @@ jobs:
           echo "RELEASE=$RELEASE" >> $GITHUB_OUTPUT
       - name: AWK Change Log
         id: changelog
+        env:
+          RELEASE_VERSION: ${{ steps.vars.outputs.RELEASE }}
         run: |
-          CHANGED=`awk -v RS="" '
-            /Changelog/{
-              found1=1
-              next
-            }
-            found1 && $0 ~ "= ${{ steps.vars.outputs.RELEASE }} =" {
-              sub(/^[^\n]*\n*/,"")
-              print
-              found1=""
-            }
-          '  readme.txt`
-          echo "CHANGED<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGED" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          # Escape dots so they are treated literally in the regex
+          release_regex=$(printf '%s\n' "$RELEASE_VERSION" | sed 's/\./\\./g')
+          # Use sed to print the block that lies between
+          #   "= <version> ="  and the next  "= x.y.z ="  heading
+          CHANGED=$(sed -n -E "/^= ${release_regex} =$/,/^= [0-9]+\.[0-9]+\.[0-9]+ =/{
+              /^= ${release_regex} =$/d          # drop the header line itself
+              /^= [0-9]+\.[0-9]+\.[0-9]+ =/d     # drop the next header (if present)
+              p                                  # print everything else in the range
+          }" readme.txt)
+          # Expose result as a step output
+          echo "CHANGED<<EOF"   >> "$GITHUB_OUTPUT"
+          echo "$CHANGED"       >> "$GITHUB_OUTPUT"
+          echo "EOF"            >> "$GITHUB_OUTPUT"
       - name: Check Release Info
         run: |
           echo "release: ${{ steps.vars.outputs.RELEASE }}"
