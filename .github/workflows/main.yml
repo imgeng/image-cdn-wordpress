@@ -10,10 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Subversion
+      - name: Install Subversion, xmlstarlet
         run: |
           sudo apt-get update
           sudo apt-get install -y subversion
+          sudo apt-get install -y xmlstarlet
       - name: Prepare Release Info
         id: vars
         run: |
@@ -56,6 +57,10 @@ jobs:
           draft: false
           prerelease: false
       - name: Sync with SVN
+        env:
+          CHUNK_SIZE: 200
+          RETRIES: 5
+          DELAY: 15
         run: |
           RELEASE_VERSION=`grep "^Stable tag:" readme.txt | awk -F' ' '{print $NF}'`
           VERSION=`grep "Version:" image-cdn.php | awk -F' ' '{print $NF}'`
@@ -80,9 +85,6 @@ jobs:
             exit
           fi
           
-          echo "svn delete trunk/*"
-          svn delete trunk/*
-          
           echo "mkdir -p dist_image_cdn"
           mkdir -p dist_image_cdn
           
@@ -93,16 +95,55 @@ jobs:
           cp -v dist_image_cdn/vendor/imageengine/php-sdk/config/APIData.sample.php dist_image_cdn/config/APIData.php
           
           echo "awk '{sub(/\*\*\*/,"***")}1' dist_image_cdn/config/APIData.php > temp.txt && mv temp.txt dist_image_cdn/config/APIData.php"
-          awk '{sub(/\*\*\*/,"${{ secrets.IMAGEENGINE_TOKEN }}")}1' dist_image_cdn/config/APIData.php > temp.txt && mv temp.txt dist_image_cdn/config/APIData.php
+          awk '{sub(/\*\*\*/, "'"${{ secrets.IMAGEENGINE_TOKEN }}"'")}1' dist_image_cdn/config/APIData.php > temp.txt && mv temp.txt dist_image_cdn/config/APIData.php
           
+          #empty trunk first
+          echo "rm -rf trunk/*"
+          rm -rf trunk/*
+          
+          # copy the new tree first
           echo "rsync -r --exclude='.git' --exclude='.github' dist_image_cdn/ trunk/"
           rsync -r --exclude='.git' --exclude='.github' dist_image_cdn/ trunk/
           
-          echo "svn add trunk/*"
-          svn add trunk/*
+          # cleanup
+          echo "rm -r dist_image_cdn"
+          rm -r dist_image_cdn
           
-          echo "svn commit --no-auth-cache --non-interactive --username \"${{ vars.SVN_REP_USER }}\" --password \"***\" -m \"Update to version $VERSION from GitHub\" ."
-          svn commit --no-auth-cache --non-interactive --username "${{ vars.SVN_REP_USER }}" --password "${{ secrets.SVN_REP_PW }}" -m "Update to version $VERSION from GitHub" .
+          # tell Subversion to remove things that disappeared
+          echo "svn status | awk '/^!/ {print \$2}' | xargs -r svn delete --force"
+          svn status --xml |
+              xmlstarlet sel -t \
+                  -m '//entry[wc-status/@item="missing"]' \
+                  -v @path -n |
+              while IFS= read -r p; do
+                  svn delete --force --targets /dev/stdin "$p"
+              done
+          
+          # tell Subversion about **new** things
+          echo "svn add trunk/*"
+          svn status --xml |
+              xmlstarlet sel -t \
+                  -m '//entry[wc-status/@item="unversioned"]' \
+                  -v @path -n |            
+              while IFS= read -r p; do
+                  svn add --force --parents --targets /dev/stdin "$p"
+              done
+          
+          echo "Proceeding with SVN commit..."                
+          
+          echo "svn commit --no-auth-cache --non-interactive --username \"${{ vars.SVN_REP_USER }}\" --password \"***\" -m \"Update to version $VERSION from GitHub\"  --target /tmp/svn_to_commit.lst"          
+          svn status --xml |
+                  xmlstarlet sel -t \
+                  -m '//entry[wc-status/@item="added" or
+                          wc-status/@item="modified" or
+                          wc-status/@item="deleted"]' \
+                  -v @path -n |
+              svn commit \
+                  --no-auth-cache --non-interactive \
+                  --username "${{ vars.SVN_REP_USER }}" \
+                  --password "${{ secrets.SVN_REP_PW }}" \
+                  -m "Update to version $VERSION from GitHub" \
+                  --targets /dev/stdin
           
           echo "svn copy --no-auth-cache --non-interactive --username \"${{ vars.SVN_REP_USER }}\" --password \"***\" ${{ vars.SVN_REP_URL }}/trunk ${{ vars.SVN_REP_URL }}/tags/$VERSION -m "release $VERSION""
           svn copy --no-auth-cache --non-interactive --username "${{ vars.SVN_REP_USER }}" --password "${{ secrets.SVN_REP_PW }}" ${{ vars.SVN_REP_URL }}/trunk ${{ vars.SVN_REP_URL }}/tags/$VERSION -m "release $VERSION"

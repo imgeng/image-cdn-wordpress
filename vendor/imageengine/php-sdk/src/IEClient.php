@@ -384,7 +384,7 @@ final class IEClient
             }
 
             if (is_array($subscriptionsResponse)) {
-                foreach($subscriptionsResponse as $subscription) {
+                foreach ($subscriptionsResponse as $subscription) {
                     if (isset($subscription['engines'])) {
                         foreach ($subscription['engines'] as $engine) {
                             if ($engine['cname'] == $cname) {
@@ -394,7 +394,7 @@ final class IEClient
                     }
                 }
             }
-            if(empty($subscription)) {
+            if (empty($subscription)) {
                 throw new Exception("Failed to get subscription");
             }
 

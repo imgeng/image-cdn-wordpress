@@ -90,6 +90,10 @@ The following are the steps to install the Image CDN plugin
 
 
 == Changelog ==
+= 1.2.6 =
+* Updated vendor dependencies
+* Version update
+
 = 1.2.5 =
 * Tested up to 6.8.1
 

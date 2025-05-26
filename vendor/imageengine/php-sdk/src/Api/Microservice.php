@@ -129,18 +129,18 @@ final class Microservice extends AbstractApi
     }
 
 
-	private function host(): string
-	{
-		$site_url = parse_url($this->sdk->getOptions()->getSiteUrl());
-		return isset($site_url['host']) && $site_url['host'] ? $site_url['host'] : 'example.com';
-	}
+    private function host(): string
+    {
+        $site_url = parse_url($this->sdk->getOptions()->getSiteUrl());
+        return isset($site_url['host']) && $site_url['host'] ? $site_url['host'] : 'example.com';
+    }
 
 
-	private function scheme(): string
-	{
-		$site_url = parse_url($this->sdk->getOptions()->getSiteUrl());
-		return isset($site_url['scheme']) && $site_url['scheme'] ? $site_url['scheme'] : 'https';
-	}
+    private function scheme(): string
+    {
+        $site_url = parse_url($this->sdk->getOptions()->getSiteUrl());
+        return isset($site_url['scheme']) && $site_url['scheme'] ? $site_url['scheme'] : 'https';
+    }
 
 
     /**
@@ -188,11 +188,16 @@ final class Microservice extends AbstractApi
      * @throws Exception
      *
      */
-    public function statistics(string $cname, string $key, array $subscription = null, array $subscriptionsResponse = null)
-    {
+    public function statistics(
+        string $cname,
+        string $key,
+        array $subscription = null,
+        array $subscriptionsResponse = null
+    ) {
         $start = strtotime(date('Y-m-01'));
 
-        if($subscription &&
+        if (
+            $subscription &&
             !($subscription['payment_type'] == 'EXTERNAL' && $subscription['payment_plan'] == 'IMAGEENGINE_PRO')
         ) {
             try {
@@ -202,11 +207,14 @@ final class Microservice extends AbstractApi
             }
 
             $period = null;
-            if(is_array($billingPeriods) && !empty($billingPeriods[0]["start_date"]) && is_array($subscriptionsResponse)) {
-                foreach($subscriptionsResponse as $k => $subs) {
+            if (
+                is_array($billingPeriods) && !empty($billingPeriods[0]["start_date"])
+                && is_array($subscriptionsResponse)
+            ) {
+                foreach ($subscriptionsResponse as $k => $subs) {
                     foreach ($subs['engines'] as $engine) {
                         if ($engine['cname'] == $cname) {
-                            if(!empty($billingPeriods[$k])) {
+                            if (!empty($billingPeriods[$k])) {
                                 $period = $billingPeriods[$k];
                                 break 2;
                             }
@@ -215,7 +223,7 @@ final class Microservice extends AbstractApi
                 }
             }
 
-            if($period && !empty($period["start_date"])) {
+            if ($period && !empty($period["start_date"])) {
                 $start_date = strtotime($period["start_date"]);
                 $dayStart =  date('d', $start_date);
                 $dayStarts = $dayStart < 10 ? '0' . $dayStart : $dayStart;
@@ -223,7 +231,7 @@ final class Microservice extends AbstractApi
                 $time = time();
                 $day = date('d', $time);
 
-                if($dayStart > $day) {
+                if ($dayStart > $day) {
                     $start = strtotime(date("Y-m-$dayStarts", strtotime('-1 month')));
                 } else {
                     $start = strtotime(date("Y-m-$dayStarts"));
