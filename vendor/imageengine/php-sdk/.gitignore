@@ -7,3 +7,5 @@ composer.lock
 /build
 /.editorconfig
 /storage/
+/examples/
+/tests/
