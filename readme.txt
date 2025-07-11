@@ -80,7 +80,7 @@ The following are the steps to install the Image CDN plugin
 
 == Screenshots ==
 
-1. Initial sceen after installing the ImageEngine plugin
+1. Initial screen after installing the ImageEngine plugin
 
 2. After adding the delivery address, enable the plugin to start optimizing images.
 
@@ -90,6 +90,10 @@ The following are the steps to install the Image CDN plugin
 
 
 == Changelog ==
+= 1.2.7 =
+* Removed config .gitignore file
+* Version update
+
 = 1.2.6 =
 * Updated vendor dependencies
 * Version update
@@ -136,12 +140,12 @@ The following are the steps to install the Image CDN plugin
 
 = 1.1.8 =
 * Fixed: Add new client hints [#24](https://github.com/imgeng/image-cdn-wordpress/issues/24)
-* Header : Permissions-Policy code updated
+* Header: Permissions-Policy code updated
 * version update
 
 = 1.1.7 =
 * Fixed: Update name of client hints [#19](https://github.com/imgeng/image-cdn-wordpress/issues/19)
-* Header : Permissions-Policy code updated
+* Header: Permissions-Policy code updated
 * version update
 
 = 1.1.6 =

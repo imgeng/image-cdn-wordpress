@@ -96,6 +96,9 @@ jobs:
           
           echo "awk '{sub(/\*\*\*/,"***")}1' dist_image_cdn/config/APIData.php > temp.txt && mv temp.txt dist_image_cdn/config/APIData.php"
           awk '{sub(/\*\*\*/, "'"${{ secrets.IMAGEENGINE_TOKEN }}"'")}1' dist_image_cdn/config/APIData.php > temp.txt && mv temp.txt dist_image_cdn/config/APIData.php
+                    
+          echo "rm dist_image_cdn/config/.gitignore"
+          rm dist_image_cdn/config/.gitignore
           
           #empty trunk first
           echo "rm -rf trunk/*"
