@@ -2,19 +2,18 @@
 Contributors: imageengine
 Tags: image cdn, ImageEngine, avif, webp, jpegxl
 Requires at least: 5.3
-Tested up to: 6.8.1
+Tested up to: 7.0
 Requires PHP: 7.4
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Automatically optimize and serve WEBP, AVIF and JPEGXL with ImageEngine, the global Image CDN. 60 sec setup.
+Automatically optimize and serve WEBP, AVIF and JPEGXL with ImageEngine.
 
 == Description ==
 
-Welcome to ImageEngine, the ultimate image optimization plugin for WordPress. Our sophisticated tool goes beyond conventional optimization techniques to deliver unparalleled performance enhancements to your website. Utilizing proprietary device detection technology, ImageEngine ensures that every image is perfectly optimized for every device that visits your site and then delivers them via our global image content delivery network (CDN).
+ImageEngine Kube is enterprise-grade image optimization software that runs inside your infrastructure — not ours. You deploy it as a container in Kubernetes or Docker, point your existing CDN and image URLs to it, and get the same advanced optimization (device detection, auto-format conversion, smart compression) that powers 100,000+ domains — with none of the per-request billing.
 
-If you want to see the performance improvements for yourself before installing this plugin, you can test any website for free [on our website](https://imageengine.io/test/?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine). Like what you see? We also offer a [30-day trial](https://imageengine.io/free/?utm_source=wordpress.org&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine) to all new users.
 
 = Key Features of ImageEngine: =
 
@@ -28,7 +27,7 @@ If you want to see the performance improvements for yourself before installing t
 
 == Why ImageEngine? ==
 
-Developed for simplicity, ImageEngine is designed for WordPress developers and users looking to enhance their website’s performance with minimal effort. Our unique value proposition lies in our device detection technology, which giants such as Google and Amazon use to ensure your images are optimized for any device, anywhere.
+Developed for simplicity, and control ImageEngine is designed for WordPress developers and users looking to enhance their website’s performance with minimal effort. Our unique value proposition lies in our device detection technology, which giants such as Google and Amazon use to ensure your images are optimized for any device, anywhere.
 
 == What Our Customers Are Saying: ==
 
@@ -38,17 +37,6 @@ Developed for simplicity, ImageEngine is designed for WordPress developers and u
 
 See more of our reviews on G2.com.
 
-== Guided Onboarding: ==
-
-No developer? No problem! We have a guided onboarding video to get you started. Unlike other tools, we also offer US-based onboarding support to help set ImageEngine up on your site if you run into any snags.
-
-Watch our onboarding video:
-
-https://player.vimeo.com/video/1040925255
-
-== Get Started with ImageEngine Today: ==
-
-Elevate your WordPress site with ImageEngine. Say goodbye to slow loading times and hello to a smooth, fast, and engaging user experience. Join us and redefine image optimization.
 
 == System Requirements ==
 
@@ -70,13 +58,10 @@ The following are the steps to install the Image CDN plugin
 3. Click the "Install Now" button.
 4. Activate the plugin.
 5. Click `ImageEngine` in the left hand menu and follow the instructions to enable the service.
-6. Sign up for an ImageEngine account to claim your delivery address, or log in if you're already registered.
-7. Make sure your delivery address is visible in the setup section.
-8. Test the connection by clicking the button
-7. Enable and Save the setup.
+6. Copy and paste your ImageEngine Kube delivery address.
+7. Test the connection by clicking the button
+8. Enable and Save the setup.
 
-
-== Frequently Asked Questions ==
 
 == Screenshots ==
 
@@ -90,6 +75,10 @@ The following are the steps to install the Image CDN plugin
 
 
 == Changelog ==
+= 1.2.8 =
+* Kube compatability
+* Version update
+
 = 1.2.7 =
 * Removed config .gitignore file
 * Version update
