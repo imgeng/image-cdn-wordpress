@@ -27,7 +27,7 @@ ImageEngine Kube is enterprise-grade image optimization software that runs insid
 
 == Why ImageEngine? ==
 
-Developed for simplicity, and control ImageEngine is designed for WordPress developers and users looking to enhance their website’s performance with minimal effort. Our unique value proposition lies in our device detection technology, which giants such as Google and Amazon use to ensure your images are optimized for any device, anywhere.
+Developed for simplicity and control, ImageEngine is designed for WordPress developers and users looking to enhance their website’s performance with minimal effort. Our unique value proposition lies in our device detection technology, which giants such as Google and Amazon use to ensure your images are optimized for any device, anywhere.
 
 == What Our Customers Are Saying: ==
 
@@ -51,15 +51,15 @@ See more of our reviews on G2.com.
 
 == Installation ==
 
-The following are the steps to install the Image CDN plugin
+The following are the steps to install the Image CDN plugin.
 
 1. In your WordPress Administration Panels, click on Add New option under Plugins from the menu.
 2. Type `ImageEngine` in the search box in the top right corner.
 3. Click the "Install Now" button.
 4. Activate the plugin.
-5. Click `ImageEngine` in the left hand menu and follow the instructions to enable the service.
+5. Click `ImageEngine` in the left-hand menu and follow the instructions to enable the service.
 6. Copy and paste your ImageEngine Kube delivery address.
-7. Test the connection by clicking the button
+7. Test the connection by clicking the button.
 8. Enable and Save the setup.
 
 
@@ -76,7 +76,7 @@ The following are the steps to install the Image CDN plugin
 
 == Changelog ==
 = 1.2.8 =
-* Kube compatability
+* Kube compatibility
 * Version update
 
 = 1.2.7 =
@@ -91,7 +91,7 @@ The following are the steps to install the Image CDN plugin
 * Tested up to 6.8.1
 
 = 1.2.4 =
-* Added Image Engine "User email address needs verification!" exception to the register/login process
+* Added ImageEngine "User email address needs verification!" exception to the register/login process
 * Tested up to 6.7.1
 * Readme updates
 
@@ -100,7 +100,7 @@ The following are the steps to install the Image CDN plugin
 * Tested up to 6.6.1
 
 = 1.2.2 =
-* Fixed: Image Engine create subscription, added newer endpoint
+* Fixed: ImageEngine create subscription, added newer endpoint
 * Tested up to 6.5.5
 
 = 1.2.1 =
@@ -108,9 +108,9 @@ The following are the steps to install the Image CDN plugin
 * Readme updates
 
 = 1.2.0 =
-* Added Image Engine registration in the settings page
-* Added Image Engine login in the settings page
-* Added Image Engine analytics in the settings page
+* Added ImageEngine registration in the settings page
+* Added ImageEngine login in the settings page
+* Added ImageEngine analytics in the settings page
 * Tested up to 6.5.3
 
 = 1.1.12 =
@@ -154,7 +154,7 @@ The following are the steps to install the Image CDN plugin
 
 = 1.1.2 =
 * Confirmed WordPress 5.7 compatibility
-* Switched from jQuery to Javascript's fetch API
+* Switched from jQuery to JavaScript's fetch API
 * Added recommendations in "Test Configuration"
 
 = 1.1.1 =
