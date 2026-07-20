@@ -441,7 +441,7 @@ class Settings {
 		}
 
 		try {
-			$response = self::client()->register( $_POST['register_username'], $_POST['register_password'], $_POST['register_plan'] );
+			$response = self::client()->register( $_POST['register_username'], $_POST['register_password'], 'free' );
 
 			$message = ImageCDN::update_delivery_address( $response );
 			if ( is_string( $message ) ) {
@@ -486,7 +486,7 @@ class Settings {
 		}
 
 		try {
-			$response = self::client()->login( $_POST['login_username'], $_POST['login_password'] );
+			$response = self::client()->login( $_POST['login_username'], $_POST['login_password'], 'free' );
 
 			$message = ImageCDN::update_delivery_address( $response );
 			if ( is_string( $message ) ) {

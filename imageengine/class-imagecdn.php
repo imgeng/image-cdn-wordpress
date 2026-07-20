@@ -572,8 +572,8 @@ class ImageCDN {
 					?>
 				</p>
 				<ol>
-					<li><?php esc_html_e( 'Claim your delivery address by signing up, or log in if you already have an account.', 'image-cdn') ?></li>
-					<li><?php esc_html_e( 'Delivery address appears in the Setup tab below.', 'image-cdn') ?></li>
+					<li><?php esc_html_e( 'Create an ImageEngine Sandbox account or log in below, or enter your ImageEngine Kube delivery address in the Setup tab.', 'image-cdn') ?></li>
+					<li><?php esc_html_e( 'Your delivery address appears in the Setup tab below.', 'image-cdn') ?></li>
 					<?php
 					if ( ! $options['enabled'] ) {
 						?>
