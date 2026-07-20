@@ -172,7 +172,7 @@ class ImageCDN {
 		self::header( 'Link', "<{$protocol}://{$host}>; rel=preconnect" );
 
 		// Add Feature-Policy header.
-		// @deprecated in favor of Permissions-Policy and will be removed once adaquate market
+		// @deprecated in favor of Permissions-Policy and will be removed once adequate market
 		// adoption has been reached (90-95%).
 		$features = array();
 		foreach ( self::$client_hints as $hint ) {
@@ -458,13 +458,13 @@ class ImageCDN {
 			}
 
 			if ( $found ) {
-				return __("Delivery address found! You can choose a different delivery address bellow.", "image-cdn");
+				return __("Delivery address found! You can choose a different delivery address below.", "image-cdn");
 			} else {
 				$options['url']     = '';
 				$options['enabled'] = false;
 
 				self::update_options( $options );
-				return __("Please choose a delivery address bellow!", "image-cdn");
+				return __("Please choose a delivery address below!", "image-cdn");
 			}
 		}
 	}
@@ -566,7 +566,7 @@ class ImageCDN {
 					printf(
 						// translators: %s is a link to the ImageEngine site.
 						esc_html__( 'This plugin will enable the %s CDN on %s.', 'image-cdn' ),
-						'<a href="https://imageengine.io/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine</a>',
+						'<a href="https://imageengine.io/?utm_source=WP-plugin-settings&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine</a>',
 						esc_html( get_site_url() )
 					);
 					?>
@@ -582,7 +582,7 @@ class ImageCDN {
 					}
 					?>
 				</ol>
-				<p>See <a href="https://support.imageengine.io/hc/en-us/articles/360059238371-Quick-Start/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">full documentation.</a></p>
+				<p>See <a href="https://support.imageengine.io/hc/en-us/articles/360059238371-Quick-Start/?utm_source=WP-plugin-settings&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">full documentation.</a></p>
 				</div>
 				<?php
 			} else {
@@ -591,15 +591,15 @@ class ImageCDN {
 					<p>
 						<?php
 						printf(
-							// translators: %s is a the ImageEngine delivery address .
+							// translators: %s is the ImageEngine delivery address.
 							esc_html__( '%s is a valid ImageEngine delivery address.', 'image-cdn' ),
 							'<code>' . esc_html( $options['url'] ) . '</code>'
 						);
 						?>
 					</p>
 					<ul>
-						<li><a href="https://control.imageengine.io/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine Control Panel</a></li>
-						<li><a href="https://support.imageengine.io/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine Documentation</a></li>
+						<li><a href="https://control.imageengine.io/?utm_source=WP-plugin-settings&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine Control Panel</a></li>
+						<li><a href="https://support.imageengine.io/?utm_source=WP-plugin-settings&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">ImageEngine Documentation</a></li>
 					</ul>
 				</div>
 				<?php

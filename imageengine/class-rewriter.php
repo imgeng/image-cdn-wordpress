@@ -173,7 +173,7 @@ class Rewriter {
 		// Add ImageEngine directives, if any.
 		$asset_url = $this->add_directives( $asset_url );
 
-		// Is it a relative-protocol URL?.
+		// Is it a relative-protocol URL?
 		if ( strpos( $asset_url, '//' ) === 0 ) {
 			return str_replace( $blog_url, $this->cdn_url, $asset_url );
 		}
@@ -264,7 +264,7 @@ class Rewriter {
 
 				if ( '(' === $delimiter ) {
 					if ( ')' !== $ending_delimiter ) {
-						// It it starts with '(' it must end with ')'.
+						// If it starts with '(' it must end with ')'.
 						return $original;
 					}
 				} elseif ( $delimiter !== $ending_delimiter ) {

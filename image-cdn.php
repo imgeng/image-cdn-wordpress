@@ -19,7 +19,7 @@
  * Version:           1.2.8
  */
 
-// Update this then you update "Requires at least" above!
+// Update this when you update "Requires at least" above!
 define( 'IMAGE_CDN_MIN_WP', '5.3' );
 
 // Update this when you update the "Version" above!

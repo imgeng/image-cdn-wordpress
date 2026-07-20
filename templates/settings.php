@@ -31,7 +31,7 @@ use ImageEngine\Settings;
 			width: auto !important;
 		}
 
-		#login_username, #login_passowrd, #register_username, #register_passowrd {
+		#login_username, #login_password, #register_username, #register_password {
 			width: 100%;
 			margin-bottom: 10px;
 		}
@@ -101,13 +101,13 @@ use ImageEngine\Settings;
 	<?php if ( Settings::client()->isLoggedIn() ) : ?>
 		<?php
 		if ( is_array( $notices = Settings::notices() ) ) {
-			$pleas_chose_notice = array_filter(
+			$please_choose_notice = array_filter(
 				$notices,
 				function ( $notice ) {
-				return $notice['type'] == 'success' && $notice['message'] == __("Please choose a delivery address bellow!", "image-cdn");
+				return $notice['type'] == 'success' && $notice['message'] == __("Please choose a delivery address below!", "image-cdn");
 			});
 		}
-		if ( ! empty( $pleas_chose_notice ) ) {
+		if ( ! empty( $please_choose_notice ) ) {
 			?>
 		<script>
 			document.addEventListener('DOMContentLoaded', function () {
@@ -148,7 +148,7 @@ use ImageEngine\Settings;
 				<a href="#" class="nav-tab <?php echo $tabA == "register" ? "nav-tab-active" : "" ?>"
 				   data-tab="register"><?php esc_html_e("Claim your Delivery Address", "image-cdn") ?></a>
 				<a href="#" class="nav-tab <?php echo $tabA == "login" ? "nav-tab-active" : "" ?>"
-				   data-tab="login"><?php esc_html_e("Log in if you already got a Delivery Address", "image-cdn") ?></a>
+				   data-tab="login"><?php esc_html_e("Log in if you already have a Delivery Address", "image-cdn") ?></a>
 			</nav>
 
 			<div class="tab-content <?php echo $tabA == "register" ? "active" : "" ?>" data-tab="register">
@@ -163,13 +163,13 @@ use ImageEngine\Settings;
 
 					<input type="email" name="register_username" id="register_username"
 						   placeholder="<?php esc_html_e("Email", "image-cdn") ?>"/>
-					<input type="password" name="register_password" id="register_passowrd"
+					<input type="password" name="register_password" id="register_password"
 						   placeholder="<?php esc_html_e("Password", "image-cdn") ?>"/>
 
 					<div style="height: 1em;"></div>
 
 					<p style="margin-bottom: 10px;"><?php echo sprintf(__("Select plan: (%s)", "image-cdn"),
-						'<a href="https://imageengine.io/pricing/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" 
+						'<a href="https://imageengine.io/pricing/?utm_source=WP-plugin-settings&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" 
 										target="_blank">'.__("Learn more", "image-cdn").'</a>') ?></p>
 
 					<div style="margin-bottom: 5px;">
@@ -182,7 +182,7 @@ use ImageEngine\Settings;
 					<div style="margin-bottom: 18px;">
 						<label>
 							<input type="radio" name="register_plan" id="register_plan_free" value="free" />
-							<?php echo __("Free forever for developers(max 10GB per month, no commercial use)", "image-cdn") ?>
+							<?php echo __("Free forever for developers (max 10GB per month, no commercial use)", "image-cdn") ?>
 						</label>
 					</div>
 
@@ -193,9 +193,9 @@ use ImageEngine\Settings;
 			<div class="tab-content <?php echo $tabA == "login" ? "active" : "" ?>" data-tab="login">
 
 				<?php if ( $options['url'] && $options['enabled'] ) : ?>
-					<p><?php echo __("If you have an ImageEngine account, login here to view your stats!", "image-cdn") ?></p>
+					<p><?php echo __("If you have an ImageEngine account, log in here to view your stats!", "image-cdn") ?></p>
 				<?php else : ?>
-					<p><?php echo __("If you have an ImageEngine account, login here to get you Delivery Address!", "image-cdn") ?></p>
+					<p><?php echo __("If you have an ImageEngine account, log in here to get your Delivery Address!", "image-cdn") ?></p>
 				<?php endif; ?>
 
 				<form method="post" action="/wp-admin/admin-post.php">
@@ -206,7 +206,7 @@ use ImageEngine\Settings;
 
 					<input type="email" name="login_username" id="login_username"
 						   placeholder="<?php esc_html_e("Email", "image-cdn") ?>"/>
-					<input type="password" name="login_password" id="login_passowrd"
+					<input type="password" name="login_password" id="login_password"
 						   placeholder="<?php esc_html_e("Password", "image-cdn") ?>"/>
 
 					<button type="submit" name="login" id="login" class="button button-primary" onclick="this.disabled = true; this.parentElement.submit();"
@@ -388,14 +388,14 @@ use ImageEngine\Settings;
 						// require_once('_analytics.php');
 						?>
 					</div>
-					<p>Find more information on <a href="https://control.imageengine.io?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">control.imageengine.io</a>.
+					<p>Find more information on <a href="https://control.imageengine.io?utm_source=WP-plugin-settings&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" target="_blank">control.imageengine.io</a>.
 					</p>
 				</div>
 			<?php endif; ?>
 
 			<div class="tab-content <?php echo $tabB == "advanced" ? "active" : "" ?>" data-tab="advanced">
 
-			<p>Please contact us at <a href="mailto:support@imageengine.io?subject=Assitance required with <?php echo esc_attr( $options['url'] ); ?>">support@imageengine.io</a> for help with these settings.</p>
+			<p>Please contact us at <a href="mailto:support@imageengine.io?subject=Assistance required with <?php echo esc_attr( $options['url'] ); ?>">support@imageengine.io</a> for help with these settings.</p>
 			<table class="form-table">
 				<tr valign="top">
 					<th scope="row">
@@ -467,7 +467,7 @@ use ImageEngine\Settings;
 											'Enter the <a href="%s" target="_blank">ImageEngine Directives</a> to apply to all images.',
 											'image-cdn'
 										),
-										esc_url( 'https://imageengine.io/docs/implementation/directives/?utm_source=WP-plugin-settigns&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine' )
+										esc_url( 'https://imageengine.io/docs/implementation/directives/?utm_source=WP-plugin-settings&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine' )
 									),
 									array( 'a' )
 								);
@@ -482,7 +482,7 @@ use ImageEngine\Settings;
 					<?php if ( Settings::client()->isLoggedIn() ) : ?>
 						<tr valign="top">
 							<th scope="row">
-								<?php esc_html_e( 'ImageEngine ApiKey', 'image-cdn' ); ?>
+								<?php esc_html_e( 'ImageEngine API Key', 'image-cdn' ); ?>
 							</th>
 							<td>
 								<b><?php echo Settings::client()->getObfuscatedApiKey(); ?></b>
@@ -578,7 +578,7 @@ use ImageEngine\Settings;
 		})
 	})
 
-	//ebable disable
+	// Enable/disable
 	document.getElementById("image_cdn_enabled").addEventListener("change", function () {
 		this.style.backgroundColor = this.value == "1" ? "green" : "gray";
 	})

@@ -57,7 +57,7 @@ class Settings {
 			} elseif ( $parts['host'] === parse_url( get_site_url() )['host'] ) {
 				add_settings_error( 'url', 'url', 'You entered the domain of your website. Please enter the ImageEngine delivery address to test the configuration.' );
 			} else {
-				// Make sure the host is resolves.
+				// Make sure the host resolves.
 				if ( ! filter_var( $parts['host'], FILTER_VALIDATE_IP ) ) {
 					$ip = gethostbyname( $parts['host'] );
 					if ( $ip === $parts['host'] ) {
@@ -393,7 +393,7 @@ class Settings {
 	/**
 	 * Removes the given prefix (needle) from the haystack.
 	 *
-	 * @param string $haystack The string which is to have it's prefix removed.
+	 * @param string $haystack The string which is to have its prefix removed.
 	 * @param string $needle the prefix to be removed.
 	 *
 	 * @return string The haystack without the needle prefix, or the original haystack if no match.
