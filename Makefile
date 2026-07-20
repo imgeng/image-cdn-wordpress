@@ -1,6 +1,7 @@
 .PHONY: % dist-clean dist make-zip svn test check fix
 
-FILE := image-cdn-0.0.0.zip
+VERSION := $(shell sed -n 's/^[[:space:]]*\*[[:space:]]*Version:[[:space:]]*\([0-9][0-9.]*\).*/\1/p' image-cdn.php)
+FILE := image-cdn-$(VERSION).zip
 
 dist-clean:
 	rm -rf dist/image_cdn
