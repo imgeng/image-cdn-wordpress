@@ -146,15 +146,14 @@ use ImageEngine\Settings;
 			?>
 			<nav class="nav-tab-wrapper wp-clearfix">
 				<a href="#" class="nav-tab <?php echo $tabA == "register" ? "nav-tab-active" : "" ?>"
-				   data-tab="register"><?php esc_html_e("Claim your Delivery Address", "image-cdn") ?></a>
+				   data-tab="register"><?php esc_html_e("Create an ImageEngine Sandbox", "image-cdn") ?></a>
 				<a href="#" class="nav-tab <?php echo $tabA == "login" ? "nav-tab-active" : "" ?>"
-				   data-tab="login"><?php esc_html_e("Log in if you already have a Delivery Address", "image-cdn") ?></a>
+				   data-tab="login"><?php esc_html_e("Log in if you already have an account", "image-cdn") ?></a>
 			</nav>
 
 			<div class="tab-content <?php echo $tabA == "register" ? "active" : "" ?>" data-tab="register">
 
-				<p><?php echo sprintf(__("If you don't already have an ImageEngine account, claim your Delivery Address
-					for %s and get optimized in minutes!", "image-cdn"), get_home_url()) ?></p>
+				<p><?php echo sprintf(__("Create a free ImageEngine Sandbox account to try ImageEngine on %s and get optimized in minutes. Already running ImageEngine Kube? Enter your delivery address in the Setup tab below, or log in to an existing account.", "image-cdn"), get_home_url()) ?></p>
 
 	<form method="post" action="/wp-admin/admin-post.php" >
 					<?php wp_nonce_field( 'image_cdn_register_nonce', '_wpnonce_register' ); ?>
@@ -168,26 +167,10 @@ use ImageEngine\Settings;
 
 					<div style="height: 1em;"></div>
 
-					<p style="margin-bottom: 10px;"><?php echo sprintf(__("Select plan: (%s)", "image-cdn"),
-						'<a href="https://imageengine.io/pricing/?utm_source=WP-plugin-settings&utm_medium=page&utm_term=wp-imageengine&utm_campaign=wp-imageengine" 
-										target="_blank">'.__("Learn more", "image-cdn").'</a>') ?></p>
-
-					<div style="margin-bottom: 5px;">
-						<label>
-							<input type="radio" name="register_plan" id="register_plan_trial" value="trial" checked="checked" />
-							<?php echo __("Free trial for 30 days, no commitments.", "image-cdn") ?>
-						</label>
-					</div>
-
-					<div style="margin-bottom: 18px;">
-						<label>
-							<input type="radio" name="register_plan" id="register_plan_free" value="free" />
-							<?php echo __("Free forever for developers (max 10GB per month, no commercial use)", "image-cdn") ?>
-						</label>
-					</div>
+					<p style="margin-bottom: 18px;"><?php echo __("The Sandbox is for evaluation (max 10GB per month, no commercial use).", "image-cdn") ?></p>
 
 					<button type="submit" name="register" id="register" class="button button-primary" onclick="this.disabled = true; this.parentElement.submit();"
-						><span class="button-loader"></span><?php esc_html_e("Register", "image-cdn") ?></button>
+						><span class="button-loader"></span><?php esc_html_e("Create Sandbox", "image-cdn") ?></button>
 				</form>
 			</div>
 			<div class="tab-content <?php echo $tabA == "login" ? "active" : "" ?>" data-tab="login">
@@ -195,7 +178,7 @@ use ImageEngine\Settings;
 				<?php if ( $options['url'] && $options['enabled'] ) : ?>
 					<p><?php echo __("If you have an ImageEngine account, log in here to view your stats!", "image-cdn") ?></p>
 				<?php else : ?>
-					<p><?php echo __("If you have an ImageEngine account, log in here to get your Delivery Address!", "image-cdn") ?></p>
+					<p><?php echo __("If you have an ImageEngine account, log in here to get your delivery address!", "image-cdn") ?></p>
 				<?php endif; ?>
 
 				<form method="post" action="/wp-admin/admin-post.php">
