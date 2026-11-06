@@ -614,7 +614,7 @@ class ImageCDN {
 	 * @return bool whether or not the server is ImageEngine.
 	 */
 	public static function is_server_imageengine( $url ) {
-		$cdn_res = wp_remote_get( $url, array( 'sslverify' => true ) );
+		$cdn_res = wp_safe_remote_get( $url, array( 'sslverify' => true ) );
 		if ( is_wp_error( $cdn_res ) ) {
 			return false;
 		}

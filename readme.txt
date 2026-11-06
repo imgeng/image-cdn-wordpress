@@ -75,6 +75,10 @@ The following are the steps to install the Image CDN plugin.
 
 
 == Changelog ==
+= 1.2.10 =
+* Hardened permission checks on admin settings requests
+* Updated standalone tests for PHPUnit 9
+
 = 1.2.9 =
 * Replaced the SaaS 30-day trial signup with a single ImageEngine Sandbox account for evaluation
 * Registration and login now use the Sandbox (free) plan
