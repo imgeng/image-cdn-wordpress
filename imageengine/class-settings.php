@@ -139,9 +139,57 @@ class Settings {
 
 
 	/**
+	 * Screen ID of the plugin settings page (see add_settings_page()).
+	 */
+	const SETTINGS_SCREEN_ID = 'toplevel_page_image_cdn';
+
+	/**
+	 * Whether the current user may manage the plugin settings.
+	 *
+	 * @return bool
+	 */
+	public static function current_user_can_manage() {
+		return current_user_can( 'manage_options' );
+	}
+
+	/**
+	 * Whether the current admin screen is the plugin settings page and the user may manage it.
+	 *
+	 * @return bool
+	 */
+	public static function is_settings_screen() {
+		if ( ! self::current_user_can_manage() || ! function_exists( 'get_current_screen' ) ) {
+			return false;
+		}
+
+		$screen = get_current_screen();
+
+		return is_object( $screen ) && self::SETTINGS_SCREEN_ID === $screen->id;
+	}
+
+	/**
+	 * Rejects the current AJAX request unless the user may manage the plugin settings.
+	 */
+	protected static function require_manage_capability() {
+		if ( ! self::current_user_can_manage() ) {
+			wp_send_json_error(
+				array(
+					'type'    => 'error',
+					'message' => 'Unauthorized',
+				),
+				403
+			);
+		}
+	}
+
+	/**
 	 * Registers the configuration test javascript helpers.
 	 */
 	public static function register_test_config() {
+		if ( ! self::is_settings_screen() ) {
+			return;
+		}
+
 		$nonce = wp_create_nonce( 'image-cdn-test-config' );
 		?>
 		<script>
@@ -258,6 +306,7 @@ class Settings {
 	 */
 	public static function test_config() {
 		check_ajax_referer( 'image-cdn-test-config', 'nonce' );
+		self::require_manage_capability();
 
 		$out = array(
 			'type'      => 'error',
@@ -319,7 +368,8 @@ class Settings {
 			wp_send_json_error( $out );
 		}
 
-		$cdn_res = wp_remote_get( $cdn_url, array( 'sslverify' => true ) );
+		// wp_safe_remote_get() refuses private/loopback hosts for this user-supplied URL.
+		$cdn_res = wp_safe_remote_get( $cdn_url, array( 'sslverify' => true ) );
 		if ( is_wp_error( $cdn_res ) ) {
 			$out['message'] = 'Unable to fetch the URL through the CDN: ' . $cdn_res->get_error_message();
 			wp_send_json_error( $out );
@@ -451,7 +501,8 @@ class Settings {
 			}
 		} catch ( \Exception $e ) {
 			if($e->getMessage() === "User email address needs verification!") {
-				self::add_error( __( 'Please check your email ('.$_POST['register_username'].') to verify your ImageEngine account. ', 'image-cdn' ), 'login' );
+				/* translators: %s: email address */
+				self::add_error( sprintf( __( 'Please check your email (%s) to verify your ImageEngine account.', 'image-cdn' ), sanitize_email( wp_unslash( $_POST['register_username'] ) ) ), 'login' );
 				wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
 				exit;
 			}
@@ -496,7 +547,8 @@ class Settings {
 			}
 		} catch ( \Exception $e ) {
 			if($e->getMessage() === "User email address needs verification!") {
-				self::add_error( __( 'Please check your email ('.$_POST['login_username'].') to verify your ImageEngine account. ', 'image-cdn' ), 'login' );
+				/* translators: %s: email address */
+				self::add_error( sprintf( __( 'Please check your email (%s) to verify your ImageEngine account.', 'image-cdn' ), sanitize_email( wp_unslash( $_POST['login_username'] ) ) ), 'login' );
 				wp_redirect( admin_url( '/admin.php?page=image_cdn' ) );
 				exit;
 			}
@@ -571,7 +623,7 @@ class Settings {
 
 		if ( ! empty( $notices ) ) {
 			foreach ( $notices as $notice ) {
-				wp_admin_notice( "<b>" . $notice['message'] . "</b>", [
+				wp_admin_notice( '<b>' . esc_html( $notice['message'] ) . '</b>', [
 						'type'        => $notice['type'],
 					'dismissible' => true
 				] );
@@ -586,7 +638,7 @@ class Settings {
 	 * Registers the analytics javascript helpers.
 	 */
 	public static function register_analytics() {
-		if ( ! self::client()->isLoggedIn() ) {
+		if ( ! self::is_settings_screen() || ! self::client()->isLoggedIn() ) {
 			return;
 		}
 		$nonce   = wp_create_nonce( 'image-cdn-analytics' );
@@ -649,6 +701,7 @@ class Settings {
 	 */
 	public static function analytics() {
 		check_ajax_referer( 'image-cdn-analytics', 'nonce' );
+		self::require_manage_capability();
 
 		$out = array(
 			'type'      => 'error',

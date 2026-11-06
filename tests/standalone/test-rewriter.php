@@ -10,7 +10,7 @@ use ImageEngine\Rewriter;
 /**
  * The RewriterTest class tests the Rewriter.
  */
-class RewriterTest extends PHPUnit_Framework_TestCase {
+class RewriterTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * Test assets that should be excluded.
